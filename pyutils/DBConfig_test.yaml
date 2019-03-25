@@ -1,0 +1,12 @@
+repos:
+- {repo_url: 'https://github.com/zzcontinent/CliffMemSQL'}
+- {repo_url: 'https://github.com/zzcontinent/GitBackup'}
+- {repo_url: 'https://github.com/zzcontinent/linaro-ubuntu-axi-driver-test'}
+- {repo_url: 'https://github.com/zzcontinent/ipsniffer'}
+- {repo_url: 'https://github.com/zzcontinent/EthernetPortSpeedTest'}
+- {repo_url: 'http://git.woda.ink/dw/metadata', user: 'cliff', passwd: 'xxxx'}
+- {repo_url: 'http://git.woda.ink/dw/ods_controller', user: 'cliff', passwd: 'xxxx'}
+- {repo_url: 'http://git.woda.ink/dw/dw-etl', user: 'cliff', passwd: 'xxxx'}
+
+backup_path: '/home/pi/pyworkspace/GitBackup/backup'
+timing_backup: 60*60*1

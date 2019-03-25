@@ -1,0 +1,4 @@
+source /home/datas/.bashrc &&
+source /home/datas/.virtualenvs/financial/bin/activate &&
+python /home/datas/financial/financial.py &&
+deactivate

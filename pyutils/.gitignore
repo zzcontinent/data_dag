@@ -1,0 +1,10 @@
+!.gitignore
+*.csv
+*.xlsx
+*.json
+*.zip
+*.rar
+*.xls
+.idea
+*.pyc
+*.log
