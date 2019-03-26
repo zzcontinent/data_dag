@@ -12,6 +12,9 @@ NODES = [
         'nodes': {
             '开始': {'desc': '开始', 'color': 'red'},
             '结束': {'desc': '结束', 'color': 'lightblue'},
+            '概述': {
+                'desc': '''airflow中的定时任务(03:00)，用于等待触发。ods报表等离线增量任务，统一放在ods_wait_tigger中配置'''
+            },
             'wait_until_success_ods_woda': {
                 'desc': '/home/datas/.virtualenvs/env27/bin/python /home/datas/ods_controller/ods_controller_woda/task5_wait_until_success.py',
                 'color': 'green'},
@@ -141,56 +144,90 @@ NODES = [
 
         },
         'dag': '''
-                开始>>[wait_until_success_ods_woda,wait_until_success_ods_jff,wait_until_success_ods_zxx] 
-                [wait_until_success_ods_jff,wait_until_success_ods_zxx]>>zxx2_etl_service
-                wait_until_success_ods_jff>>[jff_etl_service,zhouxin_jff1_sp_credict]
+                开始 >> 概述 >> [wait_until_success_ods_woda,wait_until_success_ods_jff,wait_until_success_ods_zxx] 
+                [wait_until_success_ods_jff,wait_until_success_ods_zxx] >> zxx2_etl_service
+                wait_until_success_ods_jff >> [jff_etl_service,zhouxin_jff1_sp_credict]
                 zhouxin_jff1_sp_credict >> 结束
-                [zxx2_etl_service,jff_etl_service]>>zhouxin_etl_service_cb_operation_data
-                [wait_until_success_ods_woda,zhouxin_etl_service_cb_operation_data]>>interface_v2_daily_job_reguser_channel_operation >> 结束
-                wait_until_success_ods_woda>>zhouxin_woda1_user_exam_result_server_all_total>>zhouxin_woda2_cheat_detect>>zhouxin_woda3_recommend >> 结束
-                wait_until_success_ods_zxx>>zxx_etl_service>>user_credict_month_day_work>>zxx2_credict >> 结束
-                wait_until_success_ods_woda>>dim_broker_cliff >> 结束
+                [zxx2_etl_service,jff_etl_service] >> zhouxin_etl_service_cb_operation_data
+                [wait_until_success_ods_woda,zhouxin_etl_service_cb_operation_data] >> interface_v2_daily_job_reguser_channel_operation >> 结束
+                wait_until_success_ods_woda >> zhouxin_woda1_user_exam_result_server_all_total >> zhouxin_woda2_cheat_detect >> zhouxin_woda3_recommend >> 结束
+                wait_until_success_ods_zxx >> zxx_etl_service >> user_credict_month_day_work >> zxx2_credict >> 结束
+                wait_until_success_ods_woda >> dim_broker_cliff >> 结束
                 
-                [wait_until_success_ods_woda,wait_until_success_ods_jff,wait_until_success_ods_zxx,zxx_etl_service]>>zhouxin_name_list_analysis >> 结束
+                [wait_until_success_ods_woda,wait_until_success_ods_jff,wait_until_success_ods_zxx,zxx_etl_service] >> zhouxin_name_list_analysis >> 结束
                 
-                [wait_until_success_ods_jff,wait_until_success_ods_zxx,zxx2_etl_service,jff_etl_service]>>zhouxin_performance_data >> 结束
-                [wait_until_success_ods_jff,wait_until_success_ods_zxx,zxx2_etl_service,jff_etl_service]>>zhouxin_operator_data >> 结束
+                [wait_until_success_ods_jff,wait_until_success_ods_zxx,zxx2_etl_service,jff_etl_service] >> zhouxin_performance_data >> 结束
+                [wait_until_success_ods_jff,wait_until_success_ods_zxx,zxx2_etl_service,jff_etl_service] >> zhouxin_operator_data >> 结束
                 
-                wait_until_success_ods_woda>>load_dim >> wd_broker >> wd_user >> user_broker_relation >> wd_recruit_demand >> wd_preorder >> wd_interview >> wd_hire >> wd_invite >> wd_subsidy >> wd_interaction >> wd_labor_order  >> wd_ent_interview_cnt >> 结束
+                wait_until_success_ods_woda >> load_dim >> wd_broker >> wd_user >> user_broker_relation >> wd_recruit_demand >> wd_preorder >> wd_interview >> wd_hire >> wd_invite >> wd_subsidy >> wd_interaction >> wd_labor_order  >> wd_ent_interview_cnt >> 结束
                 
-                [wait_until_success_ods_woda,wait_until_success_ods_zxx]>> financial >> 结束'''
+                [wait_until_success_ods_woda,wait_until_success_ods_zxx] >>  financial >> 结束'''
     },
     {
-        'title': '司毅etl重跑',
+        'title': 'jff_online_service出错重跑方法',
         'nodes': {
             '开始': {'desc': '开始', 'color': 'red'},
+            '概述': {
+                'desc': '''如果数据同步出现错误：ods同步错误 or etl出错，需要修改DW/stg.cdc_time中current_sync_date 字段，具体table名称见下CDC_TABLE_NAME'''
+            },
             'jff_online_service': {'desc': 'airflow的任务名', 'color': 'orange'},
             'jff_enterprise_service': {'desc': '''etl工程目录 /usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/
                                                jff_enterprise_service/jff_enterprise_service.kjb''',
                                        'color': 'orange'},
             'direct_store_name_list_sum': {
-                'desc': '''CDC_TABLE_NAME + STG_TABLE_NAME: direct_store_name_list_sum''',
+                'desc': '''CDC_TABLE_NAME : direct_store_name_list_sum''',
                 'color': 'orange'},
-            'market_prc_max': {'desc': '''CDC_TABLE_NAME + STG_TABLE_NAME : market_prc_max''',
-                                     'color': 'orange'},
-            'area_prc_max': {'desc': '''CDC_TABLE_NAME + STG_TABLE_NAME : area_prc_max''',
-                                   'color': 'orange'},
-            'ent_name_list_sum': {'desc': '''CDC_TABLE_NAME + STG_TABLE_NAME : ent_name_list_sum''',
-                                        'color': 'orange'},
-            'ent_name_list_trend': {'desc': '''CDC_TABLE_NAME + STG_TABLE_NAME : ent_name_list_trend''',
-                                          'color': 'orange'},
+            'market_prc_max': {'desc': '''CDC_TABLE_NAME : market_prc_max''',
+                               'color': 'orange'},
+            'area_prc_max': {'desc': '''CDC_TABLE_NAME : area_prc_max''',
+                             'color': 'orange'},
+            'ent_name_list_sum': {'desc': '''CDC_TABLE_NAME : ent_name_list_sum''',
+                                  'color': 'orange'},
+            'ent_name_list_trend': {'desc': '''CDC_TABLE_NAME : ent_name_list_trend''',
+                                    'color': 'orange'},
             'ent_name_list_unique_sum': {
-                'desc': '''CDC_TABLE_NAME + STG_TABLE_NAME : ent_name_list_unique_sum''', 'color': 'orange'},
+                'desc': '''CDC_TABLE_NAME : ent_name_list_unique_sum''', 'color': 'orange'},
             'ent_name_list_unique_trend': {
-                'desc': '''CDC_TABLE_NAME + STG_TABLE_NAME : ent_name_list_unique_trend''', 'color': 'orange'},
-            'zhouxinxin_retation': {'desc': '''CDC_TABLE_NAME + STG_TABLE_NAME : zhouxinxin_retation''',
-                                          'color': 'orange'},
+                'desc': '''CDC_TABLE_NAME : ent_name_list_unique_trend''', 'color': 'orange'},
+            'zhouxinxin_retation': {'desc': '''CDC_TABLE_NAME : zhouxinxin_retation''',
+                                    'color': 'orange'},
             'stg_zhouxinxin_name_list': {
-                'desc': '''CDC_TABLE_NAME + STG_TABLE_NAME : stg_zhouxinxin_name_list''', 'color': 'orange'},
+                'desc': '''CDC_TABLE_NAME : stg_zhouxinxin_name_list''', 'color': 'orange'},
             '结束': {'desc': '结束', 'color': 'lightblue'},
         },
-        'dag': '''开始 >> jff_online_service >> jff_enterprise_service
-        jff_enterprise_service >> [direct_store_name_list_sum,market_prc_max,area_prc_max,ent_name_list_sum,ent_name_list_trend,ent_name_list_unique_sum,ent_name_list_unique_trend,zhouxinxin_retation,stg_zhouxinxin_name_list]>> 结束
+        'dag': '''开始 >> 概述 >> jff_online_service >> jff_enterprise_service
+        jff_enterprise_service >> [direct_store_name_list_sum,market_prc_max,area_prc_max,ent_name_list_sum,ent_name_list_trend,ent_name_list_unique_sum,ent_name_list_unique_trend,zhouxinxin_retation,stg_zhouxinxin_name_list] >>  结束
+        '''
+    },
+    {
+        'title': 'zhouxinxin_name_list 跨库管理名单状态',
+        'nodes': {
+            '开始': {'desc': '开始', 'color': 'red'},
+            '结束': {'desc': '结束', 'color': 'lightblue'},
+            '概述': {
+                'desc': '''Git目录： 1）http://git.woda.ink/dw/dw-etl/ jff_enterprise_service/zhouxinxin_retention
+                                    2）http://git.woda.ink/dw/dw-etl/ jff_enterprise_service/zhouxinxin_name_list_syn
+                        airflow定时任务:jff_online_service/zhouxinxin_retention
+                        pg同步任务：jff_online_service/zhouxinxin_name_list_syn
+                        '''
+            },
+            'PG数据库': {
+                'desc': 'DW/stg.stg_zhouxinxin_name_list',
+                'color': 'green'
+            },
+            'MySQL数据库': {
+                'desc': 'transit_jff.zhouxinxin_name_list',
+                'color': 'green'
+            },
+            'cdc_time': {
+                'desc': '''PG的dw.cdc_time用与增量同步对应的table_name : 1.zhouxinxin_retention 
+                        2.stg_zhouxinxin_name_list ''',
+                'color': 'orange'
+            },
+        },
+        'dag': '''
+        开始 >> 概述 >> [PG数据库,MySQL数据库] >> cdc_time >> 结束
+        
         '''
     }
 ]

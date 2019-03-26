@@ -161,6 +161,9 @@
     description: "开始",
     style: "fill: red"
   },
+  "概述": {
+    description: "airflow中的定时任务(03:00)，用于等待触发。ods报表等离线增量任务，统一放在ods_wait_tigger中配置"
+  },
   "wd_broker": {
     description: "/usr/local/data-integration/pan.sh -file=/datas/kettle/jobs/dw-etl/wd_broker/wd_broker.ktr",
     style: "fill: orange"
@@ -213,9 +216,10 @@
   });
 
   // Set up the edges
-  g1.setEdge( "开始", "wait_until_success_ods_woda" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "开始", "wait_until_success_ods_jff" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "开始", "wait_until_success_ods_zxx" , { label: "", curve: d3.curveBasis });
+  g1.setEdge( "开始", "概述" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "概述", "wait_until_success_ods_woda" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "概述", "wait_until_success_ods_jff" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "概述", "wait_until_success_ods_zxx" , { label: "", curve: d3.curveBasis });
 g1.setEdge( "wait_until_success_ods_jff", "zxx2_etl_service" , { label: "", curve: d3.curveBasis });
 g1.setEdge( "wait_until_success_ods_zxx", "zxx2_etl_service" , { label: "", curve: d3.curveBasis });
 g1.setEdge( "wait_until_success_ods_jff", "jff_etl_service" , { label: "", curve: d3.curveBasis });
@@ -332,7 +336,7 @@ g1.setEdge( "financial", "结束" , { label: "", curve: d3.curveBasis });
   svg.attr('height', g1.graph().height * initialScale + 40);
 </script>
 
-<h3>司毅etl重跑</h3>
+<h3>jff_online_service出错重跑方法</h3>
 <svg width=960 height=800 id="svg2"></svg>
 <script>
   var highlight_color = "#000000";
@@ -349,11 +353,11 @@ g1.setEdge( "financial", "结束" , { label: "", curve: d3.curveBasis });
   // States and transitions from RFC 793
   var states = {
     "market_prc_max": {
-    description: "CDC_TABLE_NAME + STG_TABLE_NAME : market_prc_max",
+    description: "CDC_TABLE_NAME : market_prc_max",
     style: "fill: orange"
   },
   "ent_name_list_unique_sum": {
-    description: "CDC_TABLE_NAME + STG_TABLE_NAME : ent_name_list_unique_sum",
+    description: "CDC_TABLE_NAME : ent_name_list_unique_sum",
     style: "fill: orange"
   },
   "jff_online_service": {
@@ -361,23 +365,23 @@ g1.setEdge( "financial", "结束" , { label: "", curve: d3.curveBasis });
     style: "fill: orange"
   },
   "ent_name_list_trend": {
-    description: "CDC_TABLE_NAME + STG_TABLE_NAME : ent_name_list_trend",
+    description: "CDC_TABLE_NAME : ent_name_list_trend",
     style: "fill: orange"
   },
   "ent_name_list_unique_trend": {
-    description: "CDC_TABLE_NAME + STG_TABLE_NAME : ent_name_list_unique_trend",
+    description: "CDC_TABLE_NAME : ent_name_list_unique_trend",
     style: "fill: orange"
   },
   "zhouxinxin_retation": {
-    description: "CDC_TABLE_NAME + STG_TABLE_NAME : zhouxinxin_retation",
+    description: "CDC_TABLE_NAME : zhouxinxin_retation",
     style: "fill: orange"
   },
   "stg_zhouxinxin_name_list": {
-    description: "CDC_TABLE_NAME + STG_TABLE_NAME : stg_zhouxinxin_name_list",
+    description: "CDC_TABLE_NAME : stg_zhouxinxin_name_list",
     style: "fill: orange"
   },
   "area_prc_max": {
-    description: "CDC_TABLE_NAME + STG_TABLE_NAME : area_prc_max",
+    description: "CDC_TABLE_NAME : area_prc_max",
     style: "fill: orange"
   },
   "jff_enterprise_service": {
@@ -385,19 +389,22 @@ g1.setEdge( "financial", "结束" , { label: "", curve: d3.curveBasis });
     style: "fill: orange"
   },
   "ent_name_list_sum": {
-    description: "CDC_TABLE_NAME + STG_TABLE_NAME : ent_name_list_sum",
+    description: "CDC_TABLE_NAME : ent_name_list_sum",
     style: "fill: orange"
   },
   "开始": {
     description: "开始",
     style: "fill: red"
   },
+  "概述": {
+    description: "如果数据同步出现错误：ods同步错误 or etl出错，需要修改DW/stg.cdc_time中current_sync_date 字段，具体table名称见下CDC_TABLE_NAME"
+  },
   "结束": {
     description: "结束",
     style: "fill: lightblue"
   },
   "direct_store_name_list_sum": {
-    description: "CDC_TABLE_NAME + STG_TABLE_NAME: direct_store_name_list_sum",
+    description: "CDC_TABLE_NAME : direct_store_name_list_sum",
     style: "fill: orange"
   }
   };
@@ -412,7 +419,8 @@ g1.setEdge( "financial", "结束" , { label: "", curve: d3.curveBasis });
   });
 
   // Set up the edges
-  g2.setEdge( "开始", "jff_online_service" , { label: "", curve: d3.curveBasis });
+  g2.setEdge( "开始", "概述" , { label: "", curve: d3.curveBasis });
+g2.setEdge( "概述", "jff_online_service" , { label: "", curve: d3.curveBasis });
 g2.setEdge( "jff_online_service", "jff_enterprise_service" , { label: "", curve: d3.curveBasis });
 g2.setEdge( "jff_enterprise_service", "direct_store_name_list_sum" , { label: "", curve: d3.curveBasis });
 g2.setEdge( "jff_enterprise_service", "market_prc_max" , { label: "", curve: d3.curveBasis });
@@ -494,6 +502,127 @@ g2.setEdge( "stg_zhouxinxin_name_list", "结束" , { label: "", curve: d3.curveB
   svg.call(zoom.transform, d3.zoomIdentity.translate((svg.attr("width") - g2.graph().width * initialScale) / 2, 20).scale(initialScale));
 
   svg.attr('height', g2.graph().height * initialScale + 40);
+</script>
+
+<h3>zhouxinxin_name_list 跨库管理名单状态</h3>
+<svg width=960 height=800 id="svg3"></svg>
+<script>
+  var highlight_color = "#000000";
+  var upstream_color = "#0000FF";
+  var downstream_color = "#0000FF"
+  var fill_default_color = "rgb(240, 237, 228)"
+  var fill_upstream_color = "orange"
+  var fill_downstream_color = "orange"
+  var initialStrokeWidth = '3px';
+  
+  // Create a new directed graph
+  var g3 = new dagreD3.graphlib.Graph().setGraph({});
+
+  // States and transitions from RFC 793
+  var states = {
+    "开始": {
+    description: "开始",
+    style: "fill: red"
+  },
+  "MySQL数据库": {
+    description: "transit_jff.zhouxinxin_name_list",
+    style: "fill: green"
+  },
+  "概述": {
+    description: "Git目录： 1）http://git.woda.ink/dw/dw-etl/ jff_enterprise_service/zhouxinxin_retention<br>                                    2）http://git.woda.ink/dw/dw-etl/ jff_enterprise_service/zhouxinxin_name_list_syn<br>                        airflow定时任务:jff_online_service/zhouxinxin_retention<br>                        pg同步任务：jff_online_service/zhouxinxin_name_list_syn<br>                        "
+  },
+  "PG数据库": {
+    description: "DW/stg.stg_zhouxinxin_name_list",
+    style: "fill: green"
+  },
+  "结束": {
+    description: "结束",
+    style: "fill: lightblue"
+  },
+  "cdc_time": {
+    description: "PG的dw.cdc_time用与增量同步对应的table_name : 1.zhouxinxin_retention <br>                        2.stg_zhouxinxin_name_list ",
+    style: "fill: orange"
+  }
+  };
+
+  // Add states to the graph, set labels, and style
+  Object.keys(states).forEach(function (state) {
+    var value = states[state];
+    value.label = state;
+    value.id = state;
+    value.rx = value.ry = 5;
+    g3.setNode(state, value);
+  });
+
+  // Set up the edges
+  g3.setEdge( "开始", "概述" , { label: "", curve: d3.curveBasis });
+g3.setEdge( "概述", "PG数据库" , { label: "", curve: d3.curveBasis });
+g3.setEdge( "概述", "MySQL数据库" , { label: "", curve: d3.curveBasis });
+g3.setEdge( "PG数据库", "cdc_time" , { label: "", curve: d3.curveBasis });
+g3.setEdge( "MySQL数据库", "cdc_time" , { label: "", curve: d3.curveBasis });
+g3.setEdge( "cdc_time", "结束" , { label: "", curve: d3.curveBasis });
+
+
+  // Create the renderer
+  var render = new dagreD3.render();
+
+  // Set up an SVG group so that we can translate the final graph.
+  var svg = d3.select("#svg3"),
+    inner3 = svg.append("g");
+
+  // Set up zoom support
+  var zoom = d3.zoom()
+    .on("zoom", function () {
+      inner3.attr("transform", d3.event.transform);
+    });
+  svg.call(zoom);
+
+  // Simple function to style the tooltip for the given node.
+  var styleTooltip = function (name, description) {
+    return "<p class='name'>" + name + "</p><p class='description' style='color:orange; width:100%; height:100%; display:inline-block' >" + description +"<br>" + "</p>";
+  };
+
+  // Run the renderer. This is what draws the final graph.
+  render(inner3, g3);
+
+  inner3.selectAll("g.node")
+    .attr("title", function (v) { return styleTooltip(v, g3.node(v).description) })
+    .each(function (v) { $(this).tipsy({ gravity: "w", opacity: 1, html: true }); });
+
+  inner3.selectAll("g.node").style("stroke-width", initialStrokeWidth);
+
+  // function highlight nodes
+  inner3.selectAll("g.node").on("mouseover", function (d) {
+    inner3.selectAll("rect").style("stroke", highlight_color);
+    g3.predecessors(d).forEach(function (nodeid) {
+      my_node = inner3.select('#' + nodeid + ' rect');
+      my_node.style("stroke", fill_upstream_color);
+    })
+
+    g3.successors(d).forEach(function (nodeid) {
+      my_node = inner3.select('#' + nodeid + ' rect');
+      my_node.style("stroke", fill_downstream_color);
+    })
+  });
+
+  inner3.selectAll("g.node").on("mouseout", function (d) {
+    inner3.selectAll("rect").style("stroke", null);
+    g3.predecessors(d).forEach(function (nodeid) {
+      my_node = inner3.select('#' + nodeid + ' rect');
+      my_node.style("stroke", null);
+    })
+
+    g3.successors(d).forEach(function (nodeid) {
+      my_node = inner3.select('#' + nodeid + ' rect');
+      my_node.style("stroke", null);
+    })
+  });
+  
+  // Center the graph
+  var initialScale = 0.75;
+  svg.call(zoom.transform, d3.zoomIdentity.translate((svg.attr("width") - g3.graph().width * initialScale) / 2, 20).scale(initialScale));
+
+  svg.attr('height', g3.graph().height * initialScale + 40);
 </script>
 
 
