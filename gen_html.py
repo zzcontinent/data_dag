@@ -68,6 +68,7 @@ def gen_nodes_template(nodes):
         color = ''
         if 'desc' in v:
             desc = v['desc']
+            desc = desc.replace('\n', '<br>')
         if 'color' in v:
             color = v['color']
         if color != '':

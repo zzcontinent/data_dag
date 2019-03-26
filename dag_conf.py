@@ -161,11 +161,36 @@ NODES = [
                 [wait_until_success_ods_woda,wait_until_success_ods_zxx]>> financial >> 结束'''
     },
     {
-        'title': 'jff_online_service',
+        'title': '司毅etl重跑',
         'nodes': {
             '开始': {'desc': '开始', 'color': 'red'},
+            'jff_online_service': {'desc': 'airflow的任务名', 'color': 'orange'},
+            'jff_enterprise_service': {'desc': '''etl工程目录 /usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/
+                                               jff_enterprise_service/jff_enterprise_service.kjb''',
+                                       'color': 'orange'},
+            'direct_store_name_list_sum': {
+                'desc': '''CDC_TABLE_NAME + STG_TABLE_NAME: direct_store_name_list_sum''',
+                'color': 'orange'},
+            'market_prc_max': {'desc': '''CDC_TABLE_NAME + STG_TABLE_NAME : market_prc_max''',
+                                     'color': 'orange'},
+            'area_prc_max': {'desc': '''CDC_TABLE_NAME + STG_TABLE_NAME : area_prc_max''',
+                                   'color': 'orange'},
+            'ent_name_list_sum': {'desc': '''CDC_TABLE_NAME + STG_TABLE_NAME : ent_name_list_sum''',
+                                        'color': 'orange'},
+            'ent_name_list_trend': {'desc': '''CDC_TABLE_NAME + STG_TABLE_NAME : ent_name_list_trend''',
+                                          'color': 'orange'},
+            'ent_name_list_unique_sum': {
+                'desc': '''CDC_TABLE_NAME + STG_TABLE_NAME : ent_name_list_unique_sum''', 'color': 'orange'},
+            'ent_name_list_unique_trend': {
+                'desc': '''CDC_TABLE_NAME + STG_TABLE_NAME : ent_name_list_unique_trend''', 'color': 'orange'},
+            'zhouxinxin_retation': {'desc': '''CDC_TABLE_NAME + STG_TABLE_NAME : zhouxinxin_retation''',
+                                          'color': 'orange'},
+            'stg_zhouxinxin_name_list': {
+                'desc': '''CDC_TABLE_NAME + STG_TABLE_NAME : stg_zhouxinxin_name_list''', 'color': 'orange'},
             '结束': {'desc': '结束', 'color': 'lightblue'},
         },
-        'dag': '''开始 >> 结束'''
+        'dag': '''开始 >> jff_online_service >> jff_enterprise_service
+        jff_enterprise_service >> [direct_store_name_list_sum,market_prc_max,area_prc_max,ent_name_list_sum,ent_name_list_trend,ent_name_list_unique_sum,ent_name_list_unique_trend,zhouxinxin_retation,stg_zhouxinxin_name_list]>> 结束
+        '''
     }
 ]
