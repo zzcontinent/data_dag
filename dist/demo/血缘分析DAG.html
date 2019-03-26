@@ -49,11 +49,19 @@
 
 </style>
 
-<h1>ods_wait_trigger 03:00开始执行</h1>
-<svg width=960 height=600 id="svg1"></svg>
+<h3>ods_wait_trigger</h3>
+<svg width=960 height=800 id="svg1"></svg>
 <script>
+  var highlight_color = "#000000";
+  var upstream_color = "#0000FF";
+  var downstream_color = "#0000FF"
+  var fill_default_color = "rgb(240, 237, 228)"
+  var fill_upstream_color = "orange"
+  var fill_downstream_color = "orange"
+  var initialStrokeWidth = '3px';
+  
   // Create a new directed graph
-  var g = new dagreD3.graphlib.Graph().setGraph({});
+  var g1 = new dagreD3.graphlib.Graph().setGraph({});
 
   // States and transitions from RFC 793
   var states = {
@@ -199,66 +207,67 @@
   Object.keys(states).forEach(function (state) {
     var value = states[state];
     value.label = state;
+    value.id = state;
     value.rx = value.ry = 5;
-    g.setNode(state, value);
+    g1.setNode(state, value);
   });
 
   // Set up the edges
-  g.setEdge( "开始", "wait_until_success_ods_woda" , { label: "" });
-g.setEdge( "开始", "wait_until_success_ods_jff" , { label: "" });
-g.setEdge( "开始", "wait_until_success_ods_zxx" , { label: "" });
-g.setEdge( "wait_until_success_ods_jff", "zxx2_etl_service" , { label: "" });
-g.setEdge( "wait_until_success_ods_zxx", "zxx2_etl_service" , { label: "" });
-g.setEdge( "wait_until_success_ods_jff", "jff_etl_service" , { label: "" });
-g.setEdge( "wait_until_success_ods_jff", "zhouxin_jff1_sp_credict" , { label: "" });
-g.setEdge( "zhouxin_jff1_sp_credict", "结束" , { label: "" });
-g.setEdge( "zxx2_etl_service", "zhouxin_etl_service_cb_operation_data" , { label: "" });
-g.setEdge( "jff_etl_service", "zhouxin_etl_service_cb_operation_data" , { label: "" });
-g.setEdge( "wait_until_success_ods_woda", "interface_v2_daily_job_reguser_channel_operation" , { label: "" });
-g.setEdge( "zhouxin_etl_service_cb_operation_data", "interface_v2_daily_job_reguser_channel_operation" , { label: "" });
-g.setEdge( "interface_v2_daily_job_reguser_channel_operation", "结束" , { label: "" });
-g.setEdge( "wait_until_success_ods_woda", "zhouxin_woda1_user_exam_result_server_all_total" , { label: "" });
-g.setEdge( "zhouxin_woda1_user_exam_result_server_all_total", "zhouxin_woda2_cheat_detect" , { label: "" });
-g.setEdge( "zhouxin_woda2_cheat_detect", "zhouxin_woda3_recommend" , { label: "" });
-g.setEdge( "zhouxin_woda3_recommend", "结束" , { label: "" });
-g.setEdge( "wait_until_success_ods_zxx", "zxx_etl_service" , { label: "" });
-g.setEdge( "zxx_etl_service", "user_credict_month_day_work" , { label: "" });
-g.setEdge( "user_credict_month_day_work", "zxx2_credict" , { label: "" });
-g.setEdge( "zxx2_credict", "结束" , { label: "" });
-g.setEdge( "wait_until_success_ods_woda", "dim_broker_cliff" , { label: "" });
-g.setEdge( "dim_broker_cliff", "结束" , { label: "" });
-g.setEdge( "wait_until_success_ods_woda", "zhouxin_name_list_analysis" , { label: "" });
-g.setEdge( "wait_until_success_ods_jff", "zhouxin_name_list_analysis" , { label: "" });
-g.setEdge( "wait_until_success_ods_zxx", "zhouxin_name_list_analysis" , { label: "" });
-g.setEdge( "zxx_etl_service", "zhouxin_name_list_analysis" , { label: "" });
-g.setEdge( "zhouxin_name_list_analysis", "结束" , { label: "" });
-g.setEdge( "wait_until_success_ods_jff", "zhouxin_performance_data" , { label: "" });
-g.setEdge( "wait_until_success_ods_zxx", "zhouxin_performance_data" , { label: "" });
-g.setEdge( "zxx2_etl_service", "zhouxin_performance_data" , { label: "" });
-g.setEdge( "jff_etl_service", "zhouxin_performance_data" , { label: "" });
-g.setEdge( "zhouxin_performance_data", "结束" , { label: "" });
-g.setEdge( "wait_until_success_ods_jff", "zhouxin_operator_data" , { label: "" });
-g.setEdge( "wait_until_success_ods_zxx", "zhouxin_operator_data" , { label: "" });
-g.setEdge( "zxx2_etl_service", "zhouxin_operator_data" , { label: "" });
-g.setEdge( "jff_etl_service", "zhouxin_operator_data" , { label: "" });
-g.setEdge( "zhouxin_operator_data", "结束" , { label: "" });
-g.setEdge( "wait_until_success_ods_woda", "load_dim" , { label: "" });
-g.setEdge( "load_dim", "wd_broker" , { label: "" });
-g.setEdge( "wd_broker", "wd_user" , { label: "" });
-g.setEdge( "wd_user", "user_broker_relation" , { label: "" });
-g.setEdge( "user_broker_relation", "wd_recruit_demand" , { label: "" });
-g.setEdge( "wd_recruit_demand", "wd_preorder" , { label: "" });
-g.setEdge( "wd_preorder", "wd_interview" , { label: "" });
-g.setEdge( "wd_interview", "wd_hire" , { label: "" });
-g.setEdge( "wd_hire", "wd_invite" , { label: "" });
-g.setEdge( "wd_invite", "wd_subsidy" , { label: "" });
-g.setEdge( "wd_subsidy", "wd_interaction" , { label: "" });
-g.setEdge( "wd_interaction", "wd_labor_order" , { label: "" });
-g.setEdge( "wd_labor_order", "wd_ent_interview_cnt" , { label: "" });
-g.setEdge( "wd_ent_interview_cnt", "结束" , { label: "" });
-g.setEdge( "wait_until_success_ods_woda", "financial" , { label: "" });
-g.setEdge( "wait_until_success_ods_zxx", "financial" , { label: "" });
-g.setEdge( "financial", "结束" , { label: "" });
+  g1.setEdge( "开始", "wait_until_success_ods_woda" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "开始", "wait_until_success_ods_jff" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "开始", "wait_until_success_ods_zxx" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "wait_until_success_ods_jff", "zxx2_etl_service" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "wait_until_success_ods_zxx", "zxx2_etl_service" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "wait_until_success_ods_jff", "jff_etl_service" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "wait_until_success_ods_jff", "zhouxin_jff1_sp_credict" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "zhouxin_jff1_sp_credict", "结束" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "zxx2_etl_service", "zhouxin_etl_service_cb_operation_data" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "jff_etl_service", "zhouxin_etl_service_cb_operation_data" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "wait_until_success_ods_woda", "interface_v2_daily_job_reguser_channel_operation" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "zhouxin_etl_service_cb_operation_data", "interface_v2_daily_job_reguser_channel_operation" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "interface_v2_daily_job_reguser_channel_operation", "结束" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "wait_until_success_ods_woda", "zhouxin_woda1_user_exam_result_server_all_total" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "zhouxin_woda1_user_exam_result_server_all_total", "zhouxin_woda2_cheat_detect" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "zhouxin_woda2_cheat_detect", "zhouxin_woda3_recommend" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "zhouxin_woda3_recommend", "结束" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "wait_until_success_ods_zxx", "zxx_etl_service" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "zxx_etl_service", "user_credict_month_day_work" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "user_credict_month_day_work", "zxx2_credict" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "zxx2_credict", "结束" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "wait_until_success_ods_woda", "dim_broker_cliff" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "dim_broker_cliff", "结束" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "wait_until_success_ods_woda", "zhouxin_name_list_analysis" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "wait_until_success_ods_jff", "zhouxin_name_list_analysis" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "wait_until_success_ods_zxx", "zhouxin_name_list_analysis" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "zxx_etl_service", "zhouxin_name_list_analysis" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "zhouxin_name_list_analysis", "结束" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "wait_until_success_ods_jff", "zhouxin_performance_data" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "wait_until_success_ods_zxx", "zhouxin_performance_data" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "zxx2_etl_service", "zhouxin_performance_data" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "jff_etl_service", "zhouxin_performance_data" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "zhouxin_performance_data", "结束" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "wait_until_success_ods_jff", "zhouxin_operator_data" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "wait_until_success_ods_zxx", "zhouxin_operator_data" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "zxx2_etl_service", "zhouxin_operator_data" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "jff_etl_service", "zhouxin_operator_data" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "zhouxin_operator_data", "结束" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "wait_until_success_ods_woda", "load_dim" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "load_dim", "wd_broker" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "wd_broker", "wd_user" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "wd_user", "user_broker_relation" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "user_broker_relation", "wd_recruit_demand" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "wd_recruit_demand", "wd_preorder" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "wd_preorder", "wd_interview" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "wd_interview", "wd_hire" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "wd_hire", "wd_invite" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "wd_invite", "wd_subsidy" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "wd_subsidy", "wd_interaction" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "wd_interaction", "wd_labor_order" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "wd_labor_order", "wd_ent_interview_cnt" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "wd_ent_interview_cnt", "结束" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "wait_until_success_ods_woda", "financial" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "wait_until_success_ods_zxx", "financial" , { label: "", curve: d3.curveBasis });
+g1.setEdge( "financial", "结束" , { label: "", curve: d3.curveBasis });
 
 
   // Create the renderer
@@ -277,28 +286,65 @@ g.setEdge( "financial", "结束" , { label: "" });
 
   // Simple function to style the tooltip for the given node.
   var styleTooltip = function (name, description) {
-    return "<p class='name'>" + name + "</p><p class='description' style='color:orange; width:100%; height:100%; display:inline-block' >" + description + "</p>";
+    return "<p class='name'>" + name + "</p><p class='description' style='color:orange; width:100%; height:100%; display:inline-block' >" + description +"<br>" + "</p>";
   };
 
   // Run the renderer. This is what draws the final graph.
-  render(inner1, g);
+  render(inner1, g1);
 
   inner1.selectAll("g.node")
-    .attr("title", function (v) { return styleTooltip(v, g.node(v).description) })
+    .attr("title", function (v) { return styleTooltip(v, g1.node(v).description) })
     .each(function (v) { $(this).tipsy({ gravity: "w", opacity: 1, html: true }); });
 
+  inner1.selectAll("g.node").style("stroke-width", initialStrokeWidth);
+
+  // function highlight nodes
+  inner1.selectAll("g.node").on("mouseover", function (d) {
+    inner1.selectAll("rect").style("stroke", highlight_color);
+    g1.predecessors(d).forEach(function (nodeid) {
+      my_node = inner1.select('#' + nodeid + ' rect');
+      my_node.style("stroke", fill_upstream_color);
+    })
+
+    g1.successors(d).forEach(function (nodeid) {
+      my_node = inner1.select('#' + nodeid + ' rect');
+      my_node.style("stroke", fill_downstream_color);
+    })
+  });
+
+  inner1.selectAll("g.node").on("mouseout", function (d) {
+    inner1.selectAll("rect").style("stroke", null);
+    g1.predecessors(d).forEach(function (nodeid) {
+      my_node = inner1.select('#' + nodeid + ' rect');
+      my_node.style("stroke", null);
+    })
+
+    g1.successors(d).forEach(function (nodeid) {
+      my_node = inner1.select('#' + nodeid + ' rect');
+      my_node.style("stroke", null);
+    })
+  });
+  
   // Center the graph
   var initialScale = 0.75;
-  svg.call(zoom.transform, d3.zoomIdentity.translate((svg.attr("width") - g.graph().width * initialScale) / 2, 20).scale(initialScale));
+  svg.call(zoom.transform, d3.zoomIdentity.translate((svg.attr("width") - g1.graph().width * initialScale) / 2, 20).scale(initialScale));
 
-  svg.attr('height', g.graph().height * initialScale + 40);
+  svg.attr('height', g1.graph().height * initialScale + 40);
 </script>
 
-<h1>ods_wait_trigger 03:00开始执行</h1>
-<svg width=960 height=600 id="svg2"></svg>
+<h3>jff_online_service</h3>
+<svg width=960 height=800 id="svg2"></svg>
 <script>
+  var highlight_color = "#000000";
+  var upstream_color = "#0000FF";
+  var downstream_color = "#0000FF"
+  var fill_default_color = "rgb(240, 237, 228)"
+  var fill_upstream_color = "orange"
+  var fill_downstream_color = "orange"
+  var initialStrokeWidth = '3px';
+  
   // Create a new directed graph
-  var g = new dagreD3.graphlib.Graph().setGraph({});
+  var g2 = new dagreD3.graphlib.Graph().setGraph({});
 
   // States and transitions from RFC 793
   var states = {
@@ -316,12 +362,13 @@ g.setEdge( "financial", "结束" , { label: "" });
   Object.keys(states).forEach(function (state) {
     var value = states[state];
     value.label = state;
+    value.id = state;
     value.rx = value.ry = 5;
-    g.setNode(state, value);
+    g2.setNode(state, value);
   });
 
   // Set up the edges
-  g.setEdge( "开始", "结束" , { label: "" });
+  g2.setEdge( "开始", "结束" , { label: "", curve: d3.curveBasis });
 
 
   // Create the renderer
@@ -340,21 +387,50 @@ g.setEdge( "financial", "结束" , { label: "" });
 
   // Simple function to style the tooltip for the given node.
   var styleTooltip = function (name, description) {
-    return "<p class='name'>" + name + "</p><p class='description' style='color:orange; width:100%; height:100%; display:inline-block' >" + description + "</p>";
+    return "<p class='name'>" + name + "</p><p class='description' style='color:orange; width:100%; height:100%; display:inline-block' >" + description +"<br>" + "</p>";
   };
 
   // Run the renderer. This is what draws the final graph.
-  render(inner2, g);
+  render(inner2, g2);
 
   inner2.selectAll("g.node")
-    .attr("title", function (v) { return styleTooltip(v, g.node(v).description) })
+    .attr("title", function (v) { return styleTooltip(v, g2.node(v).description) })
     .each(function (v) { $(this).tipsy({ gravity: "w", opacity: 1, html: true }); });
 
+  inner2.selectAll("g.node").style("stroke-width", initialStrokeWidth);
+
+  // function highlight nodes
+  inner2.selectAll("g.node").on("mouseover", function (d) {
+    inner2.selectAll("rect").style("stroke", highlight_color);
+    g2.predecessors(d).forEach(function (nodeid) {
+      my_node = inner2.select('#' + nodeid + ' rect');
+      my_node.style("stroke", fill_upstream_color);
+    })
+
+    g2.successors(d).forEach(function (nodeid) {
+      my_node = inner2.select('#' + nodeid + ' rect');
+      my_node.style("stroke", fill_downstream_color);
+    })
+  });
+
+  inner2.selectAll("g.node").on("mouseout", function (d) {
+    inner2.selectAll("rect").style("stroke", null);
+    g2.predecessors(d).forEach(function (nodeid) {
+      my_node = inner2.select('#' + nodeid + ' rect');
+      my_node.style("stroke", null);
+    })
+
+    g2.successors(d).forEach(function (nodeid) {
+      my_node = inner2.select('#' + nodeid + ' rect');
+      my_node.style("stroke", null);
+    })
+  });
+  
   // Center the graph
   var initialScale = 0.75;
-  svg.call(zoom.transform, d3.zoomIdentity.translate((svg.attr("width") - g.graph().width * initialScale) / 2, 20).scale(initialScale));
+  svg.call(zoom.transform, d3.zoomIdentity.translate((svg.attr("width") - g2.graph().width * initialScale) / 2, 20).scale(initialScale));
 
-  svg.attr('height', g.graph().height * initialScale + 40);
+  svg.attr('height', g2.graph().height * initialScale + 40);
 </script>
 
 

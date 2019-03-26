@@ -41,10 +41,10 @@ def parse_dag(dag):
 
 
 @func_name()
-def gen_edge_template(edge_strs):
+def gen_edge_template(graph_id, edge_strs):
     edge_str = ''
     for v in edge_strs:
-        edge_one = '''g.setEdge(%s, { label: "" });''' % v
+        edge_one = '''%s.setEdge(%s, { label: "", curve: d3.curveBasis });''' % (graph_id, v)
         edge_str += edge_one
         edge_str += '\n'
     return edge_str.strip()
@@ -90,20 +90,21 @@ def auto_gen(file_name):
     id = 1
 
     for node in dag_conf.NODES:
+        str_svg_id = 'svg%d' % id
+        str_graph_id = 'g%d' % id
+        str_inner_id = 'inner%d' % id
+        id += 1
         # 生成节点信息
         nodes_template_str = gen_nodes_template(node['nodes'])
         # 生成标题+连接
         edge_strs = parse_dag(node['dag'])
-        edge_template_str = gen_edge_template(edge_strs)
+        edge_template_str = gen_edge_template(str_graph_id, edge_strs)
         # 合并
-        str_svg_id = 'svg%d' % id
-        str_inner_id = 'inner%d' % id
-        id += 1
-        svg_all += dag_template.str_header % node['title'] + '\n'
-        svg_all += dag_template.str_svg % str_svg_id + '\n'
-        svg_all += dag_template.str_script % (
-        nodes_template_str, edge_template_str, str_svg_id, str_inner_id, str_inner_id, str_inner_id,
-        str_inner_id) + '\n'
+        svg_all += dag_template.str_header % {'HEADER': node['title']} + '\n'
+        svg_all += dag_template.str_svg % {'SVG_ID': str_svg_id} + '\n'
+        svg_all += dag_template.str_script % {
+            'NODES_TEMPLATE': nodes_template_str, 'EDGE_TEMPLATE': edge_template_str,
+            'SVG_ID': str_svg_id, 'INNER_ID': str_inner_id, 'GRAPH': str_graph_id} + '\n'
 
     fp.write(dag_template.str_template % (file_name, svg_all))
     fp.flush()

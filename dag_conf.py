@@ -8,9 +8,10 @@ sys.setdefaultencoding('utf-8')
 NODES = [
     # ods_wait_trigger图
     {
-        'title': 'ods_wait_trigger 03:00开始执行',
+        'title': 'ods_wait_trigger',
         'nodes': {
             '开始': {'desc': '开始', 'color': 'red'},
+            '结束': {'desc': '结束', 'color': 'lightblue'},
             'wait_until_success_ods_woda': {
                 'desc': '/home/datas/.virtualenvs/env27/bin/python /home/datas/ods_controller/ods_controller_woda/task5_wait_until_success.py',
                 'color': 'green'},
@@ -137,7 +138,7 @@ NODES = [
                 'desc': 'source /home/datas/financial/cmd_day',
                 'color': 'orange'
             },
-            '结束': {'desc': '结束', 'color': 'lightblue'},
+
         },
         'dag': '''
                 开始>>[wait_until_success_ods_woda,wait_until_success_ods_jff,wait_until_success_ods_zxx] 
@@ -160,7 +161,7 @@ NODES = [
                 [wait_until_success_ods_woda,wait_until_success_ods_zxx]>> financial >> 结束'''
     },
     {
-        'title': 'ods_wait_trigger 03:00开始执行',
+        'title': 'jff_online_service',
         'nodes': {
             '开始': {'desc': '开始', 'color': 'red'},
             '结束': {'desc': '结束', 'color': 'lightblue'},
