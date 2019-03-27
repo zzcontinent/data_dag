@@ -206,71 +206,125 @@ NODES = [
                 
                 [4,6] >> 35 >> 2'''
     },
-    # {
-    #     'title': 'jff_online_service出错重跑方法',
-    #     'nodes': {
-    #         '开始': {'desc': '开始', 'color': 'red'},
-    #         '概述': {
-    #             'desc': '''如果数据同步出现错误：ods同步错误 or etl出错，需要修改DW/stg.cdc_time中current_sync_date 字段，具体table名称见下CDC_TABLE_NAME'''
-    #         },
-    #         'jff_online_service': {'desc': 'airflow的任务名', 'color': 'orange'},
-    #         'jff_enterprise_service': {'desc': '''etl工程目录 /usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/
-    #                                            jff_enterprise_service/jff_enterprise_service.kjb''',
-    #                                    'color': 'orange'},
-    #         'direct_store_name_list_sum': {
-    #             'desc': '''CDC_TABLE_NAME : direct_store_name_list_sum''',
-    #             'color': 'orange'},
-    #         'market_prc_max': {'desc': '''CDC_TABLE_NAME : market_prc_max''',
-    #                            'color': 'orange'},
-    #         'area_prc_max': {'desc': '''CDC_TABLE_NAME : area_prc_max''',
-    #                          'color': 'orange'},
-    #         'ent_name_list_sum': {'desc': '''CDC_TABLE_NAME : ent_name_list_sum''',
-    #                               'color': 'orange'},
-    #         'ent_name_list_trend': {'desc': '''CDC_TABLE_NAME : ent_name_list_trend''',
-    #                                 'color': 'orange'},
-    #         'ent_name_list_unique_sum': {
-    #             'desc': '''CDC_TABLE_NAME : ent_name_list_unique_sum''', 'color': 'orange'},
-    #         'ent_name_list_unique_trend': {
-    #             'desc': '''CDC_TABLE_NAME : ent_name_list_unique_trend''', 'color': 'orange'},
-    #         'zhouxinxin_retation': {'desc': '''CDC_TABLE_NAME : zhouxinxin_retation''',
-    #                                 'color': 'orange'},
-    #         'stg_zhouxinxin_name_list': {
-    #             'desc': '''CDC_TABLE_NAME : stg_zhouxinxin_name_list''', 'color': 'orange'},
-    #         '结束': {'desc': '结束', 'color': 'lightblue'},
-    #     },
-    #     'dag': '''开始 >> 概述 >> jff_online_service >> jff_enterprise_service
-    #     jff_enterprise_service >> [direct_store_name_list_sum,market_prc_max,area_prc_max,ent_name_list_sum,ent_name_list_trend,ent_name_list_unique_sum,ent_name_list_unique_trend,zhouxinxin_retation,stg_zhouxinxin_name_list] >>  结束
-    #     '''
-    # },
-    # {
-    #     'title': 'zhouxinxin_name_list 跨库管理名单状态',
-    #     'nodes': {
-    #         '开始': {'desc': '开始', 'color': 'red'},
-    #         '结束': {'desc': '结束', 'color': 'lightblue'},
-    #         '概述': {
-    #             'desc': '''Git目录： 1）http://git.woda.ink/dw/dw-etl/ jff_enterprise_service/zhouxinxin_retention
-    #                                 2）http://git.woda.ink/dw/dw-etl/ jff_enterprise_service/zhouxinxin_name_list_syn
-    #                     airflow定时任务:jff_online_service/zhouxinxin_retention
-    #                     pg同步任务：jff_online_service/zhouxinxin_name_list_syn
-    #                     '''
-    #         },
-    #         'PG数据库': {
-    #             'desc': 'DW/stg.stg_zhouxinxin_name_list',
-    #             'color': 'green'
-    #         },
-    #         'MySQL数据库': {
-    #             'desc': 'transit_jff.zhouxinxin_name_list',
-    #             'color': 'green'
-    #         },
-    #         'cdc_time': {
-    #             'desc': '''PG的dw.cdc_time用与增量同步对应的table_name : 1.zhouxinxin_retention
-    #                     2.stg_zhouxinxin_name_list ''',
-    #             'color': 'orange'
-    #         },
-    #     },
-    #     'dag': '''
-    #     开始 >> 概述 >> [PG数据库,MySQL数据库] >> cdc_time >> 结束
-    #     '''
-    # },
+    {
+        'title': 'jff_online_service出错重跑方法',
+        'nodes': {
+            'ts': {
+                'name': '开始',
+                'desc': '''开始''',
+                'color': 'red'
+            },
+            'te': {
+                'name': '结束',
+                'desc': '''结束''',
+                'color': 'lightblue'
+            },
+            2: {
+                'name': '概述',
+                'desc': '''如果数据同步出现错误：ods同步错误 or etl出错，需要修改DW/stg.cdc_time中current_sync_date 字段，具体table名称见下CDC_TABLE_NAME''',
+                'color': 'red'
+            },
+            3: {
+                'name': 'jff_online_service',
+                'desc': '''airflow的任务名''',
+                'color': 'orange'
+            },
+            4: {
+                'name': 'jff_enterprise_service',
+                'desc': '''etl工程目录 /usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/
+                                               jff_enterprise_service/jff_enterprise_service.kjb''',
+                'color': 'orange'
+            },
+            5: {
+                'name': 'direct_store_name_list_sum',
+                'desc': '''dw.stg.cdc_time.cdc_table_name : direct_store_name_list_sum''',
+                'color': 'orange'
+            },
+            6: {
+                'name': 'market_prc_max',
+                'desc': '''dw.stg.cdc_time.cdc_table_name : market_prc_max''',
+                'color': 'orange'
+            },
+            7: {
+                'name': 'area_prc_max',
+                'desc': '''dw.stg.cdc_time.cdc_table_name : area_prc_max''',
+                'color': 'orange'
+            },
+            8: {
+                'name': 'ent_name_list_sum',
+                'desc': '''dw.stg.cdc_time.cdc_table_name : ent_name_list_sum''',
+                'color': 'orange'
+            },
+            9: {
+                'name': 'ent_name_list_trend',
+                'desc': '''dw.stg.cdc_time.cdc_table_name : ent_name_list_trend''',
+                'color': 'orange'
+            },
+
+            10: {
+                'name': 'ent_name_list_unique_sum',
+                'desc': '''dw.stg.cdc_time.cdc_table_name : ent_name_list_unique_sum''',
+                'color': 'orange'
+            },
+            11: {
+                'name': 'ent_name_list_unique_trend',
+                'desc': '''dw.stg.cdc_time.cdc_table_name : ent_name_list_unique_trend''',
+                'color': 'orange'
+            },
+            12: {
+                'name': 'zhouxinxin_retation',
+                'desc': '''dw.stg.cdc_time.cdc_table_name : zhouxinxin_retation''',
+                'color': 'orange'
+            },
+            13: {
+                'name': 'stg_zhouxinxin_name_list',
+                'desc': '''dw.stg.cdc_time.cdc_table_name : stg_zhouxinxin_name_list''',
+                'color': 'orange'
+            }
+        },
+        'dag': '''ts >> 2 >> 3 >> 4 >> [5,6,7,8,9,10,11,12,13] >>  te
+        '''
+    },
+    {
+        'title': 'zhouxinxin_name_list 跨库管理名单状态',
+        'nodes': {
+            'ts': {
+                'name': '开始',
+                'desc': '''开始''',
+                'color': 'red'
+            },
+            'te': {
+                'name': '结束',
+                'desc': '''结束''',
+                'color': 'lightblue'
+            },
+            1: {
+                'name': '概述',
+                'desc': '''Git目录： 1）http://git.woda.ink/dw/dw-etl/ jff_enterprise_service/zhouxinxin_retention
+                                    2）http://git.woda.ink/dw/dw-etl/ jff_enterprise_service/zhouxinxin_name_list_syn
+                        airflow定时任务:jff_online_service/zhouxinxin_retention
+                        pg同步任务：jff_online_service/zhouxinxin_name_list_syn''',
+            },
+            2: {
+                'name': 'DW.stg.stg_zhouxinxin_name_list',
+                'desc': '''PG数据库''',
+                'color': 'green'
+            },
+            3: {
+                'name': 'transit_jff.zhouxinxin_name_list',
+                'desc': '''MySQL数据库''',
+                'color': 'green'
+            },
+            4: {
+                'name': 'cdc_time',
+                'desc': '''PG的dw.cdc_time用与增量同步对应的table_name : 1.zhouxinxin_retention
+                        2.stg_zhouxinxin_name_list ''',
+                'color': 'orange'
+            },
+        },
+        'dag': '''
+        ts >> 1 >> [2,3] >> 4 >> te
+        '''
+    },
 
 ]

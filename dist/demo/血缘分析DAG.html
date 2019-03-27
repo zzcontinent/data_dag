@@ -405,4 +405,330 @@ g1.setEdge( "id_35", "id_2" , { label: "" });
   svg.attr('height', g1.graph().height * initialScale + 40);
 </script>
 
+<h3>jff_online_service出错重跑方法</h3>
+<svg width=960 height=800 id="svg2"></svg>
+<script>
+  var highlight_color = "#000000";
+  var upstream_color = "#0000FF";
+  var downstream_color = "#0000FF"
+  var fill_default_color = "rgb(240, 237, 228)"
+  var fill_upstream_color = "orange"
+  var fill_downstream_color = "orange"
+  var initialStrokeWidth = '3px';
+  
+  // Create a new directed graph
+  var g2 = new dagreD3.graphlib.Graph().setGraph({});
+
+  // States and transitions from RFC 793
+  var states = {
+    "id_2": {
+    id: "id_2",
+    label: "概述",
+    description: "如果数据同步出现错误：ods同步错误 or etl出错，需要修改DW/stg.cdc_time中current_sync_date 字段，具体table名称见下CDC_TABLE_NAME",
+    style: "fill: red"
+  },
+  "id_3": {
+    id: "id_3",
+    label: "jff_online_service",
+    description: "airflow的任务名",
+    style: "fill: orange"
+  },
+  "id_4": {
+    id: "id_4",
+    label: "jff_enterprise_service",
+    description: "etl工程目录 /usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/<br>                                               jff_enterprise_service/jff_enterprise_service.kjb",
+    style: "fill: orange"
+  },
+  "id_5": {
+    id: "id_5",
+    label: "direct_store_name_list_sum",
+    description: "dw.stg.cdc_time.cdc_table_name : direct_store_name_list_sum",
+    style: "fill: orange"
+  },
+  "id_6": {
+    id: "id_6",
+    label: "market_prc_max",
+    description: "dw.stg.cdc_time.cdc_table_name : market_prc_max",
+    style: "fill: orange"
+  },
+  "id_7": {
+    id: "id_7",
+    label: "area_prc_max",
+    description: "dw.stg.cdc_time.cdc_table_name : area_prc_max",
+    style: "fill: orange"
+  },
+  "id_8": {
+    id: "id_8",
+    label: "ent_name_list_sum",
+    description: "dw.stg.cdc_time.cdc_table_name : ent_name_list_sum",
+    style: "fill: orange"
+  },
+  "id_9": {
+    id: "id_9",
+    label: "ent_name_list_trend",
+    description: "dw.stg.cdc_time.cdc_table_name : ent_name_list_trend",
+    style: "fill: orange"
+  },
+  "id_10": {
+    id: "id_10",
+    label: "ent_name_list_unique_sum",
+    description: "dw.stg.cdc_time.cdc_table_name : ent_name_list_unique_sum",
+    style: "fill: orange"
+  },
+  "id_11": {
+    id: "id_11",
+    label: "ent_name_list_unique_trend",
+    description: "dw.stg.cdc_time.cdc_table_name : ent_name_list_unique_trend",
+    style: "fill: orange"
+  },
+  "id_12": {
+    id: "id_12",
+    label: "zhouxinxin_retation",
+    description: "dw.stg.cdc_time.cdc_table_name : zhouxinxin_retation",
+    style: "fill: orange"
+  },
+  "id_13": {
+    id: "id_13",
+    label: "stg_zhouxinxin_name_list",
+    description: "dw.stg.cdc_time.cdc_table_name : stg_zhouxinxin_name_list",
+    style: "fill: orange"
+  },
+  "id_ts": {
+    id: "id_ts",
+    label: "开始",
+    description: "开始",
+    style: "fill: red"
+  },
+  "id_te": {
+    id: "id_te",
+    label: "结束",
+    description: "结束",
+    style: "fill: lightblue"
+  }
+  };
+
+  // Add states to the graph, set labels, and style
+  Object.keys(states).forEach(function (state) {
+    var value = states[state];
+    value.rx = value.ry = 5;
+    g2.setNode(state, value);
+  });
+
+  // Set up the edges
+  g2.setEdge( "id_ts", "id_2" , { label: "" });
+g2.setEdge( "id_2", "id_3" , { label: "" });
+g2.setEdge( "id_3", "id_4" , { label: "" });
+g2.setEdge( "id_4", "id_5" , { label: "" });
+g2.setEdge( "id_4", "id_6" , { label: "" });
+g2.setEdge( "id_4", "id_7" , { label: "" });
+g2.setEdge( "id_4", "id_8" , { label: "" });
+g2.setEdge( "id_4", "id_9" , { label: "" });
+g2.setEdge( "id_4", "id_10" , { label: "" });
+g2.setEdge( "id_4", "id_11" , { label: "" });
+g2.setEdge( "id_4", "id_12" , { label: "" });
+g2.setEdge( "id_4", "id_13" , { label: "" });
+g2.setEdge( "id_5", "id_te" , { label: "" });
+g2.setEdge( "id_6", "id_te" , { label: "" });
+g2.setEdge( "id_7", "id_te" , { label: "" });
+g2.setEdge( "id_8", "id_te" , { label: "" });
+g2.setEdge( "id_9", "id_te" , { label: "" });
+g2.setEdge( "id_10", "id_te" , { label: "" });
+g2.setEdge( "id_11", "id_te" , { label: "" });
+g2.setEdge( "id_12", "id_te" , { label: "" });
+g2.setEdge( "id_13", "id_te" , { label: "" });
+
+
+  // Create the renderer
+  var render = new dagreD3.render();
+
+  // Set up an SVG group so that we can translate the final graph.
+  var svg = d3.select("#svg2"),
+    inner2 = svg.append("g");
+
+  // Set up zoom support
+  var zoom = d3.zoom()
+    .on("zoom", function () {
+      inner2.attr("transform", d3.event.transform);
+    });
+  svg.call(zoom);
+
+  // Simple function to style the tooltip for the given node.
+  var styleTooltip = function (name, description) {
+    return "<p class='name'>" + name + "</p><p class='description' style='color:orange; width:100%; height:100%; display:inline-block' >" + description +"<br>" + "</p>";
+  };
+
+  // Run the renderer. This is what draws the final graph.
+  render(inner2, g2);
+
+  inner2.selectAll("g.node")
+    .attr("title", function (v) { return styleTooltip(g2.node(v).label, g2.node(v).description) })
+    .each(function (v) { $(this).tipsy({ gravity: "w", opacity: 1, html: true }); });
+
+  inner2.selectAll("g.node").style("stroke-width", initialStrokeWidth);
+
+  // function highlight nodes
+  inner2.selectAll("g.node").on("mouseover", function (d) {
+    inner2.selectAll("rect").style("stroke", highlight_color);
+    g2.predecessors(d).forEach(function (nodeid) {
+      my_node = inner2.select('#' + nodeid + ' rect');
+      my_node.style("stroke", fill_upstream_color);
+    })
+
+    g2.successors(d).forEach(function (nodeid) {
+      my_node = inner2.select('#' + nodeid + ' rect');
+      my_node.style("stroke", fill_downstream_color);
+    })
+  });
+
+  inner2.selectAll("g.node").on("mouseout", function (d) {
+    inner2.selectAll("rect").style("stroke", null);
+    g2.predecessors(d).forEach(function (nodeid) {
+      my_node = inner2.select('#' + nodeid + ' rect');
+      my_node.style("stroke", null);
+    })
+
+    g2.successors(d).forEach(function (nodeid) {
+      my_node = inner2.select('#' + nodeid + ' rect');
+      my_node.style("stroke", null);
+    })
+  });
+  
+  // Center the graph
+  var initialScale = 0.75;
+  svg.call(zoom.transform, d3.zoomIdentity.translate((svg.attr("width") - g2.graph().width * initialScale) / 2, 20).scale(initialScale));
+
+  svg.attr('height', g2.graph().height * initialScale + 40);
+</script>
+
+<h3>zhouxinxin_name_list 跨库管理名单状态</h3>
+<svg width=960 height=800 id="svg3"></svg>
+<script>
+  var highlight_color = "#000000";
+  var upstream_color = "#0000FF";
+  var downstream_color = "#0000FF"
+  var fill_default_color = "rgb(240, 237, 228)"
+  var fill_upstream_color = "orange"
+  var fill_downstream_color = "orange"
+  var initialStrokeWidth = '3px';
+  
+  // Create a new directed graph
+  var g3 = new dagreD3.graphlib.Graph().setGraph({});
+
+  // States and transitions from RFC 793
+  var states = {
+    "id_1": {
+    id: "id_1",
+    label: "概述",
+    description: "Git目录： 1）http://git.woda.ink/dw/dw-etl/ jff_enterprise_service/zhouxinxin_retention<br>                                    2）http://git.woda.ink/dw/dw-etl/ jff_enterprise_service/zhouxinxin_name_list_syn<br>                        airflow定时任务:jff_online_service/zhouxinxin_retention<br>                        pg同步任务：jff_online_service/zhouxinxin_name_list_syn"
+  },
+  "id_2": {
+    id: "id_2",
+    label: "DW.stg.stg_zhouxinxin_name_list",
+    description: "PG数据库",
+    style: "fill: green"
+  },
+  "id_3": {
+    id: "id_3",
+    label: "transit_jff.zhouxinxin_name_list",
+    description: "MySQL数据库",
+    style: "fill: green"
+  },
+  "id_4": {
+    id: "id_4",
+    label: "cdc_time",
+    description: "PG的dw.cdc_time用与增量同步对应的table_name : 1.zhouxinxin_retention<br>                        2.stg_zhouxinxin_name_list ",
+    style: "fill: orange"
+  },
+  "id_ts": {
+    id: "id_ts",
+    label: "开始",
+    description: "开始",
+    style: "fill: red"
+  },
+  "id_te": {
+    id: "id_te",
+    label: "结束",
+    description: "结束",
+    style: "fill: lightblue"
+  }
+  };
+
+  // Add states to the graph, set labels, and style
+  Object.keys(states).forEach(function (state) {
+    var value = states[state];
+    value.rx = value.ry = 5;
+    g3.setNode(state, value);
+  });
+
+  // Set up the edges
+  g3.setEdge( "id_ts", "id_1" , { label: "" });
+g3.setEdge( "id_1", "id_2" , { label: "" });
+g3.setEdge( "id_1", "id_3" , { label: "" });
+g3.setEdge( "id_2", "id_4" , { label: "" });
+g3.setEdge( "id_3", "id_4" , { label: "" });
+g3.setEdge( "id_4", "id_te" , { label: "" });
+
+
+  // Create the renderer
+  var render = new dagreD3.render();
+
+  // Set up an SVG group so that we can translate the final graph.
+  var svg = d3.select("#svg3"),
+    inner3 = svg.append("g");
+
+  // Set up zoom support
+  var zoom = d3.zoom()
+    .on("zoom", function () {
+      inner3.attr("transform", d3.event.transform);
+    });
+  svg.call(zoom);
+
+  // Simple function to style the tooltip for the given node.
+  var styleTooltip = function (name, description) {
+    return "<p class='name'>" + name + "</p><p class='description' style='color:orange; width:100%; height:100%; display:inline-block' >" + description +"<br>" + "</p>";
+  };
+
+  // Run the renderer. This is what draws the final graph.
+  render(inner3, g3);
+
+  inner3.selectAll("g.node")
+    .attr("title", function (v) { return styleTooltip(g3.node(v).label, g3.node(v).description) })
+    .each(function (v) { $(this).tipsy({ gravity: "w", opacity: 1, html: true }); });
+
+  inner3.selectAll("g.node").style("stroke-width", initialStrokeWidth);
+
+  // function highlight nodes
+  inner3.selectAll("g.node").on("mouseover", function (d) {
+    inner3.selectAll("rect").style("stroke", highlight_color);
+    g3.predecessors(d).forEach(function (nodeid) {
+      my_node = inner3.select('#' + nodeid + ' rect');
+      my_node.style("stroke", fill_upstream_color);
+    })
+
+    g3.successors(d).forEach(function (nodeid) {
+      my_node = inner3.select('#' + nodeid + ' rect');
+      my_node.style("stroke", fill_downstream_color);
+    })
+  });
+
+  inner3.selectAll("g.node").on("mouseout", function (d) {
+    inner3.selectAll("rect").style("stroke", null);
+    g3.predecessors(d).forEach(function (nodeid) {
+      my_node = inner3.select('#' + nodeid + ' rect');
+      my_node.style("stroke", null);
+    })
+
+    g3.successors(d).forEach(function (nodeid) {
+      my_node = inner3.select('#' + nodeid + ' rect');
+      my_node.style("stroke", null);
+    })
+  });
+  
+  // Center the graph
+  var initialScale = 0.75;
+  svg.call(zoom.transform, d3.zoomIdentity.translate((svg.attr("width") - g3.graph().width * initialScale) / 2, 20).scale(initialScale));
+
+  svg.attr('height', g3.graph().height * initialScale + 40);
+</script>
+
 
