@@ -222,7 +222,7 @@ NODES = [
             2: {
                 'name': '概述',
                 'desc': '''如果数据同步出现错误：ods同步错误 or etl出错，需要修改DW/stg.cdc_time中current_sync_date 字段，具体table名称见下CDC_TABLE_NAME''',
-                'color': 'red'
+                'color': 'lightblue'
             },
             3: {
                 'name': 'jff_online_service',
@@ -304,6 +304,7 @@ NODES = [
                                     2）http://git.woda.ink/dw/dw-etl/ jff_enterprise_service/zhouxinxin_name_list_syn
                         airflow定时任务:jff_online_service/zhouxinxin_retention
                         pg同步任务：jff_online_service/zhouxinxin_name_list_syn''',
+                'color': 'lightblue'
             },
             2: {
                 'name': 'DW.stg.stg_zhouxinxin_name_list',
