@@ -74,8 +74,6 @@ str_script = '''<script>
   // Add states to the graph, set labels, and style
   Object.keys(states).forEach(function (state) {
     var value = states[state];
-    value.label = state;
-    value.id = state;
     value.rx = value.ry = 5;
     %(GRAPH)s.setNode(state, value);
   });
@@ -107,7 +105,7 @@ str_script = '''<script>
   render(%(INNER_ID)s, %(GRAPH)s);
 
   %(INNER_ID)s.selectAll("g.node")
-    .attr("title", function (v) { return styleTooltip(v, %(GRAPH)s.node(v).description) })
+    .attr("title", function (v) { return styleTooltip(%(GRAPH)s.node(v).label, %(GRAPH)s.node(v).description) })
     .each(function (v) { $(this).tipsy({ gravity: "w", opacity: 1, html: true }); });
 
   %(INNER_ID)s.selectAll("g.node").style("stroke-width", initialStrokeWidth);

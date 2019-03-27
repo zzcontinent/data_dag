@@ -13,13 +13,13 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 
 
-@func_name(u'解析dag流')
-def parse_dag(dag):
+@func_name('解析dag流')
+def parse_dag(dag, nodes):
     cmds = dag.split('\n')
     edge_strs = []
     for cmd in cmds:
         dags = cmd.split('>>')
-        edge_src_dst = ' "%s", "%s" '
+        edge_src_dst = ' "id_%s", "id_%s" '
         dags_new = []
         for v in dags:
             dags_new.append(v.strip())
@@ -36,61 +36,56 @@ def parse_dag(dag):
             for vs in start_ones:
                 for ve in end_ones:
                     edge_strs.append(edge_src_dst % (vs, ve))
-    print edge_strs
     return edge_strs
 
 
-@func_name()
+@func_name('生成edge模板')
 def gen_edge_template(graph_id, edge_strs):
     edge_str = ''
     for v in edge_strs:
-        edge_one = '''%s.setEdge(%s, { label: "", curve: d3.curveBasis });''' % (graph_id, v)
+        # edge_one = '''%s.setEdge(%s, { label: "", curve: d3.curveBasis });''' % (graph_id, v)
+        edge_one = '''%s.setEdge(%s, { label: "" });''' % (graph_id, v)
         edge_str += edge_one
         edge_str += '\n'
     return edge_str.strip()
 
 
-@func_name()
+@func_name('生成节点模板')
 def gen_nodes_template(nodes):
-    node_one_color_template = '''"%s": {
+    node_one_color_template = '''"id_%s": {
+    id: "id_%s",
+    label: "%s",
     description: "%s",
     style: "fill: %s"
   },
   '''
-    node_one_template = '''"%s": {
+    node_one_template = '''"id_%s": {
+    id: "id_%s",
+    label: "%s",
     description: "%s"
   },
   '''
     node_ones = ''
-    for k, v in nodes.iteritems():
-        node = k
-        desc = ''
-        color = ''
-        if 'desc' in v:
-            desc = v['desc']
-            desc = desc.replace('\n', '<br>')
-        if 'color' in v:
-            color = v['color']
-        if color != '':
-            node_one = node_one_color_template % (node, desc, color)
+    for k, node_one in nodes.iteritems():
+        if 'color' in node_one:
+            node_one_str = node_one_color_template % (
+                k, k, node_one['name'], node_one['desc'].replace('\n', '<br>'),
+                node_one['color'])
         else:
-            node_one = node_one_template % (node, desc)
-        node_ones += node_one
+            node_one_str = node_one_template % (
+                k, k, node_one['name'], node_one['desc'].replace('\n', '<br>'))
+        node_ones += node_one_str
     return node_ones.strip().strip(',')
 
 
-@func_name()
-def gen_html(title='', node='', edges=''):
-    return dag_template.str_template % (title, title, node, edges)
-
-
-# 生成title.html
+@func_name('生成xxx.html')
 def auto_gen(file_name):
     fp = open('./dist/demo/%s.html' % file_name, 'w')
     svg_all = ''
     id = 1
 
     for node in dag_conf.NODES:
+        print node['title']
         str_svg_id = 'svg%d' % id
         str_graph_id = 'g%d' % id
         str_inner_id = 'inner%d' % id
@@ -98,7 +93,7 @@ def auto_gen(file_name):
         # 生成节点信息
         nodes_template_str = gen_nodes_template(node['nodes'])
         # 生成标题+连接
-        edge_strs = parse_dag(node['dag'])
+        edge_strs = parse_dag(node['dag'], node['nodes'])
         edge_template_str = gen_edge_template(str_graph_id, edge_strs)
         # 合并
         svg_all += dag_template.str_header % {'HEADER': node['title']} + '\n'
@@ -133,4 +128,3 @@ if __name__ == '__main__':
         raise
     finally:
         pass
-

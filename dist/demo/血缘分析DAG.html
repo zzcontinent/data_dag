@@ -65,143 +65,214 @@
 
   // States and transitions from RFC 793
   var states = {
-    "wd_subsidy": {
-    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/wd_subsidy/wd_subsidy.kjb",
-    style: "fill: orange"
-  },
-  "wd_interaction": {
-    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/wd_interaction/wd_interaction.kjb",
-    style: "fill: orange"
-  },
-  "zhouxin_jff1_sp_credict": {
-    description: "ssh 192.168.10.29 < /datas/airflow/dags/zhouxin_jff1_sp_credict.cmd ",
-    style: "fill: orange"
-  },
-  "financial": {
-    description: "source /home/datas/financial/cmd_day",
-    style: "fill: orange"
-  },
-  "wd_recruit_demand": {
-    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/wd_recruit_demand/wd_recruit_demand.kjb",
-    style: "fill: orange"
-  },
-  "wait_until_success_ods_jff": {
-    description: "/home/datas/.virtualenvs/env27/bin/python /home/datas/ods_controller/ods_controller_jff/task5_wait_until_success.py",
-    style: "fill: green"
-  },
-  "zhouxin_woda2_cheat_detect": {
-    description: "ssh 192.168.10.29 < /datas/airflow/dags/zhouxin_woda2_cheat_detect.cmd ",
-    style: "fill: orange"
-  },
-  "zhouxin_operator_data": {
-    description: "ssh 192.168.10.29 < /datas/airflow/dags/zhouxin_operator_data.cmd ",
-    style: "fill: orange"
-  },
-  "wd_hire": {
-    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/wd_hire/wd_hire.kjb",
-    style: "fill: orange"
-  },
-  "dim_broker_cliff": {
-    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/dim_broker/broker/broker.kjb",
-    style: "fill: orange"
-  },
-  "zhouxin_woda1_user_exam_result_server_all_total": {
-    description: "ssh 192.168.10.29 < /datas/airflow/dags/zhouxin_woda1_user_exam_result_server_all_total.cmd ",
-    style: "fill: orange"
-  },
-  "wd_preorder": {
-    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/wd_preorder/wd_preorder.kjb",
-    style: "fill: orange"
-  },
-  "wait_until_success_ods_zxx": {
-    description: "/home/datas/.virtualenvs/env27/bin/python /home/datas/ods_controller/ods_controller_zxx/task5_wait_until_success.py",
-    style: "fill: green"
-  },
-  "zhouxin_etl_service_cb_operation_data": {
-    description: "ssh 192.168.10.29 < /datas/airflow/dags/zhouxin_jff_etl_service_cb_operation_data.cmd ",
-    style: "fill: orange"
-  },
-  "zhouxin_name_list_analysis": {
-    description: "ssh 192.168.10.29 < /datas/airflow/dags/zhouxin_name_list_analysis.cmd ",
-    style: "fill: orange"
-  },
-  "load_dim": {
-    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/load_dim/load_dim_job.kjb",
-    style: "fill: orange"
-  },
-  "zhouxin_woda3_recommend": {
-    description: "ssh 192.168.10.29 < /datas/airflow/dags/zhouxin_woda3_recommend.cmd ",
-    style: "fill: orange"
-  },
-  "interface_v2_daily_job_reguser_channel_operation": {
-    description: "source /home/datas/interface_v2/cmd_day",
-    style: "fill: orange"
-  },
-  "wd_invite": {
-    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/wd_invite/wd_invite.kjb",
-    style: "fill: orange"
-  },
-  "user_broker_relation": {
-    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/user_broker_relation/stg_user_broker_relation.kjb",
-    style: "fill: orange"
-  },
-  "wd_ent_interview_cnt": {
-    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/wd_ent_interview_cnt/wd_ent_interview_cnt.kjb",
-    style: "fill: orange"
-  },
-  "zxx2_etl_service": {
-    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/zxx2_etl_service/zxx2_etl_service.kjb",
-    style: "fill: orange"
-  },
-  "wd_interview": {
-    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/wd_interview/wd_interview.kjb",
-    style: "fill: orange"
-  },
-  "开始": {
+    "id_1": {
+    id: "id_1",
+    label: "开始",
     description: "开始",
     style: "fill: red"
   },
-  "概述": {
-    description: "airflow中的定时任务(03:00)，用于等待触发。ods报表等离线增量任务，统一放在ods_wait_tigger中配置"
-  },
-  "wd_broker": {
-    description: "/usr/local/data-integration/pan.sh -file=/datas/kettle/jobs/dw-etl/wd_broker/wd_broker.ktr",
-    style: "fill: orange"
-  },
-  "user_credict_month_day_work": {
-    description: "/bin/bash /datas/airflow/dags/user_credict_month_day_work.sh ",
-    style: "fill: orange"
-  },
-  "jff_etl_service": {
-    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/jff_etl_service/jff_etl_service.kjb",
-    style: "fill: orange"
-  },
-  "结束": {
+  "id_2": {
+    id: "id_2",
+    label: "结束",
     description: "结束",
     style: "fill: lightblue"
   },
-  "zxx_etl_service": {
-    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/zxx_etl_service/zxx_etl_service.kjb",
-    style: "fill: orange"
+  "id_3": {
+    id: "id_3",
+    label: "概述",
+    description: "airflow中的定时任务(03:00)，用于等待触发。ods报表等离线增量任务，统一放在ods_wait_tigger中配置",
+    style: "fill: lightblue"
   },
-  "wait_until_success_ods_woda": {
+  "id_4": {
+    id: "id_4",
+    label: "wait_until_success_ods_woda",
     description: "/home/datas/.virtualenvs/env27/bin/python /home/datas/ods_controller/ods_controller_woda/task5_wait_until_success.py",
     style: "fill: green"
   },
-  "zhouxin_performance_data": {
-    description: "ssh 192.168.10.29 < /datas/airflow/dags/zhouxin_performance_data.cmd ",
+  "id_5": {
+    id: "id_5",
+    label: "wait_until_success_ods_jff",
+    description: "/home/datas/.virtualenvs/env27/bin/python /home/datas/ods_controller/ods_controller_jff/task5_wait_until_success.py",
+    style: "fill: green"
+  },
+  "id_6": {
+    id: "id_6",
+    label: "wait_until_success_ods_zxx",
+    description: "/home/datas/.virtualenvs/env27/bin/python /home/datas/ods_controller/ods_controller_zxx/task5_wait_until_success.py",
+    style: "fill: green"
+  },
+  "id_7": {
+    id: "id_7",
+    label: "interface_v2_daily_job_reguser_channel_operation",
+    description: "source /home/datas/interface_v2/cmd_day",
     style: "fill: orange"
   },
-  "wd_user": {
+  "id_8": {
+    id: "id_8",
+    label: "zxx2_etl_service",
+    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/zxx2_etl_service/zxx2_etl_service.kjb",
+    style: "fill: orange"
+  },
+  "id_9": {
+    id: "id_9",
+    label: "jff_etl_service",
+    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/jff_etl_service/jff_etl_service.kjb",
+    style: "fill: orange"
+  },
+  "id_10": {
+    id: "id_10",
+    label: "zhouxin_etl_service_cb_operation_data",
+    description: "ssh 192.168.10.29 < /datas/airflow/dags/zhouxin_jff_etl_service_cb_operation_data.cmd ",
+    style: "fill: orange"
+  },
+  "id_11": {
+    id: "id_11",
+    label: "zhouxin_woda1_user_exam_result_server_all_total",
+    description: "'ssh 192.168.10.29 < /datas/airflow/dags/zhouxin_woda1_user_exam_result_server_all_total.cmd",
+    style: "fill: orange"
+  },
+  "id_12": {
+    id: "id_12",
+    label: "zhouxin_woda2_cheat_detect",
+    description: "'ssh 192.168.10.29 < /datas/airflow/dags/zhouxin_woda2_cheat_detect.cmd",
+    style: "fill: orange"
+  },
+  "id_13": {
+    id: "id_13",
+    label: "zhouxin_woda3_recommend",
+    description: "'ssh 192.168.10.29 < /datas/airflow/dags/zhouxin_woda3_recommend.cmd",
+    style: "fill: orange"
+  },
+  "id_14": {
+    id: "id_14",
+    label: "zhouxin_jff1_sp_credict",
+    description: "'ssh 192.168.10.29 < /datas/airflow/dags/zhouxin_jff1_sp_credict.cmd",
+    style: "fill: orange"
+  },
+  "id_15": {
+    id: "id_15",
+    label: "zxx_etl_service",
+    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/zxx_etl_service/zxx_etl_service.kjb",
+    style: "fill: orange"
+  },
+  "id_16": {
+    id: "id_16",
+    label: "zxx2_credict",
+    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/zxx_credict/zxx2_credict.kjb",
+    style: "fill: orange"
+  },
+  "id_17": {
+    id: "id_17",
+    label: "user_credict_month_day_work",
+    description: "/bin/bash /datas/airflow/dags/user_credict_month_day_work.sh ",
+    style: "fill: orange"
+  },
+  "id_18": {
+    id: "id_18",
+    label: "dim_wd.load_dim",
+    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/load_dim/load_dim_job.kjb",
+    style: "fill: orange"
+  },
+  "id_19": {
+    id: "id_19",
+    label: "wd_broker",
+    description: "/usr/local/data-integration/pan.sh -file=/datas/kettle/jobs/dw-etl/wd_broker/wd_broker.ktr",
+    style: "fill: orange"
+  },
+  "id_20": {
+    id: "id_20",
+    label: "wd_user",
     description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/wd_user/wd_user_job.kjb",
     style: "fill: orange"
   },
-  "wd_labor_order": {
+  "id_21": {
+    id: "id_21",
+    label: "user_broker_relation",
+    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/user_broker_relation/stg_user_broker_relation.kjb",
+    style: "fill: orange"
+  },
+  "id_22": {
+    id: "id_22",
+    label: "wd_preorder",
+    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/wd_preorder/wd_preorder.kjb",
+    style: "fill: orange"
+  },
+  "id_23": {
+    id: "id_23",
+    label: "wd_interview",
+    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/wd_interview/wd_interview.kjb",
+    style: "fill: orange"
+  },
+  "id_24": {
+    id: "id_24",
+    label: "wd_hire",
+    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/wd_hire/wd_hire.kjb",
+    style: "fill: orange"
+  },
+  "id_25": {
+    id: "id_25",
+    label: "wd_invite",
+    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/wd_invite/wd_invite.kjb",
+    style: "fill: orange"
+  },
+  "id_26": {
+    id: "id_26",
+    label: "wd_subsidy",
+    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/wd_subsidy/wd_subsidy.kjb",
+    style: "fill: orange"
+  },
+  "id_27": {
+    id: "id_27",
+    label: "wd_interaction",
+    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/wd_interaction/wd_interaction.kjb",
+    style: "fill: orange"
+  },
+  "id_28": {
+    id: "id_28",
+    label: "wd_labor_order",
     description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/wd_labor_order/wd_labor_order.kjb",
     style: "fill: orange"
   },
-  "zxx2_credict": {
-    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/zxx_credict/zxx2_credict.kjb",
+  "id_29": {
+    id: "id_29",
+    label: "wd_recruit_demand",
+    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/wd_recruit_demand/wd_recruit_demand.kjb",
+    style: "fill: orange"
+  },
+  "id_30": {
+    id: "id_30",
+    label: "wd_ent_interview_cnt",
+    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/wd_ent_interview_cnt/wd_ent_interview_cnt.kjb",
+    style: "fill: orange"
+  },
+  "id_31": {
+    id: "id_31",
+    label: "dim_broker_cliff",
+    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/dim_broker/broker/broker.kjb",
+    style: "fill: orange"
+  },
+  "id_32": {
+    id: "id_32",
+    label: "zhouxin_name_list_analysis",
+    description: "ssh 192.168.10.29 < /datas/airflow/dags/zhouxin_name_list_analysis.cmd",
+    style: "fill: orange"
+  },
+  "id_33": {
+    id: "id_33",
+    label: "zhouxin_performance_data",
+    description: "ssh 192.168.10.29 < /datas/airflow/dags/zhouxin_performance_data.cmd",
+    style: "fill: orange"
+  },
+  "id_34": {
+    id: "id_34",
+    label: "zhouxin_operator_data",
+    description: "ssh 192.168.10.29 < /datas/airflow/dags/zhouxin_operator_data.cmd",
+    style: "fill: orange"
+  },
+  "id_35": {
+    id: "id_35",
+    label: "financial",
+    description: "source /home/datas/financial/cmd_day",
     style: "fill: orange"
   }
   };
@@ -209,69 +280,67 @@
   // Add states to the graph, set labels, and style
   Object.keys(states).forEach(function (state) {
     var value = states[state];
-    value.label = state;
-    value.id = state;
     value.rx = value.ry = 5;
     g1.setNode(state, value);
   });
 
   // Set up the edges
-  g1.setEdge( "开始", "概述" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "概述", "wait_until_success_ods_woda" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "概述", "wait_until_success_ods_jff" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "概述", "wait_until_success_ods_zxx" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "wait_until_success_ods_jff", "zxx2_etl_service" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "wait_until_success_ods_zxx", "zxx2_etl_service" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "wait_until_success_ods_jff", "jff_etl_service" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "wait_until_success_ods_jff", "zhouxin_jff1_sp_credict" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "zhouxin_jff1_sp_credict", "结束" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "zxx2_etl_service", "zhouxin_etl_service_cb_operation_data" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "jff_etl_service", "zhouxin_etl_service_cb_operation_data" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "wait_until_success_ods_woda", "interface_v2_daily_job_reguser_channel_operation" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "zhouxin_etl_service_cb_operation_data", "interface_v2_daily_job_reguser_channel_operation" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "interface_v2_daily_job_reguser_channel_operation", "结束" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "wait_until_success_ods_woda", "zhouxin_woda1_user_exam_result_server_all_total" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "zhouxin_woda1_user_exam_result_server_all_total", "zhouxin_woda2_cheat_detect" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "zhouxin_woda2_cheat_detect", "zhouxin_woda3_recommend" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "zhouxin_woda3_recommend", "结束" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "wait_until_success_ods_zxx", "zxx_etl_service" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "zxx_etl_service", "user_credict_month_day_work" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "user_credict_month_day_work", "zxx2_credict" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "zxx2_credict", "结束" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "wait_until_success_ods_woda", "dim_broker_cliff" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "dim_broker_cliff", "结束" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "wait_until_success_ods_woda", "zhouxin_name_list_analysis" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "wait_until_success_ods_jff", "zhouxin_name_list_analysis" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "wait_until_success_ods_zxx", "zhouxin_name_list_analysis" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "zxx_etl_service", "zhouxin_name_list_analysis" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "zhouxin_name_list_analysis", "结束" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "wait_until_success_ods_jff", "zhouxin_performance_data" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "wait_until_success_ods_zxx", "zhouxin_performance_data" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "zxx2_etl_service", "zhouxin_performance_data" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "jff_etl_service", "zhouxin_performance_data" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "zhouxin_performance_data", "结束" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "wait_until_success_ods_jff", "zhouxin_operator_data" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "wait_until_success_ods_zxx", "zhouxin_operator_data" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "zxx2_etl_service", "zhouxin_operator_data" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "jff_etl_service", "zhouxin_operator_data" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "zhouxin_operator_data", "结束" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "wait_until_success_ods_woda", "load_dim" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "load_dim", "wd_broker" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "wd_broker", "wd_user" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "wd_user", "user_broker_relation" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "user_broker_relation", "wd_recruit_demand" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "wd_recruit_demand", "wd_preorder" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "wd_preorder", "wd_interview" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "wd_interview", "wd_hire" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "wd_hire", "wd_invite" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "wd_invite", "wd_subsidy" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "wd_subsidy", "wd_interaction" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "wd_interaction", "wd_labor_order" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "wd_labor_order", "wd_ent_interview_cnt" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "wd_ent_interview_cnt", "结束" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "wait_until_success_ods_woda", "financial" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "wait_until_success_ods_zxx", "financial" , { label: "", curve: d3.curveBasis });
-g1.setEdge( "financial", "结束" , { label: "", curve: d3.curveBasis });
+  g1.setEdge( "id_1", "id_3" , { label: "" });
+g1.setEdge( "id_3", "id_4" , { label: "" });
+g1.setEdge( "id_3", "id_5" , { label: "" });
+g1.setEdge( "id_3", "id_6" , { label: "" });
+g1.setEdge( "id_5", "id_8" , { label: "" });
+g1.setEdge( "id_6", "id_8" , { label: "" });
+g1.setEdge( "id_5", "id_9" , { label: "" });
+g1.setEdge( "id_5", "id_14" , { label: "" });
+g1.setEdge( "id_14", "id_2" , { label: "" });
+g1.setEdge( "id_8", "id_10" , { label: "" });
+g1.setEdge( "id_9", "id_10" , { label: "" });
+g1.setEdge( "id_4", "id_7" , { label: "" });
+g1.setEdge( "id_10", "id_7" , { label: "" });
+g1.setEdge( "id_7", "id_2" , { label: "" });
+g1.setEdge( "id_4", "id_11" , { label: "" });
+g1.setEdge( "id_11", "id_12" , { label: "" });
+g1.setEdge( "id_12", "id_13" , { label: "" });
+g1.setEdge( "id_13", "id_2" , { label: "" });
+g1.setEdge( "id_6", "id_15" , { label: "" });
+g1.setEdge( "id_15", "id_17" , { label: "" });
+g1.setEdge( "id_17", "id_16" , { label: "" });
+g1.setEdge( "id_16", "id_2" , { label: "" });
+g1.setEdge( "id_4", "id_31" , { label: "" });
+g1.setEdge( "id_31", "id_2" , { label: "" });
+g1.setEdge( "id_4", "id_32" , { label: "" });
+g1.setEdge( "id_5", "id_32" , { label: "" });
+g1.setEdge( "id_6", "id_32" , { label: "" });
+g1.setEdge( "id_15", "id_32" , { label: "" });
+g1.setEdge( "id_32", "id_2" , { label: "" });
+g1.setEdge( "id_5", "id_33" , { label: "" });
+g1.setEdge( "id_6", "id_33" , { label: "" });
+g1.setEdge( "id_8", "id_33" , { label: "" });
+g1.setEdge( "id_9", "id_33" , { label: "" });
+g1.setEdge( "id_33", "id_2" , { label: "" });
+g1.setEdge( "id_5", "id_34" , { label: "" });
+g1.setEdge( "id_6", "id_34" , { label: "" });
+g1.setEdge( "id_8", "id_34" , { label: "" });
+g1.setEdge( "id_9", "id_34" , { label: "" });
+g1.setEdge( "id_34", "id_2" , { label: "" });
+g1.setEdge( "id_4", "id_18" , { label: "" });
+g1.setEdge( "id_18", "id_19" , { label: "" });
+g1.setEdge( "id_19", "id_20" , { label: "" });
+g1.setEdge( "id_20", "id_21" , { label: "" });
+g1.setEdge( "id_21", "id_29" , { label: "" });
+g1.setEdge( "id_29", "id_22" , { label: "" });
+g1.setEdge( "id_22", "id_23" , { label: "" });
+g1.setEdge( "id_23", "id_24" , { label: "" });
+g1.setEdge( "id_24", "id_25" , { label: "" });
+g1.setEdge( "id_25", "id_26" , { label: "" });
+g1.setEdge( "id_26", "id_27" , { label: "" });
+g1.setEdge( "id_27", "id_28" , { label: "" });
+g1.setEdge( "id_28", "id_30" , { label: "" });
+g1.setEdge( "id_30", "id_2" , { label: "" });
+g1.setEdge( "id_4", "id_35" , { label: "" });
+g1.setEdge( "id_6", "id_35" , { label: "" });
+g1.setEdge( "id_35", "id_2" , { label: "" });
 
 
   // Create the renderer
@@ -297,7 +366,7 @@ g1.setEdge( "financial", "结束" , { label: "", curve: d3.curveBasis });
   render(inner1, g1);
 
   inner1.selectAll("g.node")
-    .attr("title", function (v) { return styleTooltip(v, g1.node(v).description) })
+    .attr("title", function (v) { return styleTooltip(g1.node(v).label, g1.node(v).description) })
     .each(function (v) { $(this).tipsy({ gravity: "w", opacity: 1, html: true }); });
 
   inner1.selectAll("g.node").style("stroke-width", initialStrokeWidth);
@@ -334,295 +403,6 @@ g1.setEdge( "financial", "结束" , { label: "", curve: d3.curveBasis });
   svg.call(zoom.transform, d3.zoomIdentity.translate((svg.attr("width") - g1.graph().width * initialScale) / 2, 20).scale(initialScale));
 
   svg.attr('height', g1.graph().height * initialScale + 40);
-</script>
-
-<h3>jff_online_service出错重跑方法</h3>
-<svg width=960 height=800 id="svg2"></svg>
-<script>
-  var highlight_color = "#000000";
-  var upstream_color = "#0000FF";
-  var downstream_color = "#0000FF"
-  var fill_default_color = "rgb(240, 237, 228)"
-  var fill_upstream_color = "orange"
-  var fill_downstream_color = "orange"
-  var initialStrokeWidth = '3px';
-  
-  // Create a new directed graph
-  var g2 = new dagreD3.graphlib.Graph().setGraph({});
-
-  // States and transitions from RFC 793
-  var states = {
-    "market_prc_max": {
-    description: "CDC_TABLE_NAME : market_prc_max",
-    style: "fill: orange"
-  },
-  "ent_name_list_unique_sum": {
-    description: "CDC_TABLE_NAME : ent_name_list_unique_sum",
-    style: "fill: orange"
-  },
-  "jff_online_service": {
-    description: "airflow的任务名",
-    style: "fill: orange"
-  },
-  "ent_name_list_trend": {
-    description: "CDC_TABLE_NAME : ent_name_list_trend",
-    style: "fill: orange"
-  },
-  "ent_name_list_unique_trend": {
-    description: "CDC_TABLE_NAME : ent_name_list_unique_trend",
-    style: "fill: orange"
-  },
-  "zhouxinxin_retation": {
-    description: "CDC_TABLE_NAME : zhouxinxin_retation",
-    style: "fill: orange"
-  },
-  "stg_zhouxinxin_name_list": {
-    description: "CDC_TABLE_NAME : stg_zhouxinxin_name_list",
-    style: "fill: orange"
-  },
-  "area_prc_max": {
-    description: "CDC_TABLE_NAME : area_prc_max",
-    style: "fill: orange"
-  },
-  "jff_enterprise_service": {
-    description: "etl工程目录 /usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/<br>                                               jff_enterprise_service/jff_enterprise_service.kjb",
-    style: "fill: orange"
-  },
-  "ent_name_list_sum": {
-    description: "CDC_TABLE_NAME : ent_name_list_sum",
-    style: "fill: orange"
-  },
-  "开始": {
-    description: "开始",
-    style: "fill: red"
-  },
-  "概述": {
-    description: "如果数据同步出现错误：ods同步错误 or etl出错，需要修改DW/stg.cdc_time中current_sync_date 字段，具体table名称见下CDC_TABLE_NAME"
-  },
-  "结束": {
-    description: "结束",
-    style: "fill: lightblue"
-  },
-  "direct_store_name_list_sum": {
-    description: "CDC_TABLE_NAME : direct_store_name_list_sum",
-    style: "fill: orange"
-  }
-  };
-
-  // Add states to the graph, set labels, and style
-  Object.keys(states).forEach(function (state) {
-    var value = states[state];
-    value.label = state;
-    value.id = state;
-    value.rx = value.ry = 5;
-    g2.setNode(state, value);
-  });
-
-  // Set up the edges
-  g2.setEdge( "开始", "概述" , { label: "", curve: d3.curveBasis });
-g2.setEdge( "概述", "jff_online_service" , { label: "", curve: d3.curveBasis });
-g2.setEdge( "jff_online_service", "jff_enterprise_service" , { label: "", curve: d3.curveBasis });
-g2.setEdge( "jff_enterprise_service", "direct_store_name_list_sum" , { label: "", curve: d3.curveBasis });
-g2.setEdge( "jff_enterprise_service", "market_prc_max" , { label: "", curve: d3.curveBasis });
-g2.setEdge( "jff_enterprise_service", "area_prc_max" , { label: "", curve: d3.curveBasis });
-g2.setEdge( "jff_enterprise_service", "ent_name_list_sum" , { label: "", curve: d3.curveBasis });
-g2.setEdge( "jff_enterprise_service", "ent_name_list_trend" , { label: "", curve: d3.curveBasis });
-g2.setEdge( "jff_enterprise_service", "ent_name_list_unique_sum" , { label: "", curve: d3.curveBasis });
-g2.setEdge( "jff_enterprise_service", "ent_name_list_unique_trend" , { label: "", curve: d3.curveBasis });
-g2.setEdge( "jff_enterprise_service", "zhouxinxin_retation" , { label: "", curve: d3.curveBasis });
-g2.setEdge( "jff_enterprise_service", "stg_zhouxinxin_name_list" , { label: "", curve: d3.curveBasis });
-g2.setEdge( "direct_store_name_list_sum", "结束" , { label: "", curve: d3.curveBasis });
-g2.setEdge( "market_prc_max", "结束" , { label: "", curve: d3.curveBasis });
-g2.setEdge( "area_prc_max", "结束" , { label: "", curve: d3.curveBasis });
-g2.setEdge( "ent_name_list_sum", "结束" , { label: "", curve: d3.curveBasis });
-g2.setEdge( "ent_name_list_trend", "结束" , { label: "", curve: d3.curveBasis });
-g2.setEdge( "ent_name_list_unique_sum", "结束" , { label: "", curve: d3.curveBasis });
-g2.setEdge( "ent_name_list_unique_trend", "结束" , { label: "", curve: d3.curveBasis });
-g2.setEdge( "zhouxinxin_retation", "结束" , { label: "", curve: d3.curveBasis });
-g2.setEdge( "stg_zhouxinxin_name_list", "结束" , { label: "", curve: d3.curveBasis });
-
-
-  // Create the renderer
-  var render = new dagreD3.render();
-
-  // Set up an SVG group so that we can translate the final graph.
-  var svg = d3.select("#svg2"),
-    inner2 = svg.append("g");
-
-  // Set up zoom support
-  var zoom = d3.zoom()
-    .on("zoom", function () {
-      inner2.attr("transform", d3.event.transform);
-    });
-  svg.call(zoom);
-
-  // Simple function to style the tooltip for the given node.
-  var styleTooltip = function (name, description) {
-    return "<p class='name'>" + name + "</p><p class='description' style='color:orange; width:100%; height:100%; display:inline-block' >" + description +"<br>" + "</p>";
-  };
-
-  // Run the renderer. This is what draws the final graph.
-  render(inner2, g2);
-
-  inner2.selectAll("g.node")
-    .attr("title", function (v) { return styleTooltip(v, g2.node(v).description) })
-    .each(function (v) { $(this).tipsy({ gravity: "w", opacity: 1, html: true }); });
-
-  inner2.selectAll("g.node").style("stroke-width", initialStrokeWidth);
-
-  // function highlight nodes
-  inner2.selectAll("g.node").on("mouseover", function (d) {
-    inner2.selectAll("rect").style("stroke", highlight_color);
-    g2.predecessors(d).forEach(function (nodeid) {
-      my_node = inner2.select('#' + nodeid + ' rect');
-      my_node.style("stroke", fill_upstream_color);
-    })
-
-    g2.successors(d).forEach(function (nodeid) {
-      my_node = inner2.select('#' + nodeid + ' rect');
-      my_node.style("stroke", fill_downstream_color);
-    })
-  });
-
-  inner2.selectAll("g.node").on("mouseout", function (d) {
-    inner2.selectAll("rect").style("stroke", null);
-    g2.predecessors(d).forEach(function (nodeid) {
-      my_node = inner2.select('#' + nodeid + ' rect');
-      my_node.style("stroke", null);
-    })
-
-    g2.successors(d).forEach(function (nodeid) {
-      my_node = inner2.select('#' + nodeid + ' rect');
-      my_node.style("stroke", null);
-    })
-  });
-  
-  // Center the graph
-  var initialScale = 0.75;
-  svg.call(zoom.transform, d3.zoomIdentity.translate((svg.attr("width") - g2.graph().width * initialScale) / 2, 20).scale(initialScale));
-
-  svg.attr('height', g2.graph().height * initialScale + 40);
-</script>
-
-<h3>zhouxinxin_name_list 跨库管理名单状态</h3>
-<svg width=960 height=800 id="svg3"></svg>
-<script>
-  var highlight_color = "#000000";
-  var upstream_color = "#0000FF";
-  var downstream_color = "#0000FF"
-  var fill_default_color = "rgb(240, 237, 228)"
-  var fill_upstream_color = "orange"
-  var fill_downstream_color = "orange"
-  var initialStrokeWidth = '3px';
-  
-  // Create a new directed graph
-  var g3 = new dagreD3.graphlib.Graph().setGraph({});
-
-  // States and transitions from RFC 793
-  var states = {
-    "开始": {
-    description: "开始",
-    style: "fill: red"
-  },
-  "MySQL数据库": {
-    description: "transit_jff.zhouxinxin_name_list",
-    style: "fill: green"
-  },
-  "概述": {
-    description: "Git目录： 1）http://git.woda.ink/dw/dw-etl/ jff_enterprise_service/zhouxinxin_retention<br>                                    2）http://git.woda.ink/dw/dw-etl/ jff_enterprise_service/zhouxinxin_name_list_syn<br>                        airflow定时任务:jff_online_service/zhouxinxin_retention<br>                        pg同步任务：jff_online_service/zhouxinxin_name_list_syn<br>                        "
-  },
-  "PG数据库": {
-    description: "DW/stg.stg_zhouxinxin_name_list",
-    style: "fill: green"
-  },
-  "结束": {
-    description: "结束",
-    style: "fill: lightblue"
-  },
-  "cdc_time": {
-    description: "PG的dw.cdc_time用与增量同步对应的table_name : 1.zhouxinxin_retention <br>                        2.stg_zhouxinxin_name_list ",
-    style: "fill: orange"
-  }
-  };
-
-  // Add states to the graph, set labels, and style
-  Object.keys(states).forEach(function (state) {
-    var value = states[state];
-    value.label = state;
-    value.id = state;
-    value.rx = value.ry = 5;
-    g3.setNode(state, value);
-  });
-
-  // Set up the edges
-  g3.setEdge( "开始", "概述" , { label: "", curve: d3.curveBasis });
-g3.setEdge( "概述", "PG数据库" , { label: "", curve: d3.curveBasis });
-g3.setEdge( "概述", "MySQL数据库" , { label: "", curve: d3.curveBasis });
-g3.setEdge( "PG数据库", "cdc_time" , { label: "", curve: d3.curveBasis });
-g3.setEdge( "MySQL数据库", "cdc_time" , { label: "", curve: d3.curveBasis });
-g3.setEdge( "cdc_time", "结束" , { label: "", curve: d3.curveBasis });
-
-
-  // Create the renderer
-  var render = new dagreD3.render();
-
-  // Set up an SVG group so that we can translate the final graph.
-  var svg = d3.select("#svg3"),
-    inner3 = svg.append("g");
-
-  // Set up zoom support
-  var zoom = d3.zoom()
-    .on("zoom", function () {
-      inner3.attr("transform", d3.event.transform);
-    });
-  svg.call(zoom);
-
-  // Simple function to style the tooltip for the given node.
-  var styleTooltip = function (name, description) {
-    return "<p class='name'>" + name + "</p><p class='description' style='color:orange; width:100%; height:100%; display:inline-block' >" + description +"<br>" + "</p>";
-  };
-
-  // Run the renderer. This is what draws the final graph.
-  render(inner3, g3);
-
-  inner3.selectAll("g.node")
-    .attr("title", function (v) { return styleTooltip(v, g3.node(v).description) })
-    .each(function (v) { $(this).tipsy({ gravity: "w", opacity: 1, html: true }); });
-
-  inner3.selectAll("g.node").style("stroke-width", initialStrokeWidth);
-
-  // function highlight nodes
-  inner3.selectAll("g.node").on("mouseover", function (d) {
-    inner3.selectAll("rect").style("stroke", highlight_color);
-    g3.predecessors(d).forEach(function (nodeid) {
-      my_node = inner3.select('#' + nodeid + ' rect');
-      my_node.style("stroke", fill_upstream_color);
-    })
-
-    g3.successors(d).forEach(function (nodeid) {
-      my_node = inner3.select('#' + nodeid + ' rect');
-      my_node.style("stroke", fill_downstream_color);
-    })
-  });
-
-  inner3.selectAll("g.node").on("mouseout", function (d) {
-    inner3.selectAll("rect").style("stroke", null);
-    g3.predecessors(d).forEach(function (nodeid) {
-      my_node = inner3.select('#' + nodeid + ' rect');
-      my_node.style("stroke", null);
-    })
-
-    g3.successors(d).forEach(function (nodeid) {
-      my_node = inner3.select('#' + nodeid + ' rect');
-      my_node.style("stroke", null);
-    })
-  });
-  
-  // Center the graph
-  var initialScale = 0.75;
-  svg.call(zoom.transform, d3.zoomIdentity.translate((svg.attr("width") - g3.graph().width * initialScale) / 2, 20).scale(initialScale));
-
-  svg.attr('height', g3.graph().height * initialScale + 40);
 </script>
 
 

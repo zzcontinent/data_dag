@@ -9,7 +9,8 @@ sys.setdefaultencoding("utf-8")
 def func_name(str_comment=None):
     def wrapper(func):
         def inner_wrapper(*args, **kwargs):
-            print(u'%s | %s' % (func.__name__, str_comment))
+            print(u'(%s | %s | %s)' % (datetime.datetime.now().strftime('%m-%d %H:%M:%S'),
+                                       func.__name__, str_comment))
             if not args:
                 return func(**kwargs)
             else:
