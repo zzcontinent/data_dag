@@ -233,13 +233,13 @@ def select_sql_to_conf(sql, colums_nodes, table_nodes, map_colmn_column, map_col
         dag_str += '\n' + '%d >> %d' % (map_table_nodes_id[v], map_column_nodes_id[k])
 
     for col in column_belong_sql:
-        dag_str += '\n' + '%d >> 1' % map_column_nodes_id[col]
+        dag_str += '\n' + '1 >> %d ' % map_column_nodes_id[col]
 
     add_node['dag'] += dag_str
     add_node['nodes'] = node_dict
 
     with open('./dag_conf.py', 'r+') as fp:
-        reads = fp.read().strip().strip(']') + '\n %s' % add_node + ',]'
+        reads = fp.read().strip().strip(']') + '\n %s' % add_node + ',]\n'
         fp.seek(0)
         fp.truncate()
         fp.write(reads)
@@ -247,7 +247,7 @@ def select_sql_to_conf(sql, colums_nodes, table_nodes, map_colmn_column, map_col
 
 
 def main():
-    sql_str_tmp = str_sql[1]
+    sql_str_tmp = str_sql[0]
     COLUMN_PURE, COLUMN_AS, COLUMN_BELONG_SQL, TABLE_PURE, MAP_COLUMN_TABLE = meta_select_parse(sql_str_tmp)
     select_sql_to_conf(sql_str_tmp, COLUMN_PURE, TABLE_PURE, COLUMN_AS, MAP_COLUMN_TABLE, COLUMN_BELONG_SQL)
     pass
