@@ -1,5 +1,10 @@
 # !/usr/bin/env python
 # -*- coding: utf-8 -*-
+'''
+1.解析sql，得到SELECT语句的表+字段+别名+依赖关系
+2.通过1，生成dag_conf.py里的配置文件
+3.通过gen_html.py检测sqls_to_do.py + dag_conf.py是否变动，从而重新生成./dist/demo/血缘分析DAG.html
+'''
 import traceback
 import dag_conf
 import dag_template
@@ -8,6 +13,7 @@ import sys
 import time
 import filecmp
 import shutil
+import gen_dag_from_sql
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -109,6 +115,10 @@ def auto_gen(file_name):
 
 def main():
     while True:
+        if not filecmp.cmp('sqls_to_do.py', 'sqls_to_do_last.py'):
+            gen_dag_from_sql.auto_gen()
+            shutil.copyfile('sqls_to_do.py', 'sqls_to_do_last.py')
+
         if not filecmp.cmp('dag_conf.py', 'dag_conf_last.py'):
             reload(dag_conf)
             reload(dag_template)

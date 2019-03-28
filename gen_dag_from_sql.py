@@ -1,47 +1,19 @@
 # !/usr/bin/env python
 # -*- coding: utf-8 -*-
+'''
+1.解析sql，得到SELECT语句的表+字段+别名+依赖关系
+2.通过1，生成dag_conf.py里的配置文件
+3.通过gen_html.py检测dag_conf.py是否变动，从而重新生成./dist/demo/血缘分析DAG.html
+'''
 import sys
 import traceback
 from pyutils.misc import func_name
 import sqlparse
-import dag_conf
 import datetime
+import sqls_to_do
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
-
-str_sql = ['''
-    INSERT INTO transit_jff.direct_store_name_list_sum(sp_id, league_id, league_name, ent_id, ent_short_name, sp_ent_id, sum_wage_min, sum_wage_max, intv_cnt)
-SELECT a.sp_id,
-       b.league_id,
-       b.league_name,
-       d.ent_id,
-       d.ent_short_name,
-       a.sp_ent_id,
-       d.sum_wage_min,
-       d.sum_wage_max,
-       count(1) AS intv_cnt
-FROM ods_jff.name_list a
-LEFT JOIN ods_jff.league_store b ON a.sp_id = b.sp_id
-LEFT JOIN ods_jff.sp_ent c ON a.sp_ent_id = c.sp_ent_id
-LEFT JOIN ods_jff.ent d ON c.ent_id = d.ent_id
-WHERE a.is_deleted = 0 -- and b.coop_mode = 3
-AND b.is_deleted = 0
-  AND d.ent_id > 0
-  AND a.intv_dt >= date_sub(current_date(), interval 1 MONTH)
-GROUP BY a.sp_id,
-         b.league_id,
-         b.league_name,
-         d.ent_id,
-         d.ent_short_name,
-         a.sp_ent_id,
-         d.sum_wage_min,
-         d.sum_wage_max;
-    ''',
-           '''select IDCardNum as id_card_num, concat(AdscriptionMonth, '-01') as bill_related_mo, floor(sum(Amount)*100) as wages, 1 as zxx_type
-from `ods_zhouxinxin`.wb_withdrawapply 
-where AuditStatus=1 and AccountStatus=1 and ApplyType=1 and AdscriptionMonth<'2019-02-01'
-group by IDCardNum, AdscriptionMonth''']
 
 
 @func_name()
@@ -50,6 +22,7 @@ def meta_select_parse(sql):
     sql_format = sql_format.replace('LEFT', '')
     sql_format = sql_format.replace('RIGHT', '')
     sql_format = sql_format.replace('INNER', '')
+    sql_format = sql_format.strip().strip('\n').strip()
     sql_sep = sql_format.split('\n')
     print(sql_format)
 
@@ -58,8 +31,6 @@ def meta_select_parse(sql):
 
     COLUMN = []
     TABLE = []
-    SQL = sql[:len(sql) / 4]
-
     TABLE_AS = {}
     COLUMN_AS = {}
     MAP_COLUMN_TABLE = {}
@@ -83,7 +54,7 @@ def meta_select_parse(sql):
                     balance_cnt -= 1
             balance_word += line_words[i]
             if balance_cnt == 0:
-                line_words_balance.append(balance_word)
+                line_words_balance.append(balance_word.strip().strip(';'))
                 balance_word = ''
 
         for v in line_words_balance:
@@ -97,16 +68,16 @@ def meta_select_parse(sql):
         i_state_y = i_STATE[i + 1]
         state_x = STACK_ALL[i_state_x]
         state_y = STACK_ALL[i_state_y]
-        seg = STACK_ALL[i_state_x + 1:i_state_y]
+        seg_x_y = STACK_ALL[i_state_x + 1:i_state_y]
         if state_x == 'SELECT' and state_y == 'FROM':
-            COLUMN += seg
+            COLUMN += seg_x_y
         elif state_x == 'SELECT' and state_y == 'AS':
-            COLUMN += seg
+            COLUMN += seg_x_y
         elif state_x == 'AS' and state_y == 'AS':
-            COLUMN += seg
+            COLUMN += seg_x_y
             COLUMN_AS[STACK_ALL[i_state_x - 1]] = STACK_ALL[i_state_x + 1]
         elif state_x == 'AS' and state_y == 'FROM':
-            COLUMN += seg
+            COLUMN += seg_x_y
             COLUMN_AS[STACK_ALL[i_state_x - 1]] = STACK_ALL[i_state_x + 1]
 
     # 提取出TABLE位置，别名，计算表与别名映射
@@ -115,32 +86,37 @@ def meta_select_parse(sql):
         i_state_y = i_STATE[i + 1]
         state_x = STACK_ALL[i_state_x]
         state_y = STACK_ALL[i_state_y]
-        seg = STACK_ALL[i_state_x + 1:i_state_y]
-        if state_x == 'FROM' and state_y == 'WHERE':
-            TABLE += seg
-            if len(seg) > 1:
-                TABLE_AS[seg[0]] = seg[1]
+        seg_x_y = STACK_ALL[i_state_x + 1:i_state_y]
+        seg_y = STACK_ALL[i_state_y+1:]
+        if i == len(i_STATE) - 2 and state_y == 'FROM':
+            TABLE += seg_y
+            if len(seg_y) > 1:
+                TABLE_AS[seg_y[0]] = seg_y[1]
+        elif state_x == 'FROM' and state_y == 'WHERE':
+            TABLE += seg_x_y
+            if len(seg_x_y) > 1:
+                TABLE_AS[seg_x_y[0]] = seg_x_y[1]
         elif state_x == 'FROM' and state_y == 'JOIN':
-            TABLE += seg
-            if len(seg) > 1:
-                TABLE_AS[seg[0]] = seg[1]
+            TABLE += seg_x_y
+            if len(seg_x_y) > 1:
+                TABLE_AS[seg_x_y[0]] = seg_x_y[1]
         elif state_x == 'AS' and state_y == 'JOIN':
-            TABLE += seg
+            TABLE += seg_x_y
             TABLE_AS[STACK_ALL[i_state_x - 1]] = STACK_ALL[i_state_x + 1]
         elif state_x == 'FROM' and state_y == 'AS':
-            TABLE += seg
+            TABLE += seg_x_y
         elif state_x == 'AS' and state_y == 'WHERE':
-            TABLE += seg
+            TABLE += seg_x_y
             TABLE_AS[STACK_ALL[i_state_x - 1]] = STACK_ALL[i_state_x + 1]
         elif state_x == 'JOIN' and state_y == 'AS':
-            TABLE += seg
+            TABLE += seg_x_y
         elif state_x == 'AS' and state_y == 'ON':
-            TABLE += seg
+            TABLE += seg_x_y
             TABLE_AS[STACK_ALL[i_state_x - 1]] = STACK_ALL[i_state_x + 1]
         elif state_x == 'JOIN' and state_y == 'ON':
-            TABLE += seg
-            if len(seg) > 1:
-                TABLE_AS[seg[0]] = seg[1]
+            TABLE += seg_x_y
+            if len(seg_x_y) > 1:
+                TABLE_AS[seg_x_y[0]] = seg_x_y[1]
     # 1删除select字段表名
     COLUMN_PURE = []
     for i in range(len(COLUMN)):
@@ -246,11 +222,27 @@ def select_sql_to_conf(sql, colums_nodes, table_nodes, map_colmn_column, map_col
     print add_node
 
 
-def main():
-    sql_str_tmp = str_sql[0]
-    COLUMN_PURE, COLUMN_AS, COLUMN_BELONG_SQL, TABLE_PURE, MAP_COLUMN_TABLE = meta_select_parse(sql_str_tmp)
-    select_sql_to_conf(sql_str_tmp, COLUMN_PURE, TABLE_PURE, COLUMN_AS, MAP_COLUMN_TABLE, COLUMN_BELONG_SQL)
+@func_name()
+def reset_dag_conf():
+    with open('./dag_conf.py', 'r+') as fp:
+        reads = ''.join(fp.readlines()[:330]) + ']\n'
+        fp.seek(0)
+        fp.truncate()
+        fp.write(reads)
+
+
+@func_name()
+def auto_gen():
+    reload(sqls_to_do)
+    reset_dag_conf()
+    for v in sqls_to_do.str_sql:
+        COLUMN_PURE, COLUMN_AS, COLUMN_BELONG_SQL, TABLE_PURE, MAP_COLUMN_TABLE = meta_select_parse(v)
+        select_sql_to_conf(v, COLUMN_PURE, TABLE_PURE, COLUMN_AS, MAP_COLUMN_TABLE, COLUMN_BELONG_SQL)
     pass
+
+
+def main():
+    auto_gen()
 
 
 if __name__ == '__main__':

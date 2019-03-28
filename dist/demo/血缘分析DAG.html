@@ -732,7 +732,7 @@ g3.setEdge( "id_4", "id_te" , { label: "" });
   svg.attr('height', g3.graph().height * initialScale + 40);
 </script>
 
-<h3>sql_2019-03-28 18:40:49</h3>
+<h3>sql_2019-03-28 19:27:27</h3>
 <svg width=960 height=800 id="svg4"></svg>
 <script>
   var highlight_color = "#000000";
@@ -745,172 +745,6 @@ g3.setEdge( "id_4", "id_te" , { label: "" });
   
   // Create a new directed graph
   var g4 = new dagreD3.graphlib.Graph().setGraph({});
-
-  // States and transitions from RFC 793
-  var states = {
-    "id_1": {
-    id: "id_1",
-    label: "SQL",
-    description: "select IDCardNum as id_card_num, concat(AdscriptionMonth, '-01') as bill_related_mo, floor(sum(Amount)*100) as wages, 1 as zxx_type<br>from `ods_zhouxinxin`.wb_withdrawapply <br>where AuditStatus=1 and AccountStatus=1 and ApplyType=1 and AdscriptionMonth<'2019-02-01'<br>group by IDCardNum, AdscriptionMonth",
-    style: "fill: lightblue"
-  },
-  "id_2": {
-    id: "id_2",
-    label: "`ods_zhouxinxin`.wb_withdrawapply",
-    description: "表",
-    style: "fill: blue"
-  },
-  "id_3": {
-    id: "id_3",
-    label: "IDCardNum",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_4": {
-    id: "id_4",
-    label: "id_card_num",
-    description: "字段别名",
-    style: "fill: orange"
-  },
-  "id_5": {
-    id: "id_5",
-    label: "concat(AdscriptionMonth,'-01')",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_6": {
-    id: "id_6",
-    label: "bill_related_mo",
-    description: "字段别名",
-    style: "fill: orange"
-  },
-  "id_7": {
-    id: "id_7",
-    label: "floor(sum(Amount)*100)",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_8": {
-    id: "id_8",
-    label: "wages",
-    description: "字段别名",
-    style: "fill: orange"
-  },
-  "id_9": {
-    id: "id_9",
-    label: "1",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_10": {
-    id: "id_10",
-    label: "zxx_type",
-    description: "字段别名",
-    style: "fill: orange"
-  },
-  "id_ts": {
-    id: "id_ts",
-    label: "开始",
-    description: "开始",
-    style: "fill: red"
-  }
-  };
-
-  // Add states to the graph, set labels, and style
-  Object.keys(states).forEach(function (state) {
-    var value = states[state];
-    value.rx = value.ry = 5;
-    g4.setNode(state, value);
-  });
-
-  // Set up the edges
-  g4.setEdge( "id_ts", "id_1" , { label: "" });
-g4.setEdge( "id_1", "id_2" , { label: "" });
-g4.setEdge( "id_7", "id_8" , { label: "" });
-g4.setEdge( "id_9", "id_10" , { label: "" });
-g4.setEdge( "id_5", "id_6" , { label: "" });
-g4.setEdge( "id_3", "id_4" , { label: "" });
-g4.setEdge( "id_2", "id_7" , { label: "" });
-g4.setEdge( "id_2", "id_9" , { label: "" });
-g4.setEdge( "id_2", "id_5" , { label: "" });
-g4.setEdge( "id_2", "id_3" , { label: "" });
-
-
-  // Create the renderer
-  var render = new dagreD3.render();
-
-  // Set up an SVG group so that we can translate the final graph.
-  var svg = d3.select("#svg4"),
-    inner4 = svg.append("g");
-
-  // Set up zoom support
-  var zoom = d3.zoom()
-    .on("zoom", function () {
-      inner4.attr("transform", d3.event.transform);
-    });
-  svg.call(zoom);
-
-  // Simple function to style the tooltip for the given node.
-  var styleTooltip = function (name, description) {
-    return "<p class='name'>" + name + "</p><p class='description' style='color:orange; width:100%; height:100%; display:inline-block' >" + description +"<br>" + "</p>";
-  };
-
-  // Run the renderer. This is what draws the final graph.
-  render(inner4, g4);
-
-  inner4.selectAll("g.node")
-    .attr("title", function (v) { return styleTooltip(g4.node(v).label, g4.node(v).description) })
-    .each(function (v) { $(this).tipsy({ gravity: "w", opacity: 1, html: true }); });
-
-  inner4.selectAll("g.node").style("stroke-width", initialStrokeWidth);
-
-  // function highlight nodes
-  inner4.selectAll("g.node").on("mouseover", function (d) {
-    inner4.selectAll("rect").style("stroke", highlight_color);
-    g4.predecessors(d).forEach(function (nodeid) {
-      my_node = inner4.select('#' + nodeid + ' rect');
-      my_node.style("stroke", fill_upstream_color);
-    })
-
-    g4.successors(d).forEach(function (nodeid) {
-      my_node = inner4.select('#' + nodeid + ' rect');
-      my_node.style("stroke", fill_downstream_color);
-    })
-  });
-
-  inner4.selectAll("g.node").on("mouseout", function (d) {
-    inner4.selectAll("rect").style("stroke", null);
-    g4.predecessors(d).forEach(function (nodeid) {
-      my_node = inner4.select('#' + nodeid + ' rect');
-      my_node.style("stroke", null);
-    })
-
-    g4.successors(d).forEach(function (nodeid) {
-      my_node = inner4.select('#' + nodeid + ' rect');
-      my_node.style("stroke", null);
-    })
-  });
-  
-  // Center the graph
-  var initialScale = 0.75;
-  svg.call(zoom.transform, d3.zoomIdentity.translate((svg.attr("width") - g4.graph().width * initialScale) / 2, 20).scale(initialScale));
-
-  svg.attr('height', g4.graph().height * initialScale + 40);
-</script>
-
-<h3>sql_2019-03-28 18:40:56</h3>
-<svg width=960 height=800 id="svg5"></svg>
-<script>
-  var highlight_color = "#000000";
-  var upstream_color = "#0000FF";
-  var downstream_color = "#0000FF"
-  var fill_default_color = "rgb(240, 237, 228)"
-  var fill_upstream_color = "orange"
-  var fill_downstream_color = "orange"
-  var initialStrokeWidth = '3px';
-  
-  // Create a new directed graph
-  var g5 = new dagreD3.graphlib.Graph().setGraph({});
 
   // States and transitions from RFC 793
   var states = {
@@ -1016,25 +850,191 @@ g4.setEdge( "id_2", "id_3" , { label: "" });
   Object.keys(states).forEach(function (state) {
     var value = states[state];
     value.rx = value.ry = 5;
+    g4.setNode(state, value);
+  });
+
+  // Set up the edges
+  g4.setEdge( "id_ts", "id_1" , { label: "" });
+g4.setEdge( "id_1", "id_2" , { label: "" });
+g4.setEdge( "id_1", "id_3" , { label: "" });
+g4.setEdge( "id_1", "id_4" , { label: "" });
+g4.setEdge( "id_1", "id_5" , { label: "" });
+g4.setEdge( "id_14", "id_15" , { label: "" });
+g4.setEdge( "id_5", "id_13" , { label: "" });
+g4.setEdge( "id_3", "id_7" , { label: "" });
+g4.setEdge( "id_5", "id_12" , { label: "" });
+g4.setEdge( "id_5", "id_10" , { label: "" });
+g4.setEdge( "id_2", "id_6" , { label: "" });
+g4.setEdge( "id_2", "id_11" , { label: "" });
+g4.setEdge( "id_5", "id_9" , { label: "" });
+g4.setEdge( "id_3", "id_8" , { label: "" });
+g4.setEdge( "id_1", "id_14" , { label: "" });
+
+
+  // Create the renderer
+  var render = new dagreD3.render();
+
+  // Set up an SVG group so that we can translate the final graph.
+  var svg = d3.select("#svg4"),
+    inner4 = svg.append("g");
+
+  // Set up zoom support
+  var zoom = d3.zoom()
+    .on("zoom", function () {
+      inner4.attr("transform", d3.event.transform);
+    });
+  svg.call(zoom);
+
+  // Simple function to style the tooltip for the given node.
+  var styleTooltip = function (name, description) {
+    return "<p class='name'>" + name + "</p><p class='description' style='color:orange; width:100%; height:100%; display:inline-block' >" + description +"<br>" + "</p>";
+  };
+
+  // Run the renderer. This is what draws the final graph.
+  render(inner4, g4);
+
+  inner4.selectAll("g.node")
+    .attr("title", function (v) { return styleTooltip(g4.node(v).label, g4.node(v).description) })
+    .each(function (v) { $(this).tipsy({ gravity: "w", opacity: 1, html: true }); });
+
+  inner4.selectAll("g.node").style("stroke-width", initialStrokeWidth);
+
+  // function highlight nodes
+  inner4.selectAll("g.node").on("mouseover", function (d) {
+    inner4.selectAll("rect").style("stroke", highlight_color);
+    g4.predecessors(d).forEach(function (nodeid) {
+      my_node = inner4.select('#' + nodeid + ' rect');
+      my_node.style("stroke", fill_upstream_color);
+    })
+
+    g4.successors(d).forEach(function (nodeid) {
+      my_node = inner4.select('#' + nodeid + ' rect');
+      my_node.style("stroke", fill_downstream_color);
+    })
+  });
+
+  inner4.selectAll("g.node").on("mouseout", function (d) {
+    inner4.selectAll("rect").style("stroke", null);
+    g4.predecessors(d).forEach(function (nodeid) {
+      my_node = inner4.select('#' + nodeid + ' rect');
+      my_node.style("stroke", null);
+    })
+
+    g4.successors(d).forEach(function (nodeid) {
+      my_node = inner4.select('#' + nodeid + ' rect');
+      my_node.style("stroke", null);
+    })
+  });
+  
+  // Center the graph
+  var initialScale = 0.75;
+  svg.call(zoom.transform, d3.zoomIdentity.translate((svg.attr("width") - g4.graph().width * initialScale) / 2, 20).scale(initialScale));
+
+  svg.attr('height', g4.graph().height * initialScale + 40);
+</script>
+
+<h3>sql_2019-03-28 19:27:27</h3>
+<svg width=960 height=800 id="svg5"></svg>
+<script>
+  var highlight_color = "#000000";
+  var upstream_color = "#0000FF";
+  var downstream_color = "#0000FF"
+  var fill_default_color = "rgb(240, 237, 228)"
+  var fill_upstream_color = "orange"
+  var fill_downstream_color = "orange"
+  var initialStrokeWidth = '3px';
+  
+  // Create a new directed graph
+  var g5 = new dagreD3.graphlib.Graph().setGraph({});
+
+  // States and transitions from RFC 793
+  var states = {
+    "id_1": {
+    id: "id_1",
+    label: "SQL",
+    description: "select IDCardNum as id_card_num, concat(AdscriptionMonth, '-01') as bill_related_mo, floor(sum(Amount)*100) as wages, 1 as zxx_type<br> from `ods_zhouxinxin`.wb_withdrawapply <br> where AuditStatus=1 and AccountStatus=1 and ApplyType=1 and AdscriptionMonth<'2019-02-01'<br> group by IDCardNum, AdscriptionMonth",
+    style: "fill: lightblue"
+  },
+  "id_2": {
+    id: "id_2",
+    label: "`ods_zhouxinxin`.wb_withdrawapply",
+    description: "表",
+    style: "fill: blue"
+  },
+  "id_3": {
+    id: "id_3",
+    label: "IDCardNum",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_4": {
+    id: "id_4",
+    label: "id_card_num",
+    description: "字段别名",
+    style: "fill: orange"
+  },
+  "id_5": {
+    id: "id_5",
+    label: "concat(AdscriptionMonth,'-01')",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_6": {
+    id: "id_6",
+    label: "bill_related_mo",
+    description: "字段别名",
+    style: "fill: orange"
+  },
+  "id_7": {
+    id: "id_7",
+    label: "floor(sum(Amount)*100)",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_8": {
+    id: "id_8",
+    label: "wages",
+    description: "字段别名",
+    style: "fill: orange"
+  },
+  "id_9": {
+    id: "id_9",
+    label: "1",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_10": {
+    id: "id_10",
+    label: "zxx_type",
+    description: "字段别名",
+    style: "fill: orange"
+  },
+  "id_ts": {
+    id: "id_ts",
+    label: "开始",
+    description: "开始",
+    style: "fill: red"
+  }
+  };
+
+  // Add states to the graph, set labels, and style
+  Object.keys(states).forEach(function (state) {
+    var value = states[state];
+    value.rx = value.ry = 5;
     g5.setNode(state, value);
   });
 
   // Set up the edges
   g5.setEdge( "id_ts", "id_1" , { label: "" });
 g5.setEdge( "id_1", "id_2" , { label: "" });
-g5.setEdge( "id_1", "id_3" , { label: "" });
-g5.setEdge( "id_1", "id_4" , { label: "" });
-g5.setEdge( "id_1", "id_5" , { label: "" });
-g5.setEdge( "id_14", "id_15" , { label: "" });
-g5.setEdge( "id_5", "id_13" , { label: "" });
-g5.setEdge( "id_3", "id_7" , { label: "" });
-g5.setEdge( "id_5", "id_12" , { label: "" });
-g5.setEdge( "id_5", "id_10" , { label: "" });
-g5.setEdge( "id_2", "id_6" , { label: "" });
-g5.setEdge( "id_2", "id_11" , { label: "" });
-g5.setEdge( "id_5", "id_9" , { label: "" });
-g5.setEdge( "id_3", "id_8" , { label: "" });
-g5.setEdge( "id_1", "id_14" , { label: "" });
+g5.setEdge( "id_7", "id_8" , { label: "" });
+g5.setEdge( "id_9", "id_10" , { label: "" });
+g5.setEdge( "id_5", "id_6" , { label: "" });
+g5.setEdge( "id_3", "id_4" , { label: "" });
+g5.setEdge( "id_2", "id_7" , { label: "" });
+g5.setEdge( "id_2", "id_9" , { label: "" });
+g5.setEdge( "id_2", "id_5" , { label: "" });
+g5.setEdge( "id_2", "id_3" , { label: "" });
 
 
   // Create the renderer
@@ -1097,6 +1097,221 @@ g5.setEdge( "id_1", "id_14" , { label: "" });
   svg.call(zoom.transform, d3.zoomIdentity.translate((svg.attr("width") - g5.graph().width * initialScale) / 2, 20).scale(initialScale));
 
   svg.attr('height', g5.graph().height * initialScale + 40);
+</script>
+
+<h3>sql_2019-03-28 19:27:27</h3>
+<svg width=960 height=800 id="svg6"></svg>
+<script>
+  var highlight_color = "#000000";
+  var upstream_color = "#0000FF";
+  var downstream_color = "#0000FF"
+  var fill_default_color = "rgb(240, 237, 228)"
+  var fill_upstream_color = "orange"
+  var fill_downstream_color = "orange"
+  var initialStrokeWidth = '3px';
+  
+  // Create a new directed graph
+  var g6 = new dagreD3.graphlib.Graph().setGraph({});
+
+  // States and transitions from RFC 793
+  var states = {
+    "id_1": {
+    id: "id_1",
+    label: "SQL",
+    description: "<br>    SELECT <br>    direct_store_name_list_sum_id,<br>    sp_id,<br>    league_id,<br>    league_name,<br>    ent_id,<br>    ent_short_name,<br>    sp_ent_id,<br>    sum_wage_min,<br>    sum_wage_max,<br>    intv_cnt,<br>    created_tm,<br>    created_by,<br>    updated_tm,<br>    updated_by,<br>    is_deleted<br>FROM<br>    transit_jff.direct_store_name_list_sum;<br>    ",
+    style: "fill: lightblue"
+  },
+  "id_2": {
+    id: "id_2",
+    label: "transit_jff.direct_store_name_list_sum",
+    description: "表",
+    style: "fill: blue"
+  },
+  "id_3": {
+    id: "id_3",
+    label: "direct_store_name_list_sum_id",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_4": {
+    id: "id_4",
+    label: "sp_id",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_5": {
+    id: "id_5",
+    label: "league_id",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_6": {
+    id: "id_6",
+    label: "league_name",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_7": {
+    id: "id_7",
+    label: "ent_id",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_8": {
+    id: "id_8",
+    label: "ent_short_name",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_9": {
+    id: "id_9",
+    label: "sp_ent_id",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_10": {
+    id: "id_10",
+    label: "sum_wage_min",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_11": {
+    id: "id_11",
+    label: "sum_wage_max",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_12": {
+    id: "id_12",
+    label: "intv_cnt",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_ts": {
+    id: "id_ts",
+    label: "开始",
+    description: "开始",
+    style: "fill: red"
+  },
+  "id_14": {
+    id: "id_14",
+    label: "created_by",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_13": {
+    id: "id_13",
+    label: "created_tm",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_16": {
+    id: "id_16",
+    label: "updated_by",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_17": {
+    id: "id_17",
+    label: "is_deleted",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_15": {
+    id: "id_15",
+    label: "updated_tm",
+    description: "字段",
+    style: "fill: orange"
+  }
+  };
+
+  // Add states to the graph, set labels, and style
+  Object.keys(states).forEach(function (state) {
+    var value = states[state];
+    value.rx = value.ry = 5;
+    g6.setNode(state, value);
+  });
+
+  // Set up the edges
+  g6.setEdge( "id_ts", "id_1" , { label: "" });
+g6.setEdge( "id_1", "id_2" , { label: "" });
+g6.setEdge( "id_2", "id_15" , { label: "" });
+g6.setEdge( "id_2", "id_17" , { label: "" });
+g6.setEdge( "id_2", "id_3" , { label: "" });
+g6.setEdge( "id_2", "id_11" , { label: "" });
+g6.setEdge( "id_2", "id_5" , { label: "" });
+g6.setEdge( "id_2", "id_10" , { label: "" });
+g6.setEdge( "id_2", "id_12" , { label: "" });
+g6.setEdge( "id_2", "id_8" , { label: "" });
+g6.setEdge( "id_2", "id_4" , { label: "" });
+g6.setEdge( "id_2", "id_6" , { label: "" });
+g6.setEdge( "id_2", "id_14" , { label: "" });
+g6.setEdge( "id_2", "id_7" , { label: "" });
+g6.setEdge( "id_2", "id_9" , { label: "" });
+g6.setEdge( "id_2", "id_13" , { label: "" });
+g6.setEdge( "id_2", "id_16" , { label: "" });
+
+
+  // Create the renderer
+  var render = new dagreD3.render();
+
+  // Set up an SVG group so that we can translate the final graph.
+  var svg = d3.select("#svg6"),
+    inner6 = svg.append("g");
+
+  // Set up zoom support
+  var zoom = d3.zoom()
+    .on("zoom", function () {
+      inner6.attr("transform", d3.event.transform);
+    });
+  svg.call(zoom);
+
+  // Simple function to style the tooltip for the given node.
+  var styleTooltip = function (name, description) {
+    return "<p class='name'>" + name + "</p><p class='description' style='color:orange; width:100%; height:100%; display:inline-block' >" + description +"<br>" + "</p>";
+  };
+
+  // Run the renderer. This is what draws the final graph.
+  render(inner6, g6);
+
+  inner6.selectAll("g.node")
+    .attr("title", function (v) { return styleTooltip(g6.node(v).label, g6.node(v).description) })
+    .each(function (v) { $(this).tipsy({ gravity: "w", opacity: 1, html: true }); });
+
+  inner6.selectAll("g.node").style("stroke-width", initialStrokeWidth);
+
+  // function highlight nodes
+  inner6.selectAll("g.node").on("mouseover", function (d) {
+    inner6.selectAll("rect").style("stroke", highlight_color);
+    g6.predecessors(d).forEach(function (nodeid) {
+      my_node = inner6.select('#' + nodeid + ' rect');
+      my_node.style("stroke", fill_upstream_color);
+    })
+
+    g6.successors(d).forEach(function (nodeid) {
+      my_node = inner6.select('#' + nodeid + ' rect');
+      my_node.style("stroke", fill_downstream_color);
+    })
+  });
+
+  inner6.selectAll("g.node").on("mouseout", function (d) {
+    inner6.selectAll("rect").style("stroke", null);
+    g6.predecessors(d).forEach(function (nodeid) {
+      my_node = inner6.select('#' + nodeid + ' rect');
+      my_node.style("stroke", null);
+    })
+
+    g6.successors(d).forEach(function (nodeid) {
+      my_node = inner6.select('#' + nodeid + ' rect');
+      my_node.style("stroke", null);
+    })
+  });
+  
+  // Center the graph
+  var initialScale = 0.75;
+  svg.call(zoom.transform, d3.zoomIdentity.translate((svg.attr("width") - g6.graph().width * initialScale) / 2, 20).scale(initialScale));
+
+  svg.attr('height', g6.graph().height * initialScale + 40);
 </script>
 
 
