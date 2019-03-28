@@ -286,7 +286,7 @@ NODES = [
         '''
     },
     {
-        'title': 'zhouxinxin_name_list 跨库管理名单状态',
+        'title': '''zhouxinxin_name_list 跨库管理名单状态''',
         'nodes': {
             'ts': {
                 'name': '开始',
@@ -317,7 +317,7 @@ NODES = [
                 'color': 'green'
             },
             4: {
-                'name': 'cdc_time',
+                'name': '''cdc_time''',
                 'desc': '''PG的dw.cdc_time用与增量同步对应的table_name : 1.zhouxinxin_retention
                         2.stg_zhouxinxin_name_list ''',
                 'color': 'orange'
@@ -328,4 +328,5 @@ NODES = [
         '''
     },
 
-]
+ {'nodes': {1: {'color': 'lightblue', 'name': 'SQL', 'desc': '\n    INSERT INTO transit_jff.direct_store_name_list_sum(sp_id, league_id, league_name, ent_id, ent_short_name, sp_ent_id, sum_wage_min, sum_wage_max, intv_cnt)\nSELECT a.sp_id,\n       b.league_id,\n       b.league_name,\n       d.ent_id,\n       d.ent_short_name,\n       a.sp_ent_id,\n       d.sum_wage_min,\n       d.sum_wage_max,\n       count(1) AS intv_cnt\nFROM ods_jff.name_list a\nLEFT JOIN ods_jff.league_store b ON a.sp_id = b.sp_id\nLEFT JOIN ods_jff.sp_ent c ON a.sp_ent_id = c.sp_ent_id\nLEFT JOIN ods_jff.ent d ON c.ent_id = d.ent_id\nWHERE a.is_deleted = 0 -- and b.coop_mode = 3\nAND b.is_deleted = 0\n  AND d.ent_id > 0\n  AND a.intv_dt >= date_sub(current_date(), interval 1 MONTH)\nGROUP BY a.sp_id,\n         b.league_id,\n         b.league_name,\n         d.ent_id,\n         d.ent_short_name,\n         a.sp_ent_id,\n         d.sum_wage_min,\n         d.sum_wage_max;\n    '}, 2: {'color': 'blue', 'name': u'ods_jff.name_list', 'desc': '\xe8\xa1\xa8'}, 3: {'color': 'blue', 'name': u'ods_jff.league_store', 'desc': '\xe8\xa1\xa8'}, 4: {'color': 'blue', 'name': u'ods_jff.sp_ent', 'desc': '\xe8\xa1\xa8'}, 5: {'color': 'blue', 'name': u'ods_jff.ent', 'desc': '\xe8\xa1\xa8'}, 6: {'color': 'orange', 'name': u'sp_id', 'desc': '\xe5\xad\x97\xe6\xae\xb5'}, 7: {'color': 'orange', 'name': u'league_id', 'desc': '\xe5\xad\x97\xe6\xae\xb5'}, 8: {'color': 'orange', 'name': u'league_name', 'desc': '\xe5\xad\x97\xe6\xae\xb5'}, 9: {'color': 'orange', 'name': u'ent_id', 'desc': '\xe5\xad\x97\xe6\xae\xb5'}, 10: {'color': 'orange', 'name': u'ent_short_name', 'desc': '\xe5\xad\x97\xe6\xae\xb5'}, 11: {'color': 'orange', 'name': u'sp_ent_id', 'desc': '\xe5\xad\x97\xe6\xae\xb5'}, 12: {'color': 'orange', 'name': u'sum_wage_min', 'desc': '\xe5\xad\x97\xe6\xae\xb5'}, 'ts': {'color': 'red', 'name': '\xe5\xbc\x80\xe5\xa7\x8b', 'desc': '\xe5\xbc\x80\xe5\xa7\x8b'}, 14: {'color': 'orange', 'name': u'count(1)', 'desc': '\xe5\xad\x97\xe6\xae\xb5'}, 13: {'color': 'orange', 'name': u'sum_wage_max', 'desc': '\xe5\xad\x97\xe6\xae\xb5'}, 15: {'color': 'orange', 'name': u'intv_cnt', 'desc': '\xe5\xad\x97\xe6\xae\xb5\xe5\x88\xab\xe5\x90\x8d'}}, 'dag': 'ts >> 1\n    \n1 >> 2\n1 >> 3\n1 >> 4\n1 >> 5\n14 >> 15\n5 >> 13\n3 >> 7\n5 >> 12\n5 >> 10\n2 >> 6\n2 >> 11\n5 >> 9\n3 >> 8\n14 >> 1', 'title': 'sql_2019-03-28 17:28:06'},
+ {'nodes': {1: {'color': 'lightblue', 'name': 'SQL', 'desc': "select IDCardNum as id_card_num, concat(AdscriptionMonth, '-01') as bill_related_mo, floor(sum(Amount)*100) as wages, 1 as zxx_type\nfrom `ods_zhouxinxin`.wb_withdrawapply \nwhere AuditStatus=1 and AccountStatus=1 and ApplyType=1 and AdscriptionMonth<'2019-02-01'\ngroup by IDCardNum, AdscriptionMonth"}, 2: {'color': 'blue', 'name': u'`ods_zhouxinxin`.wb_withdrawapply', 'desc': '\xe8\xa1\xa8'}, 3: {'color': 'orange', 'name': u'IDCardNum', 'desc': '\xe5\xad\x97\xe6\xae\xb5'}, 4: {'color': 'orange', 'name': u'id_card_num', 'desc': '\xe5\xad\x97\xe6\xae\xb5\xe5\x88\xab\xe5\x90\x8d'}, 5: {'color': 'orange', 'name': u"concat(AdscriptionMonth,'-01')", 'desc': '\xe5\xad\x97\xe6\xae\xb5'}, 6: {'color': 'orange', 'name': u'bill_related_mo', 'desc': '\xe5\xad\x97\xe6\xae\xb5\xe5\x88\xab\xe5\x90\x8d'}, 7: {'color': 'orange', 'name': u'floor(sum(Amount)*100)', 'desc': '\xe5\xad\x97\xe6\xae\xb5'}, 8: {'color': 'orange', 'name': u'wages', 'desc': '\xe5\xad\x97\xe6\xae\xb5\xe5\x88\xab\xe5\x90\x8d'}, 9: {'color': 'orange', 'name': u'1', 'desc': '\xe5\xad\x97\xe6\xae\xb5'}, 10: {'color': 'orange', 'name': u'zxx_type', 'desc': '\xe5\xad\x97\xe6\xae\xb5\xe5\x88\xab\xe5\x90\x8d'}, 'ts': {'color': 'red', 'name': '\xe5\xbc\x80\xe5\xa7\x8b', 'desc': '\xe5\xbc\x80\xe5\xa7\x8b'}}, 'dag': 'ts >> 1\n    \n1 >> 2\n7 >> 8\n9 >> 10\n5 >> 6\n3 >> 4\n2 >> 7\n2 >> 9\n2 >> 5\n2 >> 3', 'title': 'sql_2019-03-28 17:28:10'},]

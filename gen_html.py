@@ -69,11 +69,11 @@ def gen_nodes_template(nodes):
     for k, node_one in nodes.iteritems():
         if 'color' in node_one:
             node_one_str = node_one_color_template % (
-                k, k, node_one['name'], node_one['desc'].replace('\n', '<br>'),
+                k, k, node_one['name'].replace('\n', ' | '), node_one['desc'].replace('\n', '<br>'),
                 node_one['color'])
         else:
             node_one_str = node_one_template % (
-                k, k, node_one['name'], node_one['desc'].replace('\n', '<br>'))
+                k, k, node_one['name'].replace('\n', ' | '), node_one['desc'].replace('\n', '<br>'))
         node_ones += node_one_str
     return node_ones.strip().strip(',')
 
