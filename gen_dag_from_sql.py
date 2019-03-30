@@ -15,18 +15,122 @@ import sqls_to_do
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
+meta_sql_words = []
+meta_map = {}
+
 
 @func_name()
-def meta_select_parse(sql):
+def sql_to_meta_words(sql):
+    global meta_sql_words, meta_map
     sql_format = sqlparse.format(sql, reindent=True, keyword_case='upper')
     sql_format = sql_format.replace('LEFT', '')
     sql_format = sql_format.replace('RIGHT', '')
     sql_format = sql_format.replace('INNER', '')
+    sql_format = sql_format.replace('DISTINCT', '')
     sql_format = sql_format.strip().strip('\n').strip()
-    sql_sep = sql_format.split('\n')
-    print(sql_format)
+    sql_sep = sql_format.replace('\n', ' ').replace(';', ' ').replace(',', ' ').replace('(', ' ( ').replace(')',
+                                                                                                            ' ) ').split(
+        ' ')
+    sql_words = []
+    for v in sql_sep:
+        if len(v.strip()) > 0:
+            sql_words.append(v.strip())
 
-    STACK_ALL = []
+    # 处理括号,存在子查询时需要标记下一次分解
+    meta_id = 0
+    for word in sql_words:
+        meta_sql_words.append(word)
+        if ')' == word:
+            meta_id += 1
+            meta_map_id = '#meta%d' % meta_id
+            meta_list = []
+            while True:
+                if len(meta_sql_words) == 0:
+                    break
+                top = meta_sql_words.pop()
+                meta_list.append(top)
+                if '(' == top:
+                    meta_map[meta_map_id] = list(reversed(meta_list))
+                    meta_sql_words.append(meta_map_id)
+                    break
+
+
+@func_name()
+def merge_meta_words_to_operator(meta_sql_words, meta_map):
+    # 把运算符号相连接的a op b 组合在一起
+    OPERATOR_BEFORE = ['IF', 'COUNT', 'if', 'count', 'in', 'IN', 'CURRENT_DATE', 'current_date', 'concat', 'sum',
+                       'floor']
+    OPERATOR_MIDDLE = [':=', '=', ]
+    # OPERATOR_RANGE = ['CASE', 'case', 'end', 'END']
+    merge_sql_words = []
+    meta_map_merge = meta_map
+    i = 0
+    while i < len(meta_sql_words):
+        merge_sql_words.append(meta_sql_words[i])
+        if meta_sql_words[i] in OPERATOR_MIDDLE:
+            seg_tmp = meta_sql_words[i - 1:i + 2]
+            merge_one = ' '.join(seg_tmp)
+            merge_sql_words.pop()
+            merge_sql_words.pop()
+            is_meta_in = 0
+            for v in seg_tmp:
+                if '#meta' in v:
+                    is_meta_in += 1
+                    merge_sql_words.append(v)
+                    meta_map_merge[v] = [meta_sql_words[i - 1]] + meta_map_merge[v] + [
+                        meta_sql_words[i + 1]]
+            if is_meta_in == 0:
+                merge_sql_words.append(merge_one)
+
+            i += 2
+            continue
+        elif meta_sql_words[i] in OPERATOR_BEFORE:
+            seg_tmp = meta_sql_words[i:i + 2]
+            merge_one = ' '.join(seg_tmp)
+            merge_sql_words.pop()
+            is_meta_in = 0
+            for v in seg_tmp:
+                if '#meta' in v:
+                    is_meta_in += 1
+                    merge_sql_words.append(v)
+                    meta_map_merge[v] = [meta_sql_words[i]] + meta_map_merge[v]
+            if is_meta_in == 0:
+                merge_sql_words.append(merge_one)
+
+            i += 2
+            continue
+        # case end 语句
+        elif meta_sql_words[i] == 'END' or meta_sql_words[i] == 'end':
+            merge_list = []
+            while True:
+                if len(merge_sql_words) == 0:
+                    break
+                top = merge_sql_words.pop()
+                merge_list.append(top)
+                if 'CASE' in top:
+                    # 去掉首尾2个运算符号
+                    seg_tmp = list(reversed(merge_list))
+                    merge_one = ' '.join(seg_tmp)
+                    is_meta_in = 0
+                    for v in seg_tmp:
+                        if '#meta' in v:
+                            is_meta_in += 1
+                            meta_map_merge[v] = ['CASE'] + meta_map_merge[v] + ['END']
+                    if is_meta_in == 0:
+                        merge_sql_words.append(merge_one)
+                    break
+            i += 1
+            continue
+        else:
+            i += 1
+            continue
+
+    return merge_sql_words, meta_map_merge
+
+
+@func_name()
+def meta_select_parse_v2(sql_words):
+    STACK_ALL = sql_words
     i_STATE = []
 
     COLUMN = []
@@ -35,48 +139,32 @@ def meta_select_parse(sql):
     COLUMN_AS = {}
     MAP_COLUMN_TABLE = {}
     COLUMN_BELONG_SQL = []
-
     STATE_WORDS_PASS = ['SELECT', 'AS', 'FROM', 'JOIN', 'ON', 'WHERE']
-    STATE_WORDS_IGNORE = ['WHERE', 'ORDER BY', 'DESC', 'ASC']
 
     # 提取出单词+状态位置
-    for sql_line in sql_sep:
-        line_words = sql_line.strip().strip(',').split(' ')
-        # 因为括号内允许空格，所以要合并有基数个括号的相邻word
-        line_words_balance = []
-        balance_cnt = 0
-        balance_word = ''
-        for i in range(len(line_words)):
-            for cha in line_words[i]:
-                if cha == '(':
-                    balance_cnt += 1
-                elif cha == ')':
-                    balance_cnt -= 1
-            balance_word += line_words[i]
-            if balance_cnt == 0:
-                line_words_balance.append(balance_word.strip().strip(';'))
-                balance_word = ''
-
-        for v in line_words_balance:
-            STACK_ALL.append(v)
-            if v in STATE_WORDS_PASS:
-                i_STATE.append(len(STACK_ALL) - 1)
-
+    for i in range(len(STACK_ALL)):
+        if STACK_ALL[i] in STATE_WORDS_PASS:
+            i_STATE.append(i)
+    if len(i_STATE) == 0:
+        COLUMN.append(' '.join(STACK_ALL))
     # 提取出COLUMN位置，字段别名，计算字段别名映射
+    if 1 == len(i_STATE) and 'SELECT' == STACK_ALL[i_STATE[0]]:
+        # 只对应 临时表()
+        COLUMN.append(' '.join(STACK_ALL))
     for i in range(len(i_STATE) - 1):
         i_state_x = i_STATE[i]
         i_state_y = i_STATE[i + 1]
         state_x = STACK_ALL[i_state_x]
         state_y = STACK_ALL[i_state_y]
         seg_x_y = STACK_ALL[i_state_x + 1:i_state_y]
-        if state_x == 'SELECT' and state_y == 'FROM':
+        if 'SELECT' == state_x and 'FROM' == state_y:
             COLUMN += seg_x_y
-        elif state_x == 'SELECT' and state_y == 'AS':
+        elif 'SELECT' == state_x and 'AS' == state_y:
             COLUMN += seg_x_y
-        elif state_x == 'AS' and state_y == 'AS':
+        elif 'AS' == state_x and 'AS' == state_y:
             COLUMN += seg_x_y
             COLUMN_AS[STACK_ALL[i_state_x - 1]] = STACK_ALL[i_state_x + 1]
-        elif state_x == 'AS' and state_y == 'FROM':
+        elif 'AS' == state_x and 'FROM' == state_y:
             COLUMN += seg_x_y
             COLUMN_AS[STACK_ALL[i_state_x - 1]] = STACK_ALL[i_state_x + 1]
 
@@ -87,41 +175,56 @@ def meta_select_parse(sql):
         state_x = STACK_ALL[i_state_x]
         state_y = STACK_ALL[i_state_y]
         seg_x_y = STACK_ALL[i_state_x + 1:i_state_y]
-        seg_y = STACK_ALL[i_state_y+1:]
-        if i == len(i_STATE) - 2 and state_y == 'FROM':
+        seg_y = STACK_ALL[i_state_y + 1:]
+
+        if i == len(i_STATE) - 2 and 'FROM' == state_y:
+            if seg_y[len(seg_y) - 1] == ')':
+                seg_y = seg_y[:len(seg_y) - 1]
             TABLE += seg_y
-            if len(seg_y) > 1:
-                TABLE_AS[seg_y[0]] = seg_y[1]
-        elif state_x == 'FROM' and state_y == 'WHERE':
+            i_tmp = 0
+            while i_tmp < len(seg_y) - 1:
+                TABLE_AS[seg_y[i_tmp]] = seg_y[i_tmp + 1]
+                i_tmp += 2
+        elif 'FROM' == state_x and 'WHERE' == state_y:
             TABLE += seg_x_y
-            if len(seg_x_y) > 1:
-                TABLE_AS[seg_x_y[0]] = seg_x_y[1]
-        elif state_x == 'FROM' and state_y == 'JOIN':
+            i_tmp = 0
+            while i_tmp < len(seg_x_y) - 1:
+                TABLE_AS[seg_x_y[i_tmp]] = seg_x_y[i_tmp + 1]
+                i_tmp += 2
+        elif 'FROM' == state_x and 'JOIN' == state_y:
             TABLE += seg_x_y
-            if len(seg_x_y) > 1:
-                TABLE_AS[seg_x_y[0]] = seg_x_y[1]
-        elif state_x == 'AS' and state_y == 'JOIN':
-            TABLE += seg_x_y
-            TABLE_AS[STACK_ALL[i_state_x - 1]] = STACK_ALL[i_state_x + 1]
-        elif state_x == 'FROM' and state_y == 'AS':
-            TABLE += seg_x_y
-        elif state_x == 'AS' and state_y == 'WHERE':
-            TABLE += seg_x_y
-            TABLE_AS[STACK_ALL[i_state_x - 1]] = STACK_ALL[i_state_x + 1]
-        elif state_x == 'JOIN' and state_y == 'AS':
-            TABLE += seg_x_y
-        elif state_x == 'AS' and state_y == 'ON':
+            i_tmp = 0
+            while i_tmp < len(seg_x_y) - 1:
+                TABLE_AS[seg_x_y[i_tmp]] = seg_x_y[i_tmp + 1]
+                i_tmp += 2
+        elif 'AS' == state_x and 'JOIN' == state_y:
             TABLE += seg_x_y
             TABLE_AS[STACK_ALL[i_state_x - 1]] = STACK_ALL[i_state_x + 1]
-        elif state_x == 'JOIN' and state_y == 'ON':
+        elif 'FROM' == state_x and 'AS' == state_y:
             TABLE += seg_x_y
-            if len(seg_x_y) > 1:
-                TABLE_AS[seg_x_y[0]] = seg_x_y[1]
+        elif 'AS' == state_x and 'WHERE' == state_y:
+            TABLE += seg_x_y
+            TABLE_AS[STACK_ALL[i_state_x - 1]] = STACK_ALL[i_state_x + 1]
+        elif 'JOIN' == state_x and 'AS' == state_y:
+            TABLE += seg_x_y
+        elif 'AS' == state_x and 'ON' == state_y:
+            TABLE += seg_x_y
+            TABLE_AS[STACK_ALL[i_state_x - 1]] = STACK_ALL[i_state_x + 1]
+        elif 'JOIN' == state_x and 'ON' == state_y:
+            TABLE += seg_x_y
+            i_tmp = 0
+            while i_tmp < len(seg_x_y) - 1:
+                TABLE_AS[seg_x_y[i_tmp]] = seg_x_y[i_tmp + 1]
+                i_tmp += 2
+
     # 1删除select字段表名
     COLUMN_PURE = []
     for i in range(len(COLUMN)):
         pos = COLUMN[i].find('.')
-        COLUMN_PURE.append(COLUMN[i][pos + 1:])
+        if '(' in COLUMN[i][:pos]:
+            COLUMN_PURE.append(COLUMN[i])
+        else:
+            COLUMN_PURE.append(COLUMN[i][pos + 1:])
     # 2删除表名中字段别名
     TABLE_PURE = []
     for tmp_table in TABLE:
@@ -154,18 +257,19 @@ def meta_select_parse(sql):
             MAP_COLUMN_TABLE[v] = TABLE_PURE[0]
         COLUMN_BELONG_SQL = []
 
-    print('COLUMN', COLUMN)
-    print('COLUMN_PURE', COLUMN_PURE)
-    print('COLUMN_BELONG_SQL', COLUMN_BELONG_SQL)
-    print('COLUMN_AS', COLUMN_AS)
-    print('-' * 20)
-
-    print('TABLE', TABLE)
-    print('TABLE_PURE', TABLE_PURE)
-    print('TABLE_AS', TABLE_AS)
-    print('-' * 20)
-
-    print('MAP_COLUMN_TABLE', MAP_COLUMN_TABLE)
+    # print('COLUMN', COLUMN)
+    # print('COLUMN_PURE', COLUMN_PURE)
+    # print('COLUMN_BELONG_SQL', COLUMN_BELONG_SQL)
+    # print('COLUMN_AS', COLUMN_AS)
+    # print('-' * 20)
+    #
+    # print('TABLE', TABLE)
+    # print('TABLE_PURE', TABLE_PURE)
+    # print('TABLE_AS', TABLE_AS)
+    # print('-' * 20)
+    #
+    # print('MAP_COLUMN_TABLE', MAP_COLUMN_TABLE)
+    # print('-' * 20)
     return COLUMN_PURE, COLUMN_AS, COLUMN_BELONG_SQL, TABLE_PURE, MAP_COLUMN_TABLE
 
 
@@ -203,10 +307,12 @@ def select_sql_to_conf(sql, colums_nodes, table_nodes, map_colmn_column, map_col
         node_id += 1
 
     for k, v in map_colmn_column.items():
-        dag_str += '\n' + '%d >> %d' % (map_column_nodes_id[k], map_column_nodes_id[v])
-        node_dict[map_column_nodes_id[v]]['desc'] = '字段别名'
+        if k in map_column_nodes_id and v in map_column_nodes_id:
+            dag_str += '\n' + '%d >> %d' % (map_column_nodes_id[k], map_column_nodes_id[v])
+            node_dict[map_column_nodes_id[v]]['desc'] = '字段别名'
     for k, v in map_column_table.items():
-        dag_str += '\n' + '%d >> %d' % (map_table_nodes_id[v], map_column_nodes_id[k])
+        if k in map_column_nodes_id and v in map_table_nodes_id:
+            dag_str += '\n' + '%d >> %d' % (map_table_nodes_id[v], map_column_nodes_id[k])
 
     for col in column_belong_sql:
         dag_str += '\n' + '1 >> %d ' % map_column_nodes_id[col]
@@ -219,7 +325,7 @@ def select_sql_to_conf(sql, colums_nodes, table_nodes, map_colmn_column, map_col
         fp.seek(0)
         fp.truncate()
         fp.write(reads)
-    print add_node
+    # print add_node
 
 
 @func_name()
@@ -231,14 +337,50 @@ def reset_dag_conf():
         fp.write(reads)
 
 
+# 递归调用解析sql
+def recursion_gen(meta_sql_words, meta_map):
+    merge_sql_words, merge_meta_map = merge_meta_words_to_operator(meta_sql_words,
+                                                                   meta_map)
+    COLUMN_PURE, COLUMN_AS, COLUMN_BELONG_SQL, TABLE_PURE, MAP_COLUMN_TABLE = meta_select_parse_v2(merge_sql_words)
+
+    for v in TABLE_PURE:
+        if '#meta' in v:
+            TMP_COLUMN_PURE, TMP_COLUMN_AS, TMP_COLUMN_BELONG_SQL, TMP_TABLE_PURE, TMP_MAP_COLUMN_TABLE = recursion_gen(
+                merge_meta_map[v], merge_meta_map)
+
+            for v1 in TMP_COLUMN_PURE:
+                if v1 not in COLUMN_PURE:
+                    COLUMN_PURE.append(v1)
+            for v1 in TMP_TABLE_PURE:
+                if v1 not in TABLE_PURE:
+                    TABLE_PURE.append(v1)
+
+            for k1, v1 in TMP_COLUMN_AS.items():
+                COLUMN_AS[k1] = v1
+
+            for k1, v1 in TMP_MAP_COLUMN_TABLE.items():
+                MAP_COLUMN_TABLE[k1] = v1
+
+            for v1 in TMP_COLUMN_BELONG_SQL:
+                MAP_COLUMN_TABLE[v1] = v
+
+    return COLUMN_PURE, COLUMN_AS, COLUMN_BELONG_SQL, TABLE_PURE, MAP_COLUMN_TABLE
+
+
 @func_name()
 def auto_gen():
     reload(sqls_to_do)
     reset_dag_conf()
     for v in sqls_to_do.str_sql:
-        COLUMN_PURE, COLUMN_AS, COLUMN_BELONG_SQL, TABLE_PURE, MAP_COLUMN_TABLE = meta_select_parse(v)
+        global meta_sql_words, meta_map
+        meta_sql_words = []
+        meta_map = {}
+        sql_to_meta_words(v)
+
+        COLUMN_PURE, COLUMN_AS, COLUMN_BELONG_SQL, TABLE_PURE, MAP_COLUMN_TABLE = recursion_gen(meta_sql_words,
+                                                                                                meta_map)
+
         select_sql_to_conf(v, COLUMN_PURE, TABLE_PURE, COLUMN_AS, MAP_COLUMN_TABLE, COLUMN_BELONG_SQL)
-    pass
 
 
 def main():
