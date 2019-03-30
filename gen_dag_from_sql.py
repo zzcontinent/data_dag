@@ -55,13 +55,22 @@ def sql_to_meta_words(sql):
                     break
 
 
+# 用于检索sql语句的关键字
+STATE_WORDS_PASS = ['SELECT', 'AS', 'FROM', 'JOIN', 'ON', 'WHERE']
+# 用于检索前缀表达式的关键字
+OPERATOR_BEFORE = ['IF', 'COUNT', 'if', 'count', 'in', 'IN', 'CURRENT_DATE', 'current_date', 'concat', 'sum',
+                   'floor', '@']
+# 用于检索中缀表达式的关键字
+OPERATOR_MIDDLE = [':=', '=']
+
+
+# OPERATOR_RANGE = ['CASE', 'case', 'end', 'END']
+
 @func_name()
 def merge_meta_words_to_operator(meta_sql_words, meta_map):
     # 把运算符号相连接的a op b 组合在一起
-    OPERATOR_BEFORE = ['IF', 'COUNT', 'if', 'count', 'in', 'IN', 'CURRENT_DATE', 'current_date', 'concat', 'sum',
-                       'floor']
-    OPERATOR_MIDDLE = [':=', '=', ]
-    # OPERATOR_RANGE = ['CASE', 'case', 'end', 'END']
+    global OPERATOR_BEFORE, OPERATOR_MIDDLE
+
     merge_sql_words = []
     meta_map_merge = meta_map
     i = 0
@@ -129,7 +138,7 @@ def merge_meta_words_to_operator(meta_sql_words, meta_map):
 
 
 @func_name()
-def meta_select_parse_v2(sql_words):
+def parse_meta_select_v2(sql_words):
     STACK_ALL = sql_words
     i_STATE = []
 
@@ -139,8 +148,8 @@ def meta_select_parse_v2(sql_words):
     COLUMN_AS = {}
     MAP_COLUMN_TABLE = {}
     COLUMN_BELONG_SQL = []
-    STATE_WORDS_PASS = ['SELECT', 'AS', 'FROM', 'JOIN', 'ON', 'WHERE']
 
+    global STATE_WORDS_PASS
     # 提取出单词+状态位置
     for i in range(len(STACK_ALL)):
         if STACK_ALL[i] in STATE_WORDS_PASS:
@@ -220,11 +229,19 @@ def meta_select_parse_v2(sql_words):
     # 1删除select字段表名
     COLUMN_PURE = []
     for i in range(len(COLUMN)):
-        pos = COLUMN[i].find('.')
-        if '(' in COLUMN[i][:pos]:
-            COLUMN_PURE.append(COLUMN[i])
-        else:
+        # 如果是表达式 @id_card_num := temp.mbr_id_card_num AS id_card_num，它不属于具体表，但是能够命中 find('.')
+        is_point_sep_table_column = 1
+        # for v_op in OPERATOR_BEFORE:
+        #     if v_op in COLUMN[i]:
+        #         is_point_sep_table_column -= 1
+        for v_op in OPERATOR_MIDDLE:
+            if v_op in COLUMN[i]:
+                is_point_sep_table_column -= 1
+        if is_point_sep_table_column > 0:
+            pos = COLUMN[i].find('.')
             COLUMN_PURE.append(COLUMN[i][pos + 1:])
+        else:
+            COLUMN_PURE.append(COLUMN[i])
     # 2删除表名中字段别名
     TABLE_PURE = []
     for tmp_table in TABLE:
@@ -257,24 +274,12 @@ def meta_select_parse_v2(sql_words):
             MAP_COLUMN_TABLE[v] = TABLE_PURE[0]
         COLUMN_BELONG_SQL = []
 
-    # print('COLUMN', COLUMN)
-    # print('COLUMN_PURE', COLUMN_PURE)
-    # print('COLUMN_BELONG_SQL', COLUMN_BELONG_SQL)
-    # print('COLUMN_AS', COLUMN_AS)
-    # print('-' * 20)
-    #
-    # print('TABLE', TABLE)
-    # print('TABLE_PURE', TABLE_PURE)
-    # print('TABLE_AS', TABLE_AS)
-    # print('-' * 20)
-    #
-    # print('MAP_COLUMN_TABLE', MAP_COLUMN_TABLE)
-    # print('-' * 20)
     return COLUMN_PURE, COLUMN_AS, COLUMN_BELONG_SQL, TABLE_PURE, MAP_COLUMN_TABLE
 
 
 @func_name()
-def select_sql_to_conf(sql, colums_nodes, table_nodes, map_colmn_column, map_column_table, column_belong_sql):
+def select_sql_to_conf(sql, colums_nodes, table_nodes, map_colmn_column, map_column_table, column_belong_sql,
+                       map_table_table, node_commnets):
     add_node = dict()
     node_dict = dict()
 
@@ -297,12 +302,19 @@ def select_sql_to_conf(sql, colums_nodes, table_nodes, map_colmn_column, map_col
     map_column_nodes_id = {}
     dag_str = ''
     for table in table_nodes:
-        node_dict[node_id] = {'name': table, 'desc': '表', 'color': 'blue'}
+        desc = '表'
+        if table in node_commnets:
+            desc = '表 | ' + ' '.join(node_commnets[table])
+        node_dict[node_id] = {'name': table, 'desc': desc, 'color': 'blue'}
         map_table_nodes_id[table] = node_id
-        dag_str += '\n' + '1 >> %d' % node_id
+        if table not in map_table_table.keys():
+            dag_str += '\n' + '1 >> %d' % node_id
         node_id += 1
     for col in colums_nodes:
-        node_dict[node_id] = {'name': col, 'desc': '字段', 'color': 'orange'}
+        desc = '字段'
+        if col in node_commnets:
+            desc = '字段 | ' + ' '.join(node_commnets[col])
+        node_dict[node_id] = {'name': col, 'desc': desc, 'color': 'orange'}
         map_column_nodes_id[col] = node_id
         node_id += 1
 
@@ -313,6 +325,9 @@ def select_sql_to_conf(sql, colums_nodes, table_nodes, map_colmn_column, map_col
     for k, v in map_column_table.items():
         if k in map_column_nodes_id and v in map_table_nodes_id:
             dag_str += '\n' + '%d >> %d' % (map_table_nodes_id[v], map_column_nodes_id[k])
+    for k, v in map_table_table.items():
+        if k in map_table_nodes_id and v in map_table_nodes_id:
+            dag_str += '\n' + '%d >> %d' % (map_table_nodes_id[v], map_table_nodes_id[k])
 
     for col in column_belong_sql:
         dag_str += '\n' + '1 >> %d ' % map_column_nodes_id[col]
@@ -338,20 +353,24 @@ def reset_dag_conf():
 
 
 # 递归调用解析sql
+MAP_TABLE_TABLE = {}
+
+
 def recursion_gen(meta_sql_words, meta_map):
-    merge_sql_words, merge_meta_map = merge_meta_words_to_operator(meta_sql_words,
-                                                                   meta_map)
-    COLUMN_PURE, COLUMN_AS, COLUMN_BELONG_SQL, TABLE_PURE, MAP_COLUMN_TABLE = meta_select_parse_v2(merge_sql_words)
+    global MAP_TABLE_TABLE
+    merge_sql_words, merge_meta_map = merge_meta_words_to_operator(meta_sql_words, meta_map)
+    COLUMN_PURE, COLUMN_AS, COLUMN_BELONG_SQL, TABLE_PURE, MAP_COLUMN_TABLE = parse_meta_select_v2(merge_sql_words)
 
     for v in TABLE_PURE:
         if '#meta' in v:
-            TMP_COLUMN_PURE, TMP_COLUMN_AS, TMP_COLUMN_BELONG_SQL, TMP_TABLE_PURE, TMP_MAP_COLUMN_TABLE = recursion_gen(
+            TMP_COLUMN_PURE, TMP_COLUMN_AS, TMP_COLUMN_BELONG_SQL, TMP_TABLE_PURE, TMP_MAP_COLUMN_TABLE, merge_meta_map = recursion_gen(
                 merge_meta_map[v], merge_meta_map)
 
             for v1 in TMP_COLUMN_PURE:
                 if v1 not in COLUMN_PURE:
                     COLUMN_PURE.append(v1)
             for v1 in TMP_TABLE_PURE:
+                MAP_TABLE_TABLE[v1] = v
                 if v1 not in TABLE_PURE:
                     TABLE_PURE.append(v1)
 
@@ -363,12 +382,14 @@ def recursion_gen(meta_sql_words, meta_map):
 
             for v1 in TMP_COLUMN_BELONG_SQL:
                 MAP_COLUMN_TABLE[v1] = v
+            pass
 
-    return COLUMN_PURE, COLUMN_AS, COLUMN_BELONG_SQL, TABLE_PURE, MAP_COLUMN_TABLE
+    return COLUMN_PURE, COLUMN_AS, COLUMN_BELONG_SQL, TABLE_PURE, MAP_COLUMN_TABLE, merge_meta_map
 
 
 @func_name()
 def auto_gen():
+    global MAP_TABLE_TABLE
     reload(sqls_to_do)
     reset_dag_conf()
     for v in sqls_to_do.str_sql:
@@ -377,10 +398,12 @@ def auto_gen():
         meta_map = {}
         sql_to_meta_words(v)
 
-        COLUMN_PURE, COLUMN_AS, COLUMN_BELONG_SQL, TABLE_PURE, MAP_COLUMN_TABLE = recursion_gen(meta_sql_words,
-                                                                                                meta_map)
+        COLUMN_PURE, COLUMN_AS, COLUMN_BELONG_SQL, TABLE_PURE, MAP_COLUMN_TABLE, merge_meta_map = recursion_gen(
+            meta_sql_words,
+            meta_map)
 
-        select_sql_to_conf(v, COLUMN_PURE, TABLE_PURE, COLUMN_AS, MAP_COLUMN_TABLE, COLUMN_BELONG_SQL)
+        select_sql_to_conf(v, COLUMN_PURE, TABLE_PURE, COLUMN_AS, MAP_COLUMN_TABLE, COLUMN_BELONG_SQL, MAP_TABLE_TABLE,
+                           merge_meta_map)
 
 
 def main():
