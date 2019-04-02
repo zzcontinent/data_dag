@@ -27,6 +27,7 @@ def sql_to_meta_words(sql):
     sql_format = sql_format.replace('RIGHT', '')
     sql_format = sql_format.replace('INNER', '')
     sql_format = sql_format.replace('DISTINCT', '')
+    sql_format = sql_format.replace('ALL', '')
     sql_format = sql_format.strip().strip('\n').strip()
     sql_sep = sql_format.replace('\n', ' ').replace(';', ' ').replace(',', ' ').replace('(', ' ( ').replace(')',
                                                                                                             ' ) ').split(
@@ -53,6 +54,14 @@ def sql_to_meta_words(sql):
                     meta_map[meta_map_id] = list(reversed(meta_list))
                     meta_sql_words.append(meta_map_id)
                     break
+    # # 处理UNION关键字，分割两张表
+    # for word in meta_sql_words:
+    #     if 'UNION' == word:
+    #         meta_id += 1
+    #         meta_map_id = '#meta%d' % meta_id
+    #         meta_list = []
+    #
+    pass
 
 
 # 用于检索sql语句的关键字
@@ -159,6 +168,7 @@ def parse_meta_select_v2(node_name, sql_words):
     if 1 == len(i_STATE) and 'SELECT' == STACK_ALL[i_STATE[0]]:
         # 只对应 临时表()
         COLUMN.append(' '.join(STACK_ALL))
+    rename_col_cnt = 0
     for i in range(len(i_STATE) - 1):
         i_state_x = i_STATE[i]
         i_state_y = i_STATE[i + 1]
@@ -170,11 +180,15 @@ def parse_meta_select_v2(node_name, sql_words):
         elif 'SELECT' == state_x and 'AS' == state_y:
             COLUMN += seg_x_y
         elif 'AS' == state_x and 'AS' == state_y:
+            rename_col_cnt += 1
+            rename_col = '%s(别名%d)' % (STACK_ALL[i_state_x + 1], rename_col_cnt)
             COLUMN += seg_x_y
-            COLUMN_AS[STACK_ALL[i_state_x - 1]] = STACK_ALL[i_state_x + 1]
+            COLUMN_AS[STACK_ALL[i_state_x - 1]] = rename_col
         elif 'AS' == state_x and 'FROM' == state_y:
+            rename_col_cnt += 1
+            rename_col = '%s(别名%d)' % (STACK_ALL[i_state_x + 1], rename_col_cnt)
             COLUMN += seg_x_y
-            COLUMN_AS[STACK_ALL[i_state_x - 1]] = STACK_ALL[i_state_x + 1]
+            COLUMN_AS[STACK_ALL[i_state_x - 1]] = rename_col
 
     # 提取出TABLE位置，别名，计算表与别名映射
     for i in range(len(i_STATE) - 1):
@@ -239,6 +253,8 @@ def parse_meta_select_v2(node_name, sql_words):
         if is_point_sep_table_column > 0:
             pos = COLUMN[i].find('.')
             COLUMN_PURE.append(COLUMN[i][pos + 1:])
+            if COLUMN[i] in COLUMN_AS.keys():
+                COLUMN_AS[COLUMN[i][pos + 1:]] = COLUMN_AS.pop(COLUMN[i])
         else:
             COLUMN_PURE.append(COLUMN[i])
     # 2删除表名中字段别名
@@ -249,7 +265,8 @@ def parse_meta_select_v2(node_name, sql_words):
             if v == tmp_table:
                 find_cnt += 1
         if find_cnt == 0:
-            TABLE_PURE.append(tmp_table)
+            if tmp_table not in TABLE_PURE:
+                TABLE_PURE.append(tmp_table)
 
     # 提取表与字段映射 MAP_TABLE_COLUMN
     for col in COLUMN:
@@ -266,16 +283,16 @@ def parse_meta_select_v2(node_name, sql_words):
     # 3计算非来自TABLE的字段关系映射为整个SQL
     for v in COLUMN_PURE:
         if v not in MAP_COLUMN_TABLE.keys() and v not in COLUMN_AS.values():
-            MAP_COLUMN_TABLE[v] = node_name
+            if len(TABLE_PURE) == 1:
+                MAP_COLUMN_TABLE[v] = TABLE_PURE[0]
+            else:
+                MAP_COLUMN_TABLE[v] = node_name
 
-    if node_name not in TABLE_PURE:
-        TABLE_PURE.append(node_name)
-
-    return COLUMN_PURE, COLUMN_AS, TABLE_PURE, MAP_COLUMN_TABLE
+    return COLUMN_AS, MAP_COLUMN_TABLE, TABLE_PURE
 
 
 @func_name()
-def select_sql_to_conf(sql, colums_nodes, table_nodes, map_colmn_column, map_column_table,
+def select_sql_to_conf(sql, map_colmn_column, map_column_table, table_pure,
                        map_table_table, node_commnets):
     add_node = dict()
     node_dict = dict()
@@ -285,8 +302,7 @@ def select_sql_to_conf(sql, colums_nodes, table_nodes, map_colmn_column, map_col
         'desc': '''开始''',
         'color': 'red'
     }
-    add_node['dag'] = '''ts >> 1
-    '''
+    add_node['dag'] = '''ts >> 1 '''
 
     add_node['title'] = 'sql_%s' % datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     node_dict[1] = {
@@ -294,11 +310,22 @@ def select_sql_to_conf(sql, colums_nodes, table_nodes, map_colmn_column, map_col
         'desc': sql,
         'color': 'lightblue'
     }
+
     node_id = 2
     map_table_nodes_id = {}
     map_column_nodes_id = {}
     dag_str = ''
-    for table in table_nodes:
+    COLUMN_PURE = []
+    for col1, col2 in map_colmn_column.items():
+        if col1 not in COLUMN_PURE:
+            COLUMN_PURE.append(col1)
+
+    for k, v in map_column_table.items():
+        if k not in COLUMN_PURE:
+            COLUMN_PURE.append(k)
+
+    map_table_nodes_id['SQL'] = 1
+    for table in table_pure:
         desc = '表'
         if table in node_commnets:
             desc = '表 | ' + ' '.join(node_commnets[table])
@@ -307,18 +334,23 @@ def select_sql_to_conf(sql, colums_nodes, table_nodes, map_colmn_column, map_col
         if table not in map_table_table.keys():
             dag_str += '\n' + '1 >> %d' % node_id
         node_id += 1
-    for col in colums_nodes:
+    for col in map_column_table.keys():
         desc = '字段'
         if col in node_commnets:
             desc = '字段 | ' + ' '.join(node_commnets[col])
         node_dict[node_id] = {'name': col, 'desc': desc, 'color': 'orange'}
         map_column_nodes_id[col] = node_id
         node_id += 1
+    for v in COLUMN_PURE:
+        if v in map_colmn_column.values():
+            desc = '字段别名'
+            node_dict[node_id] = {'name': v, 'desc': desc, 'color': 'pink'}
+            map_column_nodes_id[v] = node_id
+            node_id += 1
 
     for k, v in map_colmn_column.items():
         if k in map_column_nodes_id and v in map_column_nodes_id:
             dag_str += '\n' + '%d >> %d' % (map_column_nodes_id[k], map_column_nodes_id[v])
-            node_dict[map_column_nodes_id[v]]['desc'] = '字段别名'
     for k, v in map_column_table.items():
         if k in map_column_nodes_id and v in map_table_nodes_id:
             dag_str += '\n' + '%d >> %d' % (map_table_nodes_id[v], map_column_nodes_id[k])
@@ -347,86 +379,70 @@ def reset_dag_conf():
 
 # 递归调用解析sql
 MAP_TABLE_TABLE = {}
+COLUMN_AS = {}
+MAP_COLUMN_TABLE = {}
+TABLE_PURE = []
+merge_meta_map = {}
 
 
 def recursion_gen(node_name, meta_sql_words, meta_map):
-    global MAP_TABLE_TABLE
+    global MAP_TABLE_TABLE, COLUMN_AS, MAP_COLUMN_TABLE, TABLE_PURE, merge_meta_map
+
     merge_sql_words, merge_meta_map = merge_meta_words_to_operator(meta_sql_words, meta_map)
-    COLUMN_PURE, COLUMN_AS, TABLE_PURE, MAP_COLUMN_TABLE = parse_meta_select_v2(node_name, merge_sql_words)
+    TMP_COLUMN_AS, TMP_MAP_COLUMN_TABLE, TMP_TABLE_PURE = parse_meta_select_v2(node_name, merge_sql_words)
+
+    # 层级关系
+    for v1 in TMP_TABLE_PURE:
+        if v1 not in MAP_TABLE_TABLE.keys():
+            MAP_TABLE_TABLE[v1] = node_name
+
+    # 改名，字段重名 or 表重名
+    TMP_COLUMN_AS_copy = {}
+    TMP_MAP_COLUMN_TABLE_copy = {}
+    TMP_TABLE_PURE_copy = []
+    for v in TMP_TABLE_PURE:
+        TMP_TABLE_PURE_copy.append(v)
+
+    for k_tmp, v_tmp in TMP_COLUMN_AS.items():
+        TMP_COLUMN_AS_copy[k_tmp] = v_tmp
+    for k_tmp, v_tmp in TMP_MAP_COLUMN_TABLE.items():
+        TMP_MAP_COLUMN_TABLE_copy[k_tmp] = v_tmp
+
+    # 重命名+更新
+    # ----------------------------------------------TABLE_PURE
+    # for v1 in TMP_TABLE_PURE_copy:
+    #     if v1 in TABLE_PURE and '#meta' not in v1:
+    #         TMP_TABLE_PURE.pop(TMP_TABLE_PURE.index(v1))
+    #         TMP_TABLE_PURE.append(node_name + '.' + v1)
+    for v1 in TMP_TABLE_PURE:
+        if v1 not in TABLE_PURE:
+            TABLE_PURE.append(v1)
+    # ----------------------------------------------COLUMN_AS
+    for k1, v1 in TMP_COLUMN_AS_copy.items():
+        if k1 in COLUMN_AS.keys():
+            TMP_COLUMN_AS.pop(k1)
+            if v1 != COLUMN_AS[k1]:
+                TMP_COLUMN_AS[node_name + '.' + k1] = v1
+    for k1, v1 in TMP_COLUMN_AS.items():
+        COLUMN_AS[k1] = v1
+    # ----------------------------------------------MAP_COLUMN_TABLE
+    for k1, v1 in TMP_MAP_COLUMN_TABLE_copy.items():
+        if k1 in MAP_COLUMN_TABLE.keys():
+            TMP_MAP_COLUMN_TABLE.pop(k1)
+            if v1 != MAP_COLUMN_TABLE[k1]:
+                TMP_MAP_COLUMN_TABLE[node_name + '.' + k1] = v1
+    for k1, v1 in TMP_MAP_COLUMN_TABLE.items():
+        MAP_COLUMN_TABLE[k1] = v1
 
     #   递归子查询的表+字段+关系
-    for v in TABLE_PURE:
-        if '#meta' in v and node_name != v:
-            TMP_COLUMN_PURE, TMP_COLUMN_AS, TMP_TABLE_PURE, TMP_MAP_COLUMN_TABLE, merge_meta_map = recursion_gen(v,
-                                                                                                                 merge_meta_map[
-                                                                                                                     v],
-                                                                                                                 merge_meta_map)
-            if v == '#meta7':
-                pass
-
-            # 改名，字段重名 or 表重名
-            COLUMN_AS_copy = {}
-            MAP_COLUMN_TABLE_copy = {}
-            COLUMN_PURE_copy = []
-            TABLE_PURE_copy = []
-
-            for k_tmp, v_tmp in COLUMN_AS.items():
-                COLUMN_AS_copy[k_tmp] = v_tmp
-            for k_tmp, v_tmp in MAP_COLUMN_TABLE.items():
-                MAP_COLUMN_TABLE_copy[k_tmp] = v_tmp
-            for v_tmp in COLUMN_PURE:
-                COLUMN_PURE_copy.append(v_tmp)
-            for v_tmp in TABLE_PURE:
-                TABLE_PURE_copy.append(v_tmp)
-
-            # 重命名
-            for k1, v1 in COLUMN_AS_copy.items():
-                if k1 in TMP_COLUMN_AS.keys():
-                    COLUMN_AS.pop(k1)
-                    COLUMN_AS[v + '.' + k1] = v1
-
-            for k1, v1 in MAP_COLUMN_TABLE_copy.items():
-                if k1 not in TMP_MAP_COLUMN_TABLE.keys():
-                    MAP_COLUMN_TABLE[k1] = v1
-                else:
-                    MAP_COLUMN_TABLE.pop(k1)
-                    MAP_COLUMN_TABLE[v + '.' + k1] = v1
-
-            for v1 in COLUMN_PURE_copy:
-                if v1 in TMP_COLUMN_PURE:
-                    COLUMN_PURE.pop(COLUMN_PURE.index(v1))
-                    COLUMN_PURE.append(v + '.' + v1)
-
-            for v1 in TABLE_PURE_copy:
-                if v1 in TMP_TABLE_PURE and v1 != node_name:
-                    TMP_TABLE_PURE.pop(TMP_TABLE_PURE.index(v1))
-                    TABLE_PURE.pop(TABLE_PURE.index(v1))
-                    TMP_TABLE_PURE.append(v + '.' + v1)
-                    TABLE_PURE.append(v + '.' + v1)
-
-            for v1 in TMP_TABLE_PURE:
-                if v1 not in MAP_TABLE_TABLE:
-                    MAP_TABLE_TABLE[v1] = v
-
-            # 合并
-            for k1, v1 in TMP_COLUMN_AS.items():
-                COLUMN_AS[k1] = v1
-            for k1, v1 in TMP_MAP_COLUMN_TABLE.items():
-                MAP_COLUMN_TABLE[k1] = v1
-
-            for v1 in TMP_COLUMN_PURE:
-                COLUMN_PURE.append(v1)
-            for v1 in TMP_TABLE_PURE:
-                TABLE_PURE.append(v1)
-
-            pass
-
-    return COLUMN_PURE, COLUMN_AS, TABLE_PURE, MAP_COLUMN_TABLE, merge_meta_map
+    for v in TMP_TABLE_PURE:
+        if '#meta' in v:
+            recursion_gen(v, merge_meta_map[v], merge_meta_map)
 
 
 @func_name()
 def auto_gen():
-    global MAP_TABLE_TABLE
+    global MAP_TABLE_TABLE, COLUMN_AS, MAP_COLUMN_TABLE, TABLE_PURE, merge_meta_map
     reload(sqls_to_do)
     reset_dag_conf()
     for v in sqls_to_do.str_sql:
@@ -435,11 +451,9 @@ def auto_gen():
         meta_map = {}
         sql_to_meta_words(v)
 
-        COLUMN_PURE, COLUMN_AS, TABLE_PURE, MAP_COLUMN_TABLE, merge_meta_map = recursion_gen('SQL',
-                                                                                             meta_sql_words,
-                                                                                             meta_map)
+        recursion_gen('SQL', meta_sql_words, meta_map)
 
-        select_sql_to_conf(v, COLUMN_PURE, TABLE_PURE, COLUMN_AS, MAP_COLUMN_TABLE, MAP_TABLE_TABLE,
+        select_sql_to_conf(v, COLUMN_AS, MAP_COLUMN_TABLE, TABLE_PURE, MAP_TABLE_TABLE,
                            merge_meta_map)
 
 
