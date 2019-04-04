@@ -127,7 +127,7 @@
   },
   "id_11": {
     id: "id_11",
-    label: "upper",
+    label: "jff_name_list_id",
     description: "字段",
     style: "fill: orange"
   },
@@ -139,156 +139,150 @@
   },
   "id_13": {
     id: "id_13",
-    label: "jff_name_list_id",
+    label: "work_sts",
     description: "字段",
     style: "fill: orange"
   },
   "id_14": {
     id: "id_14",
-    label: "work_sts",
+    label: "sp_short_name",
     description: "字段",
     style: "fill: orange"
   },
   "id_15": {
     id: "id_15",
-    label: "sp_short_name",
+    label: "leave_dt",
     description: "字段",
     style: "fill: orange"
   },
   "id_16": {
     id: "id_16",
-    label: "leave_dt",
+    label: " ",
     description: "字段",
     style: "fill: orange"
   },
   "id_17": {
     id: "id_17",
-    label: " ",
+    label: "ent_short_name",
     description: "字段",
     style: "fill: orange"
   },
   "id_18": {
     id: "id_18",
-    label: "ent_short_name",
+    label: "sp_id",
     description: "字段",
     style: "fill: orange"
   },
   "id_19": {
     id: "id_19",
-    label: "sp_id",
+    label: "@id_card_num",
     description: "字段",
     style: "fill: orange"
   },
   "id_20": {
     id: "id_20",
-    label: "@id_card_num",
+    label: "trgt_sp_id",
     description: "字段",
     style: "fill: orange"
   },
   "id_21": {
     id: "id_21",
-    label: "trgt_sp_id",
+    label: "real_b_sp_id",
     description: "字段",
     style: "fill: orange"
   },
   "id_22": {
     id: "id_22",
-    label: "real_b_sp_id",
+    label: "@rank",
     description: "字段",
     style: "fill: orange"
   },
   "id_23": {
     id: "id_23",
-    label: "@rank",
+    label: "intv_dt",
     description: "字段",
     style: "fill: orange"
   },
   "id_24": {
     id: "id_24",
-    label: "intv_dt",
+    label: "srce_sp_id",
     description: "字段",
     style: "fill: orange"
   },
   "id_25": {
     id: "id_25",
-    label: "srce_sp_id",
-    description: "字段",
+    label: "#meta2",
+    description: "字段 | upper ( a.id_card_num ) ",
     style: "fill: orange"
   },
   "id_26": {
     id: "id_26",
-    label: "#meta2",
-    description: "字段 | ( a.id_card_num ) ",
-    style: "fill: orange"
-  },
-  "id_27": {
-    id: "id_27",
     label: "#meta3",
     description: "字段 | if ( work_card_no = '' NULL work_card_no ) ",
     style: "fill: orange"
   },
-  "id_28": {
-    id: "id_28",
+  "id_27": {
+    id: "id_27",
     label: "entry_dt",
     description: "字段",
     style: "fill: orange"
   },
-  "id_29": {
-    id: "id_29",
+  "id_28": {
+    id: "id_28",
     label: "#meta4",
     description: "字段 | if ( @intv_dt = temp.intv_dt AND @id_card_num = temp.id_card_num @rank : = @rank + 1 @rank : = 1 ) ",
     style: "fill: orange"
   },
+  "id_29": {
+    id: "id_29",
+    label: "#meta5",
+    description: "字段 | upper ( id_card_num ) ",
+    style: "fill: orange"
+  },
   "id_30": {
     id: "id_30",
-    label: "#meta5",
-    description: "字段 | ( id_card_num ) ",
+    label: "name_list_id",
+    description: "字段",
     style: "fill: orange"
   },
   "id_31": {
     id: "id_31",
-    label: "name_list_id",
+    label: "rcrt_order_id",
     description: "字段",
     style: "fill: orange"
   },
   "id_32": {
     id: "id_32",
-    label: "rcrt_order_id",
+    label: "intv_sts",
     description: "字段",
     style: "fill: orange"
   },
   "id_33": {
     id: "id_33",
-    label: "intv_sts",
+    label: "league_name",
     description: "字段",
     style: "fill: orange"
   },
   "id_34": {
     id: "id_34",
-    label: "league_name",
+    label: "ent_id",
     description: "字段",
     style: "fill: orange"
   },
   "id_35": {
     id: "id_35",
-    label: "ent_id",
-    description: "字段",
-    style: "fill: orange"
+    label: "work_card_no",
+    description: "字段别名",
+    style: "fill: pink"
   },
   "id_36": {
     id: "id_36",
-    label: "work_card_no",
+    label: "rank",
     description: "字段别名",
     style: "fill: pink"
   },
   "id_37": {
     id: "id_37",
-    label: "rank",
-    description: "字段别名",
-    style: "fill: pink"
-  },
-  "id_38": {
-    id: "id_38",
     label: "id_card_num",
     description: "字段别名",
     style: "fill: pink"
@@ -310,34 +304,33 @@
 
   // Set up the edges
   g1.setEdge( "id_ts", "id_1" , { label: "" });
-g1.setEdge( "id_27", "id_36" , { label: "" });
+g1.setEdge( "id_26", "id_35" , { label: "" });
+g1.setEdge( "id_28", "id_36" , { label: "" });
 g1.setEdge( "id_29", "id_37" , { label: "" });
-g1.setEdge( "id_30", "id_38" , { label: "" });
 g1.setEdge( "id_10", "id_11" , { label: "" });
 g1.setEdge( "id_9", "id_12" , { label: "" });
 g1.setEdge( "id_10", "id_13" , { label: "" });
-g1.setEdge( "id_10", "id_14" , { label: "" });
-g1.setEdge( "id_7", "id_15" , { label: "" });
-g1.setEdge( "id_10", "id_16" , { label: "" });
-g1.setEdge( "id_9", "id_17" , { label: "" });
-g1.setEdge( "id_5", "id_18" , { label: "" });
-g1.setEdge( "id_4", "id_19" , { label: "" });
-g1.setEdge( "id_9", "id_20" , { label: "" });
-g1.setEdge( "id_10", "id_21" , { label: "" });
-g1.setEdge( "id_6", "id_22" , { label: "" });
-g1.setEdge( "id_9", "id_23" , { label: "" });
+g1.setEdge( "id_7", "id_14" , { label: "" });
+g1.setEdge( "id_10", "id_15" , { label: "" });
+g1.setEdge( "id_9", "id_16" , { label: "" });
+g1.setEdge( "id_5", "id_17" , { label: "" });
+g1.setEdge( "id_4", "id_18" , { label: "" });
+g1.setEdge( "id_9", "id_19" , { label: "" });
+g1.setEdge( "id_10", "id_20" , { label: "" });
+g1.setEdge( "id_6", "id_21" , { label: "" });
+g1.setEdge( "id_9", "id_22" , { label: "" });
+g1.setEdge( "id_10", "id_23" , { label: "" });
 g1.setEdge( "id_10", "id_24" , { label: "" });
-g1.setEdge( "id_10", "id_25" , { label: "" });
-g1.setEdge( "id_1", "id_26" , { label: "" });
-g1.setEdge( "id_2", "id_27" , { label: "" });
-g1.setEdge( "id_10", "id_28" , { label: "" });
-g1.setEdge( "id_2", "id_29" , { label: "" });
+g1.setEdge( "id_1", "id_25" , { label: "" });
+g1.setEdge( "id_2", "id_26" , { label: "" });
+g1.setEdge( "id_10", "id_27" , { label: "" });
+g1.setEdge( "id_2", "id_28" , { label: "" });
+g1.setEdge( "id_10", "id_29" , { label: "" });
 g1.setEdge( "id_10", "id_30" , { label: "" });
 g1.setEdge( "id_10", "id_31" , { label: "" });
 g1.setEdge( "id_10", "id_32" , { label: "" });
-g1.setEdge( "id_10", "id_33" , { label: "" });
-g1.setEdge( "id_4", "id_34" , { label: "" });
-g1.setEdge( "id_10", "id_35" , { label: "" });
+g1.setEdge( "id_4", "id_33" , { label: "" });
+g1.setEdge( "id_10", "id_34" , { label: "" });
 g1.setEdge( "id_8", "id_10" , { label: "" });
 g1.setEdge( "id_1", "id_3" , { label: "" });
 g1.setEdge( "id_1", "id_7" , { label: "" });
@@ -477,102 +470,96 @@ g1.setEdge( "id_1", "id_4" , { label: "" });
   },
   "id_9": {
     id: "id_9",
-    label: "upper",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_10": {
-    id: "id_10",
     label: "#meta5",
     description: "字段 | count ( 1 ) ",
     style: "fill: orange"
   },
+  "id_10": {
+    id: "id_10",
+    label: "work_card_no",
+    description: "字段",
+    style: "fill: orange"
+  },
   "id_11": {
     id: "id_11",
-    label: "work_card_no",
+    label: "@rank",
     description: "字段",
     style: "fill: orange"
   },
   "id_12": {
     id: "id_12",
-    label: "@rank",
-    description: "字段",
+    label: "#meta3",
+    description: "字段 | upper ( id_card_num ) ",
     style: "fill: orange"
   },
   "id_13": {
     id: "id_13",
-    label: "#meta3",
-    description: "字段 | ( id_card_num ) ",
+    label: "@entry_dt",
+    description: "字段",
     style: "fill: orange"
   },
   "id_14": {
     id: "id_14",
-    label: "@entry_dt",
+    label: "entry_dt",
     description: "字段",
     style: "fill: orange"
   },
   "id_15": {
     id: "id_15",
-    label: "entry_dt",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_16": {
-    id: "id_16",
     label: "#meta4",
     description: "字段 | max ( leave_dt ) ",
     style: "fill: orange"
   },
+  "id_16": {
+    id: "id_16",
+    label: "ent_id",
+    description: "字段",
+    style: "fill: orange"
+  },
   "id_17": {
     id: "id_17",
-    label: "ent_id",
+    label: "@id_card_num",
     description: "字段",
     style: "fill: orange"
   },
   "id_18": {
     id: "id_18",
-    label: "@id_card_num",
-    description: "字段",
-    style: "fill: orange"
+    label: "rank",
+    description: "字段别名",
+    style: "fill: pink"
   },
   "id_19": {
     id: "id_19",
-    label: "rank",
+    label: "work_card_num",
     description: "字段别名",
     style: "fill: pink"
   },
   "id_20": {
     id: "id_20",
-    label: "work_card_num",
+    label: "leave_date",
     description: "字段别名",
     style: "fill: pink"
   },
   "id_21": {
     id: "id_21",
-    label: "leave_date",
+    label: "id_card_num",
     description: "字段别名",
     style: "fill: pink"
   },
   "id_22": {
     id: "id_22",
-    label: "id_card_num",
+    label: "entry_date",
     description: "字段别名",
     style: "fill: pink"
   },
   "id_23": {
     id: "id_23",
-    label: "entry_date",
+    label: "leave_dt",
     description: "字段别名",
     style: "fill: pink"
   },
   "id_24": {
     id: "id_24",
-    label: "leave_dt",
-    description: "字段别名",
-    style: "fill: pink"
-  },
-  "id_25": {
-    id: "id_25",
     label: "num",
     description: "字段别名",
     style: "fill: pink"
@@ -594,26 +581,25 @@ g1.setEdge( "id_1", "id_4" , { label: "" });
 
   // Set up the edges
   g2.setEdge( "id_ts", "id_1" , { label: "" });
-g2.setEdge( "id_6", "id_19" , { label: "" });
-g2.setEdge( "id_7", "id_20" , { label: "" });
-g2.setEdge( "id_24", "id_21" , { label: "" });
-g2.setEdge( "id_13", "id_22" , { label: "" });
+g2.setEdge( "id_6", "id_18" , { label: "" });
+g2.setEdge( "id_7", "id_19" , { label: "" });
+g2.setEdge( "id_23", "id_20" , { label: "" });
+g2.setEdge( "id_12", "id_21" , { label: "" });
+g2.setEdge( "id_14", "id_22" , { label: "" });
 g2.setEdge( "id_15", "id_23" , { label: "" });
-g2.setEdge( "id_16", "id_24" , { label: "" });
-g2.setEdge( "id_10", "id_25" , { label: "" });
+g2.setEdge( "id_9", "id_24" , { label: "" });
 g2.setEdge( "id_2", "id_6" , { label: "" });
 g2.setEdge( "id_2", "id_7" , { label: "" });
 g2.setEdge( "id_4", "id_8" , { label: "" });
 g2.setEdge( "id_5", "id_9" , { label: "" });
 g2.setEdge( "id_5", "id_10" , { label: "" });
-g2.setEdge( "id_5", "id_11" , { label: "" });
-g2.setEdge( "id_4", "id_12" , { label: "" });
-g2.setEdge( "id_5", "id_13" , { label: "" });
-g2.setEdge( "id_4", "id_14" , { label: "" });
+g2.setEdge( "id_4", "id_11" , { label: "" });
+g2.setEdge( "id_5", "id_12" , { label: "" });
+g2.setEdge( "id_4", "id_13" , { label: "" });
+g2.setEdge( "id_5", "id_14" , { label: "" });
 g2.setEdge( "id_5", "id_15" , { label: "" });
 g2.setEdge( "id_5", "id_16" , { label: "" });
-g2.setEdge( "id_5", "id_17" , { label: "" });
-g2.setEdge( "id_4", "id_18" , { label: "" });
+g2.setEdge( "id_4", "id_17" , { label: "" });
 g2.setEdge( "id_2", "id_4" , { label: "" });
 g2.setEdge( "id_1", "id_2" , { label: "" });
 g2.setEdge( "id_2", "id_3" , { label: "" });
@@ -748,102 +734,96 @@ g2.setEdge( "id_3", "id_5" , { label: "" });
   },
   "id_9": {
     id: "id_9",
-    label: "upper",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_10": {
-    id: "id_10",
     label: "#meta5",
     description: "字段 | count ( 1 ) ",
     style: "fill: orange"
   },
+  "id_10": {
+    id: "id_10",
+    label: "work_card_no",
+    description: "字段",
+    style: "fill: orange"
+  },
   "id_11": {
     id: "id_11",
-    label: "work_card_no",
+    label: "@rank",
     description: "字段",
     style: "fill: orange"
   },
   "id_12": {
     id: "id_12",
-    label: "@rank",
-    description: "字段",
+    label: "#meta3",
+    description: "字段 | upper ( id_card_num ) ",
     style: "fill: orange"
   },
   "id_13": {
     id: "id_13",
-    label: "#meta3",
-    description: "字段 | ( id_card_num ) ",
+    label: "@entry_dt",
+    description: "字段",
     style: "fill: orange"
   },
   "id_14": {
     id: "id_14",
-    label: "@entry_dt",
+    label: "entry_dt",
     description: "字段",
     style: "fill: orange"
   },
   "id_15": {
     id: "id_15",
-    label: "entry_dt",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_16": {
-    id: "id_16",
     label: "#meta4",
     description: "字段 | max ( leave_dt ) ",
     style: "fill: orange"
   },
+  "id_16": {
+    id: "id_16",
+    label: "ent_id",
+    description: "字段",
+    style: "fill: orange"
+  },
   "id_17": {
     id: "id_17",
-    label: "ent_id",
+    label: "@id_card_num",
     description: "字段",
     style: "fill: orange"
   },
   "id_18": {
     id: "id_18",
-    label: "@id_card_num",
-    description: "字段",
-    style: "fill: orange"
+    label: "rank",
+    description: "字段别名",
+    style: "fill: pink"
   },
   "id_19": {
     id: "id_19",
-    label: "rank",
+    label: "work_card_num",
     description: "字段别名",
     style: "fill: pink"
   },
   "id_20": {
     id: "id_20",
-    label: "work_card_num",
+    label: "leave_date",
     description: "字段别名",
     style: "fill: pink"
   },
   "id_21": {
     id: "id_21",
-    label: "leave_date",
+    label: "id_card_num",
     description: "字段别名",
     style: "fill: pink"
   },
   "id_22": {
     id: "id_22",
-    label: "id_card_num",
+    label: "entry_date",
     description: "字段别名",
     style: "fill: pink"
   },
   "id_23": {
     id: "id_23",
-    label: "entry_date",
+    label: "leave_dt",
     description: "字段别名",
     style: "fill: pink"
   },
   "id_24": {
     id: "id_24",
-    label: "leave_dt",
-    description: "字段别名",
-    style: "fill: pink"
-  },
-  "id_25": {
-    id: "id_25",
     label: "num",
     description: "字段别名",
     style: "fill: pink"
@@ -865,26 +845,25 @@ g2.setEdge( "id_3", "id_5" , { label: "" });
 
   // Set up the edges
   g3.setEdge( "id_ts", "id_1" , { label: "" });
-g3.setEdge( "id_6", "id_19" , { label: "" });
-g3.setEdge( "id_7", "id_20" , { label: "" });
-g3.setEdge( "id_24", "id_21" , { label: "" });
-g3.setEdge( "id_13", "id_22" , { label: "" });
+g3.setEdge( "id_6", "id_18" , { label: "" });
+g3.setEdge( "id_7", "id_19" , { label: "" });
+g3.setEdge( "id_23", "id_20" , { label: "" });
+g3.setEdge( "id_12", "id_21" , { label: "" });
+g3.setEdge( "id_14", "id_22" , { label: "" });
 g3.setEdge( "id_15", "id_23" , { label: "" });
-g3.setEdge( "id_16", "id_24" , { label: "" });
-g3.setEdge( "id_10", "id_25" , { label: "" });
+g3.setEdge( "id_9", "id_24" , { label: "" });
 g3.setEdge( "id_2", "id_6" , { label: "" });
 g3.setEdge( "id_2", "id_7" , { label: "" });
 g3.setEdge( "id_4", "id_8" , { label: "" });
 g3.setEdge( "id_5", "id_9" , { label: "" });
 g3.setEdge( "id_5", "id_10" , { label: "" });
-g3.setEdge( "id_5", "id_11" , { label: "" });
-g3.setEdge( "id_4", "id_12" , { label: "" });
-g3.setEdge( "id_5", "id_13" , { label: "" });
-g3.setEdge( "id_4", "id_14" , { label: "" });
+g3.setEdge( "id_4", "id_11" , { label: "" });
+g3.setEdge( "id_5", "id_12" , { label: "" });
+g3.setEdge( "id_4", "id_13" , { label: "" });
+g3.setEdge( "id_5", "id_14" , { label: "" });
 g3.setEdge( "id_5", "id_15" , { label: "" });
 g3.setEdge( "id_5", "id_16" , { label: "" });
-g3.setEdge( "id_5", "id_17" , { label: "" });
-g3.setEdge( "id_4", "id_18" , { label: "" });
+g3.setEdge( "id_4", "id_17" , { label: "" });
 g3.setEdge( "id_2", "id_4" , { label: "" });
 g3.setEdge( "id_1", "id_2" , { label: "" });
 g3.setEdge( "id_2", "id_3" , { label: "" });
