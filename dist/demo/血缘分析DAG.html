@@ -49,7 +49,7 @@
 
 </style>
 
-<h3>ods_wait_trigger</h3>
+<h3>jff_online_service中一个案例</h3>
 <svg width=960 height=800 id="svg1"></svg>
 <script>
   var highlight_color = "#000000";
@@ -67,213 +67,99 @@
   var states = {
     "id_1": {
     id: "id_1",
-    label: "开始",
-    description: "开始",
-    style: "fill: red"
+    label: "SQL",
+    description: "<br>    INSERT INTO transit_jff.direct_store_name_list_sum(sp_id, league_id, league_name, ent_id, ent_short_name, sp_ent_id, sum_wage_min, sum_wage_max, intv_cnt)<br>SELECT a.sp_id,<br>       b.league_id,<br>       b.league_name,<br>       d.ent_id,<br>       d.ent_short_name,<br>       a.sp_ent_id,<br>       d.sum_wage_min,<br>       d.sum_wage_max,<br>       count(1) AS intv_cnt<br>FROM ods_jff.name_list a<br>LEFT JOIN ods_jff.league_store b ON a.sp_id = b.sp_id<br>LEFT JOIN ods_jff.sp_ent c ON a.sp_ent_id = c.sp_ent_id<br>LEFT JOIN ods_jff.ent d ON c.ent_id = d.ent_id<br>WHERE a.is_deleted = 0 -- and b.coop_mode = 3<br>AND b.is_deleted = 0<br>  AND d.ent_id > 0<br>  AND a.intv_dt >= date_sub(current_date(), interval 1 MONTH)<br>GROUP BY a.sp_id,<br>         b.league_id,<br>         b.league_name,<br>         d.ent_id,<br>         d.ent_short_name,<br>         a.sp_ent_id,<br>         d.sum_wage_min,<br>         d.sum_wage_max;<br>    ",
+    style: "fill: lightblue"
   },
   "id_2": {
     id: "id_2",
-    label: "结束",
-    description: "结束",
-    style: "fill: lightblue"
+    label: "ods_jff.name_list",
+    description: "表",
+    style: "fill: blue"
   },
   "id_3": {
     id: "id_3",
-    label: "概述",
-    description: "airflow中的定时任务(03:00)，用于等待触发。ods报表等离线增量任务，统一放在ods_wait_tigger中配置",
-    style: "fill: lightblue"
+    label: "ods_jff.league_store",
+    description: "表",
+    style: "fill: blue"
   },
   "id_4": {
     id: "id_4",
-    label: "wait_until_success_ods_woda",
-    description: "/home/datas/.virtualenvs/env27/bin/python /home/datas/ods_controller/ods_controller_woda/task5_wait_until_success.py",
-    style: "fill: green"
+    label: "ods_jff.sp_ent",
+    description: "表",
+    style: "fill: blue"
   },
   "id_5": {
     id: "id_5",
-    label: "wait_until_success_ods_jff",
-    description: "/home/datas/.virtualenvs/env27/bin/python /home/datas/ods_controller/ods_controller_jff/task5_wait_until_success.py",
-    style: "fill: green"
+    label: "ods_jff.ent",
+    description: "表",
+    style: "fill: blue"
   },
   "id_6": {
     id: "id_6",
-    label: "wait_until_success_ods_zxx",
-    description: "/home/datas/.virtualenvs/env27/bin/python /home/datas/ods_controller/ods_controller_zxx/task5_wait_until_success.py",
-    style: "fill: green"
+    label: "sum_wage_max",
+    description: "字段",
+    style: "fill: orange"
   },
   "id_7": {
     id: "id_7",
-    label: "interface_v2_daily_job_reguser_channel_operation",
-    description: "source /home/datas/interface_v2/cmd_day",
+    label: "league_id",
+    description: "字段",
     style: "fill: orange"
   },
   "id_8": {
     id: "id_8",
-    label: "zxx2_etl_service",
-    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/zxx2_etl_service/zxx2_etl_service.kjb",
+    label: "sum_wage_min",
+    description: "字段",
     style: "fill: orange"
   },
   "id_9": {
     id: "id_9",
-    label: "jff_etl_service",
-    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/jff_etl_service/jff_etl_service.kjb",
+    label: "ent_short_name",
+    description: "字段",
     style: "fill: orange"
   },
   "id_10": {
     id: "id_10",
-    label: "zhouxin_etl_service_cb_operation_data",
-    description: "ssh 192.168.10.29 < /datas/airflow/dags/zhouxin_jff_etl_service_cb_operation_data.cmd ",
+    label: "sp_id",
+    description: "字段",
     style: "fill: orange"
   },
   "id_11": {
     id: "id_11",
-    label: "zhouxin_woda1_user_exam_result_server_all_total",
-    description: "'ssh 192.168.10.29 < /datas/airflow/dags/zhouxin_woda1_user_exam_result_server_all_total.cmd",
+    label: "#meta2",
+    description: "字段 | count ( 1 ) ",
     style: "fill: orange"
   },
   "id_12": {
     id: "id_12",
-    label: "zhouxin_woda2_cheat_detect",
-    description: "'ssh 192.168.10.29 < /datas/airflow/dags/zhouxin_woda2_cheat_detect.cmd",
+    label: "sp_ent_id",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_ts": {
+    id: "id_ts",
+    label: "开始",
+    description: "开始",
+    style: "fill: red"
+  },
+  "id_14": {
+    id: "id_14",
+    label: "league_name",
+    description: "字段",
     style: "fill: orange"
   },
   "id_13": {
     id: "id_13",
-    label: "zhouxin_woda3_recommend",
-    description: "'ssh 192.168.10.29 < /datas/airflow/dags/zhouxin_woda3_recommend.cmd",
-    style: "fill: orange"
-  },
-  "id_14": {
-    id: "id_14",
-    label: "zhouxin_jff1_sp_credict",
-    description: "'ssh 192.168.10.29 < /datas/airflow/dags/zhouxin_jff1_sp_credict.cmd",
+    label: "ent_id",
+    description: "字段",
     style: "fill: orange"
   },
   "id_15": {
     id: "id_15",
-    label: "zxx_etl_service",
-    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/zxx_etl_service/zxx_etl_service.kjb",
-    style: "fill: orange"
-  },
-  "id_16": {
-    id: "id_16",
-    label: "zxx2_credict",
-    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/zxx_credict/zxx2_credict.kjb",
-    style: "fill: orange"
-  },
-  "id_17": {
-    id: "id_17",
-    label: "user_credict_month_day_work",
-    description: "/bin/bash /datas/airflow/dags/user_credict_month_day_work.sh ",
-    style: "fill: orange"
-  },
-  "id_18": {
-    id: "id_18",
-    label: "dim_wd.load_dim",
-    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/load_dim/load_dim_job.kjb",
-    style: "fill: orange"
-  },
-  "id_19": {
-    id: "id_19",
-    label: "wd_broker",
-    description: "/usr/local/data-integration/pan.sh -file=/datas/kettle/jobs/dw-etl/wd_broker/wd_broker.ktr",
-    style: "fill: orange"
-  },
-  "id_20": {
-    id: "id_20",
-    label: "wd_user",
-    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/wd_user/wd_user_job.kjb",
-    style: "fill: orange"
-  },
-  "id_21": {
-    id: "id_21",
-    label: "user_broker_relation",
-    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/user_broker_relation/stg_user_broker_relation.kjb",
-    style: "fill: orange"
-  },
-  "id_22": {
-    id: "id_22",
-    label: "wd_preorder",
-    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/wd_preorder/wd_preorder.kjb",
-    style: "fill: orange"
-  },
-  "id_23": {
-    id: "id_23",
-    label: "wd_interview",
-    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/wd_interview/wd_interview.kjb",
-    style: "fill: orange"
-  },
-  "id_24": {
-    id: "id_24",
-    label: "wd_hire",
-    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/wd_hire/wd_hire.kjb",
-    style: "fill: orange"
-  },
-  "id_25": {
-    id: "id_25",
-    label: "wd_invite",
-    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/wd_invite/wd_invite.kjb",
-    style: "fill: orange"
-  },
-  "id_26": {
-    id: "id_26",
-    label: "wd_subsidy",
-    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/wd_subsidy/wd_subsidy.kjb",
-    style: "fill: orange"
-  },
-  "id_27": {
-    id: "id_27",
-    label: "wd_interaction",
-    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/wd_interaction/wd_interaction.kjb",
-    style: "fill: orange"
-  },
-  "id_28": {
-    id: "id_28",
-    label: "wd_labor_order",
-    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/wd_labor_order/wd_labor_order.kjb",
-    style: "fill: orange"
-  },
-  "id_29": {
-    id: "id_29",
-    label: "wd_recruit_demand",
-    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/wd_recruit_demand/wd_recruit_demand.kjb",
-    style: "fill: orange"
-  },
-  "id_30": {
-    id: "id_30",
-    label: "wd_ent_interview_cnt",
-    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/wd_ent_interview_cnt/wd_ent_interview_cnt.kjb",
-    style: "fill: orange"
-  },
-  "id_31": {
-    id: "id_31",
-    label: "dim_broker_cliff",
-    description: "/usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/dim_broker/broker/broker.kjb",
-    style: "fill: orange"
-  },
-  "id_32": {
-    id: "id_32",
-    label: "zhouxin_name_list_analysis",
-    description: "ssh 192.168.10.29 < /datas/airflow/dags/zhouxin_name_list_analysis.cmd",
-    style: "fill: orange"
-  },
-  "id_33": {
-    id: "id_33",
-    label: "zhouxin_performance_data",
-    description: "ssh 192.168.10.29 < /datas/airflow/dags/zhouxin_performance_data.cmd",
-    style: "fill: orange"
-  },
-  "id_34": {
-    id: "id_34",
-    label: "zhouxin_operator_data",
-    description: "ssh 192.168.10.29 < /datas/airflow/dags/zhouxin_operator_data.cmd",
-    style: "fill: orange"
-  },
-  "id_35": {
-    id: "id_35",
-    label: "financial",
-    description: "source /home/datas/financial/cmd_day",
-    style: "fill: orange"
+    label: "intv_cnt",
+    description: "字段别名",
+    style: "fill: pink"
   }
   };
 
@@ -285,62 +171,21 @@
   });
 
   // Set up the edges
-  g1.setEdge( "id_1", "id_3" , { label: "" });
-g1.setEdge( "id_3", "id_4" , { label: "" });
-g1.setEdge( "id_3", "id_5" , { label: "" });
-g1.setEdge( "id_3", "id_6" , { label: "" });
+  g1.setEdge( "id_ts", "id_1" , { label: "" });
+g1.setEdge( "id_11", "id_15" , { label: "" });
+g1.setEdge( "id_5", "id_6" , { label: "" });
+g1.setEdge( "id_3", "id_7" , { label: "" });
 g1.setEdge( "id_5", "id_8" , { label: "" });
-g1.setEdge( "id_6", "id_8" , { label: "" });
 g1.setEdge( "id_5", "id_9" , { label: "" });
-g1.setEdge( "id_5", "id_14" , { label: "" });
-g1.setEdge( "id_14", "id_2" , { label: "" });
-g1.setEdge( "id_8", "id_10" , { label: "" });
-g1.setEdge( "id_9", "id_10" , { label: "" });
-g1.setEdge( "id_4", "id_7" , { label: "" });
-g1.setEdge( "id_10", "id_7" , { label: "" });
-g1.setEdge( "id_7", "id_2" , { label: "" });
-g1.setEdge( "id_4", "id_11" , { label: "" });
-g1.setEdge( "id_11", "id_12" , { label: "" });
-g1.setEdge( "id_12", "id_13" , { label: "" });
-g1.setEdge( "id_13", "id_2" , { label: "" });
-g1.setEdge( "id_6", "id_15" , { label: "" });
-g1.setEdge( "id_15", "id_17" , { label: "" });
-g1.setEdge( "id_17", "id_16" , { label: "" });
-g1.setEdge( "id_16", "id_2" , { label: "" });
-g1.setEdge( "id_4", "id_31" , { label: "" });
-g1.setEdge( "id_31", "id_2" , { label: "" });
-g1.setEdge( "id_4", "id_32" , { label: "" });
-g1.setEdge( "id_5", "id_32" , { label: "" });
-g1.setEdge( "id_6", "id_32" , { label: "" });
-g1.setEdge( "id_15", "id_32" , { label: "" });
-g1.setEdge( "id_32", "id_2" , { label: "" });
-g1.setEdge( "id_5", "id_33" , { label: "" });
-g1.setEdge( "id_6", "id_33" , { label: "" });
-g1.setEdge( "id_8", "id_33" , { label: "" });
-g1.setEdge( "id_9", "id_33" , { label: "" });
-g1.setEdge( "id_33", "id_2" , { label: "" });
-g1.setEdge( "id_5", "id_34" , { label: "" });
-g1.setEdge( "id_6", "id_34" , { label: "" });
-g1.setEdge( "id_8", "id_34" , { label: "" });
-g1.setEdge( "id_9", "id_34" , { label: "" });
-g1.setEdge( "id_34", "id_2" , { label: "" });
-g1.setEdge( "id_4", "id_18" , { label: "" });
-g1.setEdge( "id_18", "id_19" , { label: "" });
-g1.setEdge( "id_19", "id_20" , { label: "" });
-g1.setEdge( "id_20", "id_21" , { label: "" });
-g1.setEdge( "id_21", "id_29" , { label: "" });
-g1.setEdge( "id_29", "id_22" , { label: "" });
-g1.setEdge( "id_22", "id_23" , { label: "" });
-g1.setEdge( "id_23", "id_24" , { label: "" });
-g1.setEdge( "id_24", "id_25" , { label: "" });
-g1.setEdge( "id_25", "id_26" , { label: "" });
-g1.setEdge( "id_26", "id_27" , { label: "" });
-g1.setEdge( "id_27", "id_28" , { label: "" });
-g1.setEdge( "id_28", "id_30" , { label: "" });
-g1.setEdge( "id_30", "id_2" , { label: "" });
-g1.setEdge( "id_4", "id_35" , { label: "" });
-g1.setEdge( "id_6", "id_35" , { label: "" });
-g1.setEdge( "id_35", "id_2" , { label: "" });
+g1.setEdge( "id_2", "id_10" , { label: "" });
+g1.setEdge( "id_1", "id_11" , { label: "" });
+g1.setEdge( "id_2", "id_12" , { label: "" });
+g1.setEdge( "id_5", "id_13" , { label: "" });
+g1.setEdge( "id_3", "id_14" , { label: "" });
+g1.setEdge( "id_1", "id_5" , { label: "" });
+g1.setEdge( "id_1", "id_3" , { label: "" });
+g1.setEdge( "id_1", "id_2" , { label: "" });
+g1.setEdge( "id_1", "id_4" , { label: "" });
 
 
   // Create the renderer
@@ -405,7 +250,7 @@ g1.setEdge( "id_35", "id_2" , { label: "" });
   svg.attr('height', g1.graph().height * initialScale + 40);
 </script>
 
-<h3>jff_online_service出错重跑方法</h3>
+<h3>周鑫案例1</h3>
 <svg width=960 height=800 id="svg2"></svg>
 <script>
   var highlight_color = "#000000";
@@ -421,89 +266,149 @@ g1.setEdge( "id_35", "id_2" , { label: "" });
 
   // States and transitions from RFC 793
   var states = {
-    "id_2": {
-    id: "id_2",
-    label: "概述",
-    description: "如果数据同步出现错误：ods同步错误 or etl出错，需要修改DW/stg.cdc_time中current_sync_date 字段，具体table名称见下CDC_TABLE_NAME",
+    "id_1": {
+    id: "id_1",
+    label: "SQL",
+    description: "<br>        SELECT user_sk, count(distinct (intv_dt_sk, ent_sk)) as intv_cnt, <br>round(count(distinct (case when intv_sts=2 then (intv_dt_sk, ent_sk) else null end))/(count(distinct (intv_dt_sk, ent_sk))+0),2) as intv_sccs_rt, <br>round(count(distinct (case when fdbk_sts=2 then (intv_dt_sk, ent_sk) else null end))/(count(distinct (intv_dt_sk, ent_sk))+0),2) as hr_rt,<br>case when count(fdbk_sts=2 or null)=0 then count(distinct (intv_dt_sk, ent_sk)) else<br>round((count(distinct (intv_dt_sk, ent_sk))+0.0)/count(distinct (case when fdbk_sts=2 then (intv_dt_sk, ent_sk) else null end))) end as hr_per_intv_cnt<br>, max(event_tm) as max_intv_dt, min(event_tm) as min_intv_dt,<br>date_part('day', CURRENT_TIMESTAMP-min(event_tm))+1 as intv_dys,<br>round(count(distinct (intv_dt_sk, ent_sk))/(date_part('year', CURRENT_TIMESTAMP-min(event_tm))+1)::numeric,2) as intv_frq,<br>round(count(distinct (case when is_inner<2 then (intv_dt_sk, ent_sk) else null end))/count(distinct (intv_dt_sk, ent_sk))::numeric,2) as zxx_intv_rt,<br>min(case when is_inner<2 then event_tm else CURRENT_DATE end) as first_intv_zxx_tm<br>FROM dm.fact_interview<br>where is_deleted=0 and user_sk!=''<br>group by user_sk",
     style: "fill: lightblue"
+  },
+  "id_2": {
+    id: "id_2",
+    label: "dm.fact_interview",
+    description: "表",
+    style: "fill: blue"
   },
   "id_3": {
     id: "id_3",
-    label: "jff_online_service",
-    description: "airflow的任务名",
+    label: "#meta44",
+    description: "字段 | CASE WHEN count ( fdbk_sts = 2 OR NULL ) = 0 THEN count ( ( intv_dt_sk ent_sk ) ) ELSE round ( ( count ( ( intv_dt_sk ent_sk ) ) + 0.0 ) / count ( ( CASE WHEN fdbk_sts = 2 THEN ( intv_dt_sk ent_sk ) ELSE NULL END ) ) ) END ",
     style: "fill: orange"
   },
   "id_4": {
     id: "id_4",
-    label: "jff_enterprise_service",
-    description: "etl工程目录 /usr/local/data-integration/kitchen.sh -file=/datas/kettle/jobs/dw-etl/<br>                                               jff_enterprise_service/jff_enterprise_service.kjb",
+    label: "#meta43",
+    description: "字段 | min ( CASE WHEN is_inner<2 THEN event_tm ELSE CURRENT_DATE END ) ",
     style: "fill: orange"
   },
   "id_5": {
     id: "id_5",
-    label: "direct_store_name_list_sum",
-    description: "dw.stg.cdc_time.cdc_table_name : direct_store_name_list_sum",
+    label: "#meta42",
+    description: "字段 | round ( count ( ( CASE WHEN is_inner<2 THEN ( intv_dt_sk ent_sk ) ELSE NULL END ) ) / count ( ( intv_dt_sk ent_sk ) ) :: numeric 2 ) ",
     style: "fill: orange"
   },
   "id_6": {
     id: "id_6",
-    label: "market_prc_max",
-    description: "dw.stg.cdc_time.cdc_table_name : market_prc_max",
+    label: "user_sk",
+    description: "字段",
     style: "fill: orange"
   },
   "id_7": {
     id: "id_7",
-    label: "area_prc_max",
-    description: "dw.stg.cdc_time.cdc_table_name : area_prc_max",
+    label: "#meta27",
+    description: "字段 | max ( event_tm ) ",
     style: "fill: orange"
   },
   "id_8": {
     id: "id_8",
-    label: "ent_name_list_sum",
-    description: "dw.stg.cdc_time.cdc_table_name : ent_name_list_sum",
+    label: "#meta16",
+    description: "字段 | round ( count ( ( CASE WHEN fdbk_sts = 2 THEN ( intv_dt_sk ent_sk ) ELSE NULL END ) ) / ( count ( ( intv_dt_sk ent_sk ) ) + 0 ) 2 ) ",
     style: "fill: orange"
   },
   "id_9": {
     id: "id_9",
-    label: "ent_name_list_trend",
-    description: "dw.stg.cdc_time.cdc_table_name : ent_name_list_trend",
+    label: "#meta2",
+    description: "字段 | count ( ( intv_dt_sk ent_sk ) ) ",
     style: "fill: orange"
   },
   "id_10": {
     id: "id_10",
-    label: "ent_name_list_unique_sum",
-    description: "dw.stg.cdc_time.cdc_table_name : ent_name_list_unique_sum",
+    label: "#meta30",
+    description: "字段 | date_part ( 'day' CURRENT_TIMESTAMP - min ( event_tm ) ) + 1 ",
     style: "fill: orange"
   },
   "id_11": {
     id: "id_11",
-    label: "ent_name_list_unique_trend",
-    description: "dw.stg.cdc_time.cdc_table_name : ent_name_list_unique_trend",
+    label: "#meta36",
+    description: "字段 | round ( count ( ( intv_dt_sk ent_sk ) ) / ( date_part ( 'year' CURRENT_TIMESTAMP - min ( event_tm ) ) + 1 ) :: numeric 2 ) ",
     style: "fill: orange"
   },
   "id_12": {
     id: "id_12",
-    label: "zhouxinxin_retation",
-    description: "dw.stg.cdc_time.cdc_table_name : zhouxinxin_retation",
+    label: "#meta9",
+    description: "字段 | round ( count ( ( CASE WHEN intv_sts = 2 THEN ( intv_dt_sk ent_sk ) ELSE NULL END ) ) / ( count ( ( intv_dt_sk ent_sk ) ) + 0 ) 2 ) ",
     style: "fill: orange"
   },
   "id_13": {
     id: "id_13",
-    label: "stg_zhouxinxin_name_list",
-    description: "dw.stg.cdc_time.cdc_table_name : stg_zhouxinxin_name_list",
+    label: "#meta28",
+    description: "字段 | min ( event_tm ) ",
     style: "fill: orange"
+  },
+  "id_14": {
+    id: "id_14",
+    label: "hr_per_intv_cnt",
+    description: "字段别名",
+    style: "fill: pink"
+  },
+  "id_15": {
+    id: "id_15",
+    label: "first_intv_zxx_tm",
+    description: "字段别名",
+    style: "fill: pink"
+  },
+  "id_16": {
+    id: "id_16",
+    label: "zxx_intv_rt",
+    description: "字段别名",
+    style: "fill: pink"
+  },
+  "id_17": {
+    id: "id_17",
+    label: "max_intv_dt",
+    description: "字段别名",
+    style: "fill: pink"
+  },
+  "id_18": {
+    id: "id_18",
+    label: "hr_rt",
+    description: "字段别名",
+    style: "fill: pink"
+  },
+  "id_19": {
+    id: "id_19",
+    label: "intv_cnt",
+    description: "字段别名",
+    style: "fill: pink"
+  },
+  "id_20": {
+    id: "id_20",
+    label: "intv_dys",
+    description: "字段别名",
+    style: "fill: pink"
+  },
+  "id_21": {
+    id: "id_21",
+    label: "intv_frq",
+    description: "字段别名",
+    style: "fill: pink"
+  },
+  "id_22": {
+    id: "id_22",
+    label: "intv_sccs_rt",
+    description: "字段别名",
+    style: "fill: pink"
+  },
+  "id_23": {
+    id: "id_23",
+    label: "min_intv_dt",
+    description: "字段别名",
+    style: "fill: pink"
   },
   "id_ts": {
     id: "id_ts",
     label: "开始",
     description: "开始",
     style: "fill: red"
-  },
-  "id_te": {
-    id: "id_te",
-    label: "结束",
-    description: "结束",
-    style: "fill: lightblue"
   }
   };
 
@@ -515,27 +420,29 @@ g1.setEdge( "id_35", "id_2" , { label: "" });
   });
 
   // Set up the edges
-  g2.setEdge( "id_ts", "id_2" , { label: "" });
+  g2.setEdge( "id_ts", "id_1" , { label: "" });
+g2.setEdge( "id_3", "id_14" , { label: "" });
+g2.setEdge( "id_4", "id_15" , { label: "" });
+g2.setEdge( "id_5", "id_16" , { label: "" });
+g2.setEdge( "id_7", "id_17" , { label: "" });
+g2.setEdge( "id_8", "id_18" , { label: "" });
+g2.setEdge( "id_9", "id_19" , { label: "" });
+g2.setEdge( "id_10", "id_20" , { label: "" });
+g2.setEdge( "id_11", "id_21" , { label: "" });
+g2.setEdge( "id_12", "id_22" , { label: "" });
+g2.setEdge( "id_13", "id_23" , { label: "" });
 g2.setEdge( "id_2", "id_3" , { label: "" });
-g2.setEdge( "id_3", "id_4" , { label: "" });
-g2.setEdge( "id_4", "id_5" , { label: "" });
-g2.setEdge( "id_4", "id_6" , { label: "" });
-g2.setEdge( "id_4", "id_7" , { label: "" });
-g2.setEdge( "id_4", "id_8" , { label: "" });
-g2.setEdge( "id_4", "id_9" , { label: "" });
-g2.setEdge( "id_4", "id_10" , { label: "" });
-g2.setEdge( "id_4", "id_11" , { label: "" });
-g2.setEdge( "id_4", "id_12" , { label: "" });
-g2.setEdge( "id_4", "id_13" , { label: "" });
-g2.setEdge( "id_5", "id_te" , { label: "" });
-g2.setEdge( "id_6", "id_te" , { label: "" });
-g2.setEdge( "id_7", "id_te" , { label: "" });
-g2.setEdge( "id_8", "id_te" , { label: "" });
-g2.setEdge( "id_9", "id_te" , { label: "" });
-g2.setEdge( "id_10", "id_te" , { label: "" });
-g2.setEdge( "id_11", "id_te" , { label: "" });
-g2.setEdge( "id_12", "id_te" , { label: "" });
-g2.setEdge( "id_13", "id_te" , { label: "" });
+g2.setEdge( "id_2", "id_4" , { label: "" });
+g2.setEdge( "id_2", "id_5" , { label: "" });
+g2.setEdge( "id_2", "id_6" , { label: "" });
+g2.setEdge( "id_2", "id_7" , { label: "" });
+g2.setEdge( "id_2", "id_8" , { label: "" });
+g2.setEdge( "id_2", "id_9" , { label: "" });
+g2.setEdge( "id_2", "id_10" , { label: "" });
+g2.setEdge( "id_2", "id_11" , { label: "" });
+g2.setEdge( "id_2", "id_12" , { label: "" });
+g2.setEdge( "id_2", "id_13" , { label: "" });
+g2.setEdge( "id_1", "id_2" , { label: "" });
 
 
   // Create the renderer
@@ -598,1392 +505,6 @@ g2.setEdge( "id_13", "id_te" , { label: "" });
   svg.call(zoom.transform, d3.zoomIdentity.translate((svg.attr("width") - g2.graph().width * initialScale) / 2, 20).scale(initialScale));
 
   svg.attr('height', g2.graph().height * initialScale + 40);
-</script>
-
-<h3>zhouxinxin_name_list 跨库管理名单状态</h3>
-<svg width=960 height=800 id="svg3"></svg>
-<script>
-  var highlight_color = "#000000";
-  var upstream_color = "#0000FF";
-  var downstream_color = "#0000FF"
-  var fill_default_color = "rgb(240, 237, 228)"
-  var fill_upstream_color = "orange"
-  var fill_downstream_color = "orange"
-  var initialStrokeWidth = '3px';
-  
-  // Create a new directed graph
-  var g3 = new dagreD3.graphlib.Graph().setGraph({});
-
-  // States and transitions from RFC 793
-  var states = {
-    "id_1": {
-    id: "id_1",
-    label: "概述",
-    description: "Git目录： 1）http://git.woda.ink/dw/dw-etl/ jff_enterprise_service/zhouxinxin_retention<br>                                    2）http://git.woda.ink/dw/dw-etl/ jff_enterprise_service/zhouxinxin_name_list_syn<br>                        airflow定时任务:jff_online_service/zhouxinxin_retention<br>                        pg同步任务：jff_online_service/zhouxinxin_name_list_syn",
-    style: "fill: lightblue"
-  },
-  "id_2": {
-    id: "id_2",
-    label: "DW.stg.stg_zhouxinxin_name_list",
-    description: "PG数据库",
-    style: "fill: green"
-  },
-  "id_3": {
-    id: "id_3",
-    label: "transit_jff.zhouxinxin_name_list",
-    description: "MySQL数据库",
-    style: "fill: green"
-  },
-  "id_4": {
-    id: "id_4",
-    label: "cdc_time",
-    description: "PG的dw.cdc_time用与增量同步对应的table_name : 1.zhouxinxin_retention<br>                        2.stg_zhouxinxin_name_list ",
-    style: "fill: orange"
-  },
-  "id_ts": {
-    id: "id_ts",
-    label: "开始",
-    description: "开始",
-    style: "fill: red"
-  },
-  "id_te": {
-    id: "id_te",
-    label: "结束",
-    description: "结束",
-    style: "fill: lightblue"
-  }
-  };
-
-  // Add states to the graph, set labels, and style
-  Object.keys(states).forEach(function (state) {
-    var value = states[state];
-    value.rx = value.ry = 5;
-    g3.setNode(state, value);
-  });
-
-  // Set up the edges
-  g3.setEdge( "id_ts", "id_1" , { label: "" });
-g3.setEdge( "id_1", "id_2" , { label: "" });
-g3.setEdge( "id_1", "id_3" , { label: "" });
-g3.setEdge( "id_2", "id_4" , { label: "" });
-g3.setEdge( "id_3", "id_4" , { label: "" });
-g3.setEdge( "id_4", "id_te" , { label: "" });
-
-
-  // Create the renderer
-  var render = new dagreD3.render();
-
-  // Set up an SVG group so that we can translate the final graph.
-  var svg = d3.select("#svg3"),
-    inner3 = svg.append("g");
-
-  // Set up zoom support
-  var zoom = d3.zoom()
-    .on("zoom", function () {
-      inner3.attr("transform", d3.event.transform);
-    });
-  svg.call(zoom);
-
-  // Simple function to style the tooltip for the given node.
-  var styleTooltip = function (name, description) {
-    return "<p class='name'>" + name + "</p><p class='description' style='color:orange; width:100%; height:100%; display:inline-block' >" + description +"<br>" + "</p>";
-  };
-
-  // Run the renderer. This is what draws the final graph.
-  render(inner3, g3);
-
-  inner3.selectAll("g.node")
-    .attr("title", function (v) { return styleTooltip(g3.node(v).label, g3.node(v).description) })
-    .each(function (v) { $(this).tipsy({ gravity: "w", opacity: 1, html: true }); });
-
-  inner3.selectAll("g.node").style("stroke-width", initialStrokeWidth);
-
-  // function highlight nodes
-  inner3.selectAll("g.node").on("mouseover", function (d) {
-    inner3.selectAll("rect").style("stroke", highlight_color);
-    g3.predecessors(d).forEach(function (nodeid) {
-      my_node = inner3.select('#' + nodeid + ' rect');
-      my_node.style("stroke", fill_upstream_color);
-    })
-
-    g3.successors(d).forEach(function (nodeid) {
-      my_node = inner3.select('#' + nodeid + ' rect');
-      my_node.style("stroke", fill_downstream_color);
-    })
-  });
-
-  inner3.selectAll("g.node").on("mouseout", function (d) {
-    inner3.selectAll("rect").style("stroke", null);
-    g3.predecessors(d).forEach(function (nodeid) {
-      my_node = inner3.select('#' + nodeid + ' rect');
-      my_node.style("stroke", null);
-    })
-
-    g3.successors(d).forEach(function (nodeid) {
-      my_node = inner3.select('#' + nodeid + ' rect');
-      my_node.style("stroke", null);
-    })
-  });
-  
-  // Center the graph
-  var initialScale = 0.75;
-  svg.call(zoom.transform, d3.zoomIdentity.translate((svg.attr("width") - g3.graph().width * initialScale) / 2, 20).scale(initialScale));
-
-  svg.attr('height', g3.graph().height * initialScale + 40);
-</script>
-
-<h3>sql_2019-04-02 20:25:44</h3>
-<svg width=960 height=800 id="svg4"></svg>
-<script>
-  var highlight_color = "#000000";
-  var upstream_color = "#0000FF";
-  var downstream_color = "#0000FF"
-  var fill_default_color = "rgb(240, 237, 228)"
-  var fill_upstream_color = "orange"
-  var fill_downstream_color = "orange"
-  var initialStrokeWidth = '3px';
-  
-  // Create a new directed graph
-  var g4 = new dagreD3.graphlib.Graph().setGraph({});
-
-  // States and transitions from RFC 793
-  var states = {
-    "id_1": {
-    id: "id_1",
-    label: "SQL",
-    description: "<br>    INSERT INTO transit_jff.direct_store_name_list_sum(sp_id, league_id, league_name, ent_id, ent_short_name, sp_ent_id, sum_wage_min, sum_wage_max, intv_cnt)<br>SELECT a.sp_id,<br>       b.league_id,<br>       b.league_name,<br>       d.ent_id,<br>       d.ent_short_name,<br>       a.sp_ent_id,<br>       d.sum_wage_min,<br>       d.sum_wage_max,<br>       count(1) AS intv_cnt<br>FROM ods_jff.name_list a<br>LEFT JOIN ods_jff.league_store b ON a.sp_id = b.sp_id<br>LEFT JOIN ods_jff.sp_ent c ON a.sp_ent_id = c.sp_ent_id<br>LEFT JOIN ods_jff.ent d ON c.ent_id = d.ent_id<br>WHERE a.is_deleted = 0 -- and b.coop_mode = 3<br>AND b.is_deleted = 0<br>  AND d.ent_id > 0<br>  AND a.intv_dt >= date_sub(current_date(), interval 1 MONTH)<br>GROUP BY a.sp_id,<br>         b.league_id,<br>         b.league_name,<br>         d.ent_id,<br>         d.ent_short_name,<br>         a.sp_ent_id,<br>         d.sum_wage_min,<br>         d.sum_wage_max;<br>    ",
-    style: "fill: lightblue"
-  },
-  "id_2": {
-    id: "id_2",
-    label: "ods_jff.name_list",
-    description: "表",
-    style: "fill: blue"
-  },
-  "id_3": {
-    id: "id_3",
-    label: "ods_jff.league_store",
-    description: "表",
-    style: "fill: blue"
-  },
-  "id_4": {
-    id: "id_4",
-    label: "ods_jff.sp_ent",
-    description: "表",
-    style: "fill: blue"
-  },
-  "id_5": {
-    id: "id_5",
-    label: "ods_jff.ent",
-    description: "表",
-    style: "fill: blue"
-  },
-  "id_6": {
-    id: "id_6",
-    label: "intv_cnt",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_7": {
-    id: "id_7",
-    label: "league_id",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_8": {
-    id: "id_8",
-    label: "sum_wage_min",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_9": {
-    id: "id_9",
-    label: "sum_wage_max",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_10": {
-    id: "id_10",
-    label: "ent_short_name",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_11": {
-    id: "id_11",
-    label: "sp_id",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_12": {
-    id: "id_12",
-    label: "#meta2",
-    description: "字段 | count ( 1 )",
-    style: "fill: orange"
-  },
-  "id_ts": {
-    id: "id_ts",
-    label: "开始",
-    description: "开始",
-    style: "fill: red"
-  },
-  "id_14": {
-    id: "id_14",
-    label: "ent_id",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_13": {
-    id: "id_13",
-    label: "sp_ent_id",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_15": {
-    id: "id_15",
-    label: "league_name",
-    description: "字段",
-    style: "fill: orange"
-  }
-  };
-
-  // Add states to the graph, set labels, and style
-  Object.keys(states).forEach(function (state) {
-    var value = states[state];
-    value.rx = value.ry = 5;
-    g4.setNode(state, value);
-  });
-
-  // Set up the edges
-  g4.setEdge( "id_ts", "id_1" , { label: "" });
-g4.setEdge( "id_1", "id_6" , { label: "" });
-g4.setEdge( "id_3", "id_7" , { label: "" });
-g4.setEdge( "id_5", "id_8" , { label: "" });
-g4.setEdge( "id_5", "id_9" , { label: "" });
-g4.setEdge( "id_5", "id_10" , { label: "" });
-g4.setEdge( "id_2", "id_11" , { label: "" });
-g4.setEdge( "id_1", "id_12" , { label: "" });
-g4.setEdge( "id_2", "id_13" , { label: "" });
-g4.setEdge( "id_5", "id_14" , { label: "" });
-g4.setEdge( "id_3", "id_15" , { label: "" });
-g4.setEdge( "id_1", "id_5" , { label: "" });
-g4.setEdge( "id_1", "id_3" , { label: "" });
-g4.setEdge( "id_1", "id_2" , { label: "" });
-g4.setEdge( "id_1", "id_4" , { label: "" });
-
-
-  // Create the renderer
-  var render = new dagreD3.render();
-
-  // Set up an SVG group so that we can translate the final graph.
-  var svg = d3.select("#svg4"),
-    inner4 = svg.append("g");
-
-  // Set up zoom support
-  var zoom = d3.zoom()
-    .on("zoom", function () {
-      inner4.attr("transform", d3.event.transform);
-    });
-  svg.call(zoom);
-
-  // Simple function to style the tooltip for the given node.
-  var styleTooltip = function (name, description) {
-    return "<p class='name'>" + name + "</p><p class='description' style='color:orange; width:100%; height:100%; display:inline-block' >" + description +"<br>" + "</p>";
-  };
-
-  // Run the renderer. This is what draws the final graph.
-  render(inner4, g4);
-
-  inner4.selectAll("g.node")
-    .attr("title", function (v) { return styleTooltip(g4.node(v).label, g4.node(v).description) })
-    .each(function (v) { $(this).tipsy({ gravity: "w", opacity: 1, html: true }); });
-
-  inner4.selectAll("g.node").style("stroke-width", initialStrokeWidth);
-
-  // function highlight nodes
-  inner4.selectAll("g.node").on("mouseover", function (d) {
-    inner4.selectAll("rect").style("stroke", highlight_color);
-    g4.predecessors(d).forEach(function (nodeid) {
-      my_node = inner4.select('#' + nodeid + ' rect');
-      my_node.style("stroke", fill_upstream_color);
-    })
-
-    g4.successors(d).forEach(function (nodeid) {
-      my_node = inner4.select('#' + nodeid + ' rect');
-      my_node.style("stroke", fill_downstream_color);
-    })
-  });
-
-  inner4.selectAll("g.node").on("mouseout", function (d) {
-    inner4.selectAll("rect").style("stroke", null);
-    g4.predecessors(d).forEach(function (nodeid) {
-      my_node = inner4.select('#' + nodeid + ' rect');
-      my_node.style("stroke", null);
-    })
-
-    g4.successors(d).forEach(function (nodeid) {
-      my_node = inner4.select('#' + nodeid + ' rect');
-      my_node.style("stroke", null);
-    })
-  });
-  
-  // Center the graph
-  var initialScale = 0.75;
-  svg.call(zoom.transform, d3.zoomIdentity.translate((svg.attr("width") - g4.graph().width * initialScale) / 2, 20).scale(initialScale));
-
-  svg.attr('height', g4.graph().height * initialScale + 40);
-</script>
-
-<h3>sql_2019-04-02 20:25:45</h3>
-<svg width=960 height=800 id="svg5"></svg>
-<script>
-  var highlight_color = "#000000";
-  var upstream_color = "#0000FF";
-  var downstream_color = "#0000FF"
-  var fill_default_color = "rgb(240, 237, 228)"
-  var fill_upstream_color = "orange"
-  var fill_downstream_color = "orange"
-  var initialStrokeWidth = '3px';
-  
-  // Create a new directed graph
-  var g5 = new dagreD3.graphlib.Graph().setGraph({});
-
-  // States and transitions from RFC 793
-  var states = {
-    "id_1": {
-    id: "id_1",
-    label: "SQL",
-    description: "insert into oper_tmp.ent_sp_coop_rlat_detail(intv_dt, ent_id, ent_short_name, sp_id, sp_short_name, rcrt_typ, intv_sts, intv_cnt)<br>select intv_dt, ent_id, ent_short_name, sp_id, sp_short_name, rcrt_typ, intv_sts, count(1) as intv_cnt<br>from (<br>	select ent_id, ent_short_name, sp_id, sp_short_name, mbr_id_card_num, intv_dt, rcrt_typ, intv_sts,<br>	if(@mbr_id_card_num=temp.mbr_id_card_num and @sp_id=temp.sp_id and @intv_dt=temp.intv_dt, @rank := @rank+1, @rank := 1) as rank,<br>	@mbr_id_card_num := temp.mbr_id_card_num, @sp_id := temp.sp_id, @intv_dt := temp.intv_dt<br>	from (<br>		select c.ent_id, c.ent_short_name, e.sp_id, e.sp_short_name,<br>		upper(a.mbr_id_card_num) as mbr_id_card_num, intv_dt, a.rcrt_typ, intv_sts, a.created_tm<br>		from ods_jff.name_list a<br>		left join ods_jff.sp_ent b on a.sp_ent_id = b.sp_ent_id<br>		left join ods_jff.ent c on b.ent_id = c.ent_id<br>        left join ods_jff.sp_real_coop d on a.trgt_sp_id = d.b_sp_id<br>		left join ods_jff.sp e on d.real_b_sp_id = e.sp_id<br>		where (a.sp_id=1006 or a.sp_id=9172) and e.sp_id is not null and c.ent_id is not null<br>		and a.is_deleted = 0 and a.intv_dt >= @min_intv_dt<br>		union<br>		select h.ent_id, h.ent_short_name, e.std_labor_sp_id as sp_id, e.labor_sp_short_name as sp_short_name,<br>		upper(e.mbr_id_card_num) as mbr_id_card_num, e.intv_dt, 2 as rcrt_typ, e.intv_sts, e.created_tm<br>		from ods_jff.name_list_std e<br>		left join ods_jff.league_store f on e.std_store_sp_id = f.sp_id<br>		left join ods_jff.sp_ent g on e.sp_ent_id = g.sp_ent_id<br>		left join ods_jff.ent h on g.ent_id = h.ent_id<br>		where e.intv_dt > f.coop_start_dt and e.is_deleted = 0 and e.std_store_sp_id != 1006 and e.intv_dt >= @min_intv_dt<br>        and h.ent_id is not null and e.std_labor_sp_id is not null<br>		order by mbr_id_card_num, sp_id, intv_dt, created_tm desc<br>	) temp,<br>	(select @mbr_id_card_num := null, @sp_id := null, @intv_dt := null, @rank := 0) r<br>) a<br>where a.rank =1<br>group by intv_dt, ent_id, ent_short_name, sp_id, sp_short_name, rcrt_typ, intv_sts;",
-    style: "fill: lightblue"
-  },
-  "id_2": {
-    id: "id_2",
-    label: "ods_jff.name_list",
-    description: "表",
-    style: "fill: blue"
-  },
-  "id_3": {
-    id: "id_3",
-    label: "ods_jff.league_store",
-    description: "表",
-    style: "fill: blue"
-  },
-  "id_4": {
-    id: "id_4",
-    label: "ods_jff.sp_ent",
-    description: "表",
-    style: "fill: blue"
-  },
-  "id_5": {
-    id: "id_5",
-    label: "ods_jff.ent",
-    description: "表",
-    style: "fill: blue"
-  },
-  "id_6": {
-    id: "id_6",
-    label: "#meta9",
-    description: "表 | ( SELECT ent_id ent_short_name sp_id sp_short_name mbr_id_card_num intv_dt rcrt_typ intv_sts if #meta3 AS rank @mbr_id_card_num := temp.mbr_id_card_num @sp_id := temp.sp_id @intv_dt := temp.intv_dt FROM #meta7 TEMP #meta8 r )",
-    style: "fill: blue"
-  },
-  "id_7": {
-    id: "id_7",
-    label: "#meta7",
-    description: "表 | ( SELECT c.ent_id c.ent_short_name e.sp_id e.sp_short_name upper #meta4 AS mbr_id_card_num intv_dt a.rcrt_typ intv_sts a.created_tm FROM ods_jff.name_list a JOIN ods_jff.sp_ent b ON a.sp_ent_id = b.sp_ent_id JOIN ods_jff.ent c ON b.ent_id = c.ent_id JOIN ods_jff.sp_real_coop d ON a.trgt_sp_id = d.b_sp_id JOIN ods_jff.sp e ON d.real_b_sp_id = e.sp_id WHERE #meta5 AND e.sp_id IS NOT NULL AND c.ent_id IS NOT NULL AND a.is_deleted = 0 AND a.intv_dt >= @min_intv_dt UNION SELECT h.ent_id h.ent_short_name e.std_labor_sp_id AS sp_id e.labor_sp_short_name AS sp_short_name upper #meta6 AS mbr_id_card_num e.intv_dt 2 AS rcrt_typ e.intv_sts e.created_tm FROM ods_jff.name_list_std e JOIN ods_jff.league_store f ON e.std_store_sp_id = f.sp_id JOIN ods_jff.sp_ent g ON e.sp_ent_id = g.sp_ent_id JOIN ods_jff.ent h ON g.ent_id = h.ent_id WHERE e.intv_dt > f.coop_start_dt AND e.is_deleted = 0 AND e.std_store_sp_id != 1006 AND e.intv_dt >= @min_intv_dt AND h.ent_id IS NOT NULL AND e.std_labor_sp_id IS NOT NULL ORDER BY mbr_id_card_num sp_id intv_dt created_tm DESC )",
-    style: "fill: blue"
-  },
-  "id_8": {
-    id: "id_8",
-    label: "#meta8",
-    description: "表 | ( SELECT @mbr_id_card_num := NULL @sp_id := NULL @intv_dt := NULL @rank := 0 )",
-    style: "fill: blue"
-  },
-  "id_9": {
-    id: "id_9",
-    label: "b",
-    description: "表",
-    style: "fill: blue"
-  },
-  "id_10": {
-    id: "id_10",
-    label: "c",
-    description: "表",
-    style: "fill: blue"
-  },
-  "id_11": {
-    id: "id_11",
-    label: "ods_jff.sp_real_coop",
-    description: "表",
-    style: "fill: blue"
-  },
-  "id_12": {
-    id: "id_12",
-    label: "ods_jff.sp",
-    description: "表",
-    style: "fill: blue"
-  },
-  "id_13": {
-    id: "id_13",
-    label: "ods_jff.name_list_std",
-    description: "表",
-    style: "fill: blue"
-  },
-  "id_14": {
-    id: "id_14",
-    label: "upper",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_15": {
-    id: "id_15",
-    label: "intv_cnt",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_16": {
-    id: "id_16",
-    label: "sum_wage_min",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_17": {
-    id: "id_17",
-    label: "sp_short_name",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_18": {
-    id: "id_18",
-    label: "rank",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_19": {
-    id: "id_19",
-    label: "#meta7.intv_dt",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_20": {
-    id: "id_20",
-    label: "#meta9.ent_short_name",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_21": {
-    id: "id_21",
-    label: "( SELECT @mbr_id_card_num := NULL @sp_id := NULL @intv_dt := NULL @rank := 0 )",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_22": {
-    id: "id_22",
-    label: "std_labor_sp_id",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_23": {
-    id: "id_23",
-    label: "sum_wage_max",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_24": {
-    id: "id_24",
-    label: "SQL.ent_short_name",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_25": {
-    id: "id_25",
-    label: "SQL.ent_id",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_26": {
-    id: "id_26",
-    label: "ent_short_name",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_27": {
-    id: "id_27",
-    label: "@mbr_id_card_num := temp.mbr_id_card_num",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_28": {
-    id: "id_28",
-    label: "sp_id",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_29": {
-    id: "id_29",
-    label: "@intv_dt := temp.intv_dt",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_30": {
-    id: "id_30",
-    label: "2",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_31": {
-    id: "id_31",
-    label: "sp_ent_id",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_32": {
-    id: "id_32",
-    label: "#meta7.rcrt_typ",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_33": {
-    id: "id_33",
-    label: "#meta7.sp_short_name",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_34": {
-    id: "id_34",
-    label: "#meta7.mbr_id_card_num",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_35": {
-    id: "id_35",
-    label: "@sp_id := temp.sp_id",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_36": {
-    id: "id_36",
-    label: "SQL.#meta2",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_37": {
-    id: "id_37",
-    label: "#meta9.sp_id",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_38": {
-    id: "id_38",
-    label: "intv_dt",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_39": {
-    id: "id_39",
-    label: "#meta7.intv_sts",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_40": {
-    id: "id_40",
-    label: "#meta9.ent_id",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_41": {
-    id: "id_41",
-    label: "#meta2",
-    description: "字段 | count ( 1 )",
-    style: "fill: orange"
-  },
-  "id_42": {
-    id: "id_42",
-    label: "#meta3",
-    description: "字段 | if ( @mbr_id_card_num=temp.mbr_id_card_num AND @sp_id=temp.sp_id AND @intv_dt=temp.intv_dt @rank := @rank+1 @rank := 1 )",
-    style: "fill: orange"
-  },
-  "id_43": {
-    id: "id_43",
-    label: "#meta6",
-    description: "字段 | ( e.mbr_id_card_num )",
-    style: "fill: orange"
-  },
-  "id_44": {
-    id: "id_44",
-    label: "#meta4",
-    description: "字段 | ( a.mbr_id_card_num )",
-    style: "fill: orange"
-  },
-  "id_ts": {
-    id: "id_ts",
-    label: "开始",
-    description: "开始",
-    style: "fill: red"
-  },
-  "id_46": {
-    id: "id_46",
-    label: "#meta7.sp_id",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_47": {
-    id: "id_47",
-    label: "SQL.sp_id",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_48": {
-    id: "id_48",
-    label: "league_id",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_49": {
-    id: "id_49",
-    label: "SQL.intv_cnt",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_50": {
-    id: "id_50",
-    label: "intv_sts",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_51": {
-    id: "id_51",
-    label: "league_name",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_52": {
-    id: "id_52",
-    label: "ent_id",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_53": {
-    id: "id_53",
-    label: "labor_sp_short_name",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_54": {
-    id: "id_54",
-    label: "created_tm",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_55": {
-    id: "id_55",
-    label: "mbr_id_card_num",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_45": {
-    id: "id_45",
-    label: "rcrt_typ",
-    description: "字段",
-    style: "fill: orange"
-  }
-  };
-
-  // Add states to the graph, set labels, and style
-  Object.keys(states).forEach(function (state) {
-    var value = states[state];
-    value.rx = value.ry = 5;
-    g5.setNode(state, value);
-  });
-
-  // Set up the edges
-  g5.setEdge( "id_ts", "id_1" , { label: "" });
-g5.setEdge( "id_7", "id_14" , { label: "" });
-g5.setEdge( "id_1", "id_15" , { label: "" });
-g5.setEdge( "id_5", "id_16" , { label: "" });
-g5.setEdge( "id_6", "id_17" , { label: "" });
-g5.setEdge( "id_6", "id_18" , { label: "" });
-g5.setEdge( "id_13", "id_19" , { label: "" });
-g5.setEdge( "id_6", "id_20" , { label: "" });
-g5.setEdge( "id_8", "id_21" , { label: "" });
-g5.setEdge( "id_13", "id_22" , { label: "" });
-g5.setEdge( "id_5", "id_23" , { label: "" });
-g5.setEdge( "id_6", "id_24" , { label: "" });
-g5.setEdge( "id_6", "id_25" , { label: "" });
-g5.setEdge( "id_5", "id_26" , { label: "" });
-g5.setEdge( "id_6", "id_27" , { label: "" });
-g5.setEdge( "id_2", "id_28" , { label: "" });
-g5.setEdge( "id_6", "id_29" , { label: "" });
-g5.setEdge( "id_7", "id_30" , { label: "" });
-g5.setEdge( "id_2", "id_31" , { label: "" });
-g5.setEdge( "id_2", "id_32" , { label: "" });
-g5.setEdge( "id_13", "id_33" , { label: "" });
-g5.setEdge( "id_7", "id_34" , { label: "" });
-g5.setEdge( "id_6", "id_35" , { label: "" });
-g5.setEdge( "id_6", "id_36" , { label: "" });
-g5.setEdge( "id_6", "id_37" , { label: "" });
-g5.setEdge( "id_6", "id_38" , { label: "" });
-g5.setEdge( "id_13", "id_39" , { label: "" });
-g5.setEdge( "id_6", "id_40" , { label: "" });
-g5.setEdge( "id_1", "id_41" , { label: "" });
-g5.setEdge( "id_6", "id_42" , { label: "" });
-g5.setEdge( "id_7", "id_43" , { label: "" });
-g5.setEdge( "id_7", "id_44" , { label: "" });
-g5.setEdge( "id_6", "id_45" , { label: "" });
-g5.setEdge( "id_13", "id_46" , { label: "" });
-g5.setEdge( "id_6", "id_47" , { label: "" });
-g5.setEdge( "id_3", "id_48" , { label: "" });
-g5.setEdge( "id_6", "id_49" , { label: "" });
-g5.setEdge( "id_6", "id_50" , { label: "" });
-g5.setEdge( "id_3", "id_51" , { label: "" });
-g5.setEdge( "id_5", "id_52" , { label: "" });
-g5.setEdge( "id_13", "id_53" , { label: "" });
-g5.setEdge( "id_13", "id_54" , { label: "" });
-g5.setEdge( "id_6", "id_55" , { label: "" });
-g5.setEdge( "id_1", "id_4" , { label: "" });
-g5.setEdge( "id_7", "id_9" , { label: "" });
-g5.setEdge( "id_7", "id_12" , { label: "" });
-g5.setEdge( "id_7", "id_10" , { label: "" });
-g5.setEdge( "id_6", "id_7" , { label: "" });
-g5.setEdge( "id_7", "id_11" , { label: "" });
-g5.setEdge( "id_1", "id_5" , { label: "" });
-g5.setEdge( "id_1", "id_3" , { label: "" });
-g5.setEdge( "id_1", "id_6" , { label: "" });
-g5.setEdge( "id_1", "id_2" , { label: "" });
-g5.setEdge( "id_6", "id_8" , { label: "" });
-g5.setEdge( "id_7", "id_13" , { label: "" });
-
-
-  // Create the renderer
-  var render = new dagreD3.render();
-
-  // Set up an SVG group so that we can translate the final graph.
-  var svg = d3.select("#svg5"),
-    inner5 = svg.append("g");
-
-  // Set up zoom support
-  var zoom = d3.zoom()
-    .on("zoom", function () {
-      inner5.attr("transform", d3.event.transform);
-    });
-  svg.call(zoom);
-
-  // Simple function to style the tooltip for the given node.
-  var styleTooltip = function (name, description) {
-    return "<p class='name'>" + name + "</p><p class='description' style='color:orange; width:100%; height:100%; display:inline-block' >" + description +"<br>" + "</p>";
-  };
-
-  // Run the renderer. This is what draws the final graph.
-  render(inner5, g5);
-
-  inner5.selectAll("g.node")
-    .attr("title", function (v) { return styleTooltip(g5.node(v).label, g5.node(v).description) })
-    .each(function (v) { $(this).tipsy({ gravity: "w", opacity: 1, html: true }); });
-
-  inner5.selectAll("g.node").style("stroke-width", initialStrokeWidth);
-
-  // function highlight nodes
-  inner5.selectAll("g.node").on("mouseover", function (d) {
-    inner5.selectAll("rect").style("stroke", highlight_color);
-    g5.predecessors(d).forEach(function (nodeid) {
-      my_node = inner5.select('#' + nodeid + ' rect');
-      my_node.style("stroke", fill_upstream_color);
-    })
-
-    g5.successors(d).forEach(function (nodeid) {
-      my_node = inner5.select('#' + nodeid + ' rect');
-      my_node.style("stroke", fill_downstream_color);
-    })
-  });
-
-  inner5.selectAll("g.node").on("mouseout", function (d) {
-    inner5.selectAll("rect").style("stroke", null);
-    g5.predecessors(d).forEach(function (nodeid) {
-      my_node = inner5.select('#' + nodeid + ' rect');
-      my_node.style("stroke", null);
-    })
-
-    g5.successors(d).forEach(function (nodeid) {
-      my_node = inner5.select('#' + nodeid + ' rect');
-      my_node.style("stroke", null);
-    })
-  });
-  
-  // Center the graph
-  var initialScale = 0.75;
-  svg.call(zoom.transform, d3.zoomIdentity.translate((svg.attr("width") - g5.graph().width * initialScale) / 2, 20).scale(initialScale));
-
-  svg.attr('height', g5.graph().height * initialScale + 40);
-</script>
-
-<h3>sql_2019-04-02 20:25:45</h3>
-<svg width=960 height=800 id="svg6"></svg>
-<script>
-  var highlight_color = "#000000";
-  var upstream_color = "#0000FF";
-  var downstream_color = "#0000FF"
-  var fill_default_color = "rgb(240, 237, 228)"
-  var fill_upstream_color = "orange"
-  var fill_downstream_color = "orange"
-  var initialStrokeWidth = '3px';
-  
-  // Create a new directed graph
-  var g6 = new dagreD3.graphlib.Graph().setGraph({});
-
-  // States and transitions from RFC 793
-  var states = {
-    "id_1": {
-    id: "id_1",
-    label: "SQL",
-    description: "truncate table transit_jff.ent_name_list_sum;<br><br>insert into transit_jff.ent_name_list_sum(ent_id, ent_short_name, id_card_num, sp_id, sp_short_name, intv_sts, intv_cnt)<br>SELECT d.ent_id, d.ent_short_name, a.mbr_id_card_num as id_card_num, b.sp_id, b.sp_short_name, a.intv_sts, count(1) as intv_cnt<br>FROM (<br>	select intv_dt, mbr_id_card_num, sp_id, sp_ent_id, intv_sts, is_deleted,<br>	if(@id_card_num=temp.mbr_id_card_num and @sp_id=temp.sp_id and @intv_dt=temp.intv_dt, @rank := @rank+1, @rank := 1) as rank,<br>	@id_card_num := temp.mbr_id_card_num as id_card_num,  @intv_dt := temp.intv_dt, @sp_id := temp.sp_id<br>	from (<br>		select a.intv_dt, a.mbr_id_card_num, a.sp_id, a.sp_ent_id, a.intv_sts, a.is_deleted<br>		from ods_jff.name_list a<br>		inner join (<br>			select distinct mbr_id_card_num, sp_id, sp_ent_id from transit_jff.temp_name_list_updated<br>		) b<br>		on a.sp_id = b.sp_id and a.sp_ent_id = b.sp_ent_id and a.mbr_id_card_num = b.mbr_id_card_num<br>		where a.is_deleted = 0 and a.mbr_id_card_num is not null and a.mbr_id_card_num != '' and a.intv_dt < current_date()<br>		and a.sp_id != 9172 and a.sp_id != 1006 and (a.trgt_sp_id = 0 or a.trgt_sp_id is null)<br>		order by a.mbr_id_card_num, a.sp_id, a.intv_dt, a.created_tm desc<br>	) temp,<br>	(select @id_card_num := null, @sp_id := null, @intv_dt := null, @rank := 0) r<br>) a<br>inner join ods_jff.sp b<br>on a.sp_id = b.sp_id<br>inner join ods_jff.sp_ent c<br>on a.sp_ent_id = c.sp_ent_id<br>inner join ods_jff.ent d<br>on c.ent_id = d.ent_id<br>where a.rank = 1<br>group by d.ent_id, d.ent_short_name, a.mbr_id_card_num, b.sp_id, b.sp_short_name, a.intv_sts;",
-    style: "fill: lightblue"
-  },
-  "id_2": {
-    id: "id_2",
-    label: "ods_jff.name_list",
-    description: "表",
-    style: "fill: blue"
-  },
-  "id_3": {
-    id: "id_3",
-    label: "ods_jff.league_store",
-    description: "表",
-    style: "fill: blue"
-  },
-  "id_4": {
-    id: "id_4",
-    label: "ods_jff.sp_ent",
-    description: "表",
-    style: "fill: blue"
-  },
-  "id_5": {
-    id: "id_5",
-    label: "ods_jff.ent",
-    description: "表",
-    style: "fill: blue"
-  },
-  "id_6": {
-    id: "id_6",
-    label: "#meta9",
-    description: "表 | ( SELECT intv_dt mbr_id_card_num sp_id sp_ent_id intv_sts is_deleted if #meta3 AS rank @id_card_num := temp.mbr_id_card_num AS id_card_num @intv_dt := temp.intv_dt @sp_id := temp.sp_id FROM #meta7 TEMP #meta8 r )",
-    style: "fill: blue"
-  },
-  "id_7": {
-    id: "id_7",
-    label: "#meta7",
-    description: "表 | ( SELECT a.intv_dt a.mbr_id_card_num a.sp_id a.sp_ent_id a.intv_sts a.is_deleted FROM ods_jff.name_list a JOIN #meta4 b ON a.sp_id = b.sp_id AND a.sp_ent_id = b.sp_ent_id AND a.mbr_id_card_num = b.mbr_id_card_num WHERE a.is_deleted = 0 AND a.mbr_id_card_num IS NOT NULL AND a.mbr_id_card_num != '' AND a.intv_dt < current_date #meta5 AND a.sp_id != 9172 AND a.sp_id != 1006 AND #meta6 ORDER BY a.mbr_id_card_num a.sp_id a.intv_dt a.created_tm DESC )",
-    style: "fill: blue"
-  },
-  "id_8": {
-    id: "id_8",
-    label: "#meta8",
-    description: "表 | ( SELECT @id_card_num := NULL @sp_id := NULL @intv_dt := NULL @rank := 0 )",
-    style: "fill: blue"
-  },
-  "id_9": {
-    id: "id_9",
-    label: "b",
-    description: "表",
-    style: "fill: blue"
-  },
-  "id_10": {
-    id: "id_10",
-    label: "c",
-    description: "表",
-    style: "fill: blue"
-  },
-  "id_11": {
-    id: "id_11",
-    label: "ods_jff.sp_real_coop",
-    description: "表",
-    style: "fill: blue"
-  },
-  "id_12": {
-    id: "id_12",
-    label: "ods_jff.sp",
-    description: "表",
-    style: "fill: blue"
-  },
-  "id_13": {
-    id: "id_13",
-    label: "ods_jff.name_list_std",
-    description: "表",
-    style: "fill: blue"
-  },
-  "id_14": {
-    id: "id_14",
-    label: "#meta4",
-    description: "表 | ( SELECT mbr_id_card_num sp_id sp_ent_id FROM transit_jff.temp_name_list_updated )",
-    style: "fill: blue"
-  },
-  "id_15": {
-    id: "id_15",
-    label: "transit_jff.temp_name_list_updated",
-    description: "表",
-    style: "fill: blue"
-  },
-  "id_16": {
-    id: "id_16",
-    label: "upper",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_17": {
-    id: "id_17",
-    label: "( SELECT @id_card_num := NULL @sp_id := NULL @intv_dt := NULL @rank := 0 )",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_18": {
-    id: "id_18",
-    label: "intv_cnt",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_19": {
-    id: "id_19",
-    label: "sum_wage_min",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_20": {
-    id: "id_20",
-    label: "SQL.sp_short_name",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_21": {
-    id: "id_21",
-    label: "sp_short_name",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_22": {
-    id: "id_22",
-    label: "rank",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_23": {
-    id: "id_23",
-    label: "#meta7.intv_dt",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_24": {
-    id: "id_24",
-    label: "#meta4.mbr_id_card_num",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_25": {
-    id: "id_25",
-    label: "#meta9.ent_short_name",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_26": {
-    id: "id_26",
-    label: "( SELECT @mbr_id_card_num := NULL @sp_id := NULL @intv_dt := NULL @rank := 0 )",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_27": {
-    id: "id_27",
-    label: "std_labor_sp_id",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_28": {
-    id: "id_28",
-    label: "sum_wage_max",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_29": {
-    id: "id_29",
-    label: "SQL.ent_short_name",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_30": {
-    id: "id_30",
-    label: "SQL.ent_id",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_31": {
-    id: "id_31",
-    label: "ent_short_name",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_32": {
-    id: "id_32",
-    label: "@mbr_id_card_num := temp.mbr_id_card_num",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_33": {
-    id: "id_33",
-    label: "sp_id",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_34": {
-    id: "id_34",
-    label: "@intv_dt := temp.intv_dt",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_35": {
-    id: "id_35",
-    label: "2",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_36": {
-    id: "id_36",
-    label: "sp_ent_id",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_37": {
-    id: "id_37",
-    label: "#meta7.rcrt_typ",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_38": {
-    id: "id_38",
-    label: "#meta7.sp_short_name",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_39": {
-    id: "id_39",
-    label: "@id_card_num := temp.mbr_id_card_num",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_40": {
-    id: "id_40",
-    label: "#meta7.mbr_id_card_num",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_41": {
-    id: "id_41",
-    label: "#meta7.is_deleted",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_42": {
-    id: "id_42",
-    label: "@sp_id := temp.sp_id",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_43": {
-    id: "id_43",
-    label: "#meta9.id_card_num",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_44": {
-    id: "id_44",
-    label: "SQL.#meta2",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_ts": {
-    id: "id_ts",
-    label: "开始",
-    description: "开始",
-    style: "fill: red"
-  },
-  "id_46": {
-    id: "id_46",
-    label: "intv_dt",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_47": {
-    id: "id_47",
-    label: "#meta7.intv_sts",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_48": {
-    id: "id_48",
-    label: "#meta9.ent_id",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_49": {
-    id: "id_49",
-    label: "#meta2",
-    description: "字段 | count ( 1 )",
-    style: "fill: orange"
-  },
-  "id_50": {
-    id: "id_50",
-    label: "#meta3",
-    description: "字段 | if ( @id_card_num=temp.mbr_id_card_num AND @sp_id=temp.sp_id AND @intv_dt=temp.intv_dt @rank := @rank+1 @rank := 1 )",
-    style: "fill: orange"
-  },
-  "id_51": {
-    id: "id_51",
-    label: "#meta6",
-    description: "字段 | ( a.trgt_sp_id = 0 OR a.trgt_sp_id IS NULL )",
-    style: "fill: orange"
-  },
-  "id_52": {
-    id: "id_52",
-    label: "#meta4",
-    description: "字段 | ( SELECT mbr_id_card_num sp_id sp_ent_id FROM transit_jff.temp_name_list_updated )",
-    style: "fill: orange"
-  },
-  "id_53": {
-    id: "id_53",
-    label: "#meta4.sp_ent_id",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_54": {
-    id: "id_54",
-    label: "rcrt_typ",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_55": {
-    id: "id_55",
-    label: "#meta7.sp_id",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_56": {
-    id: "id_56",
-    label: "SQL.sp_id",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_57": {
-    id: "id_57",
-    label: "is_deleted",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_58": {
-    id: "id_58",
-    label: "#meta9.sp_ent_id",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_59": {
-    id: "id_59",
-    label: "#meta4.sp_id",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_60": {
-    id: "id_60",
-    label: "league_id",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_61": {
-    id: "id_61",
-    label: "SQL.intv_cnt",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_62": {
-    id: "id_62",
-    label: "intv_sts",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_63": {
-    id: "id_63",
-    label: "league_name",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_64": {
-    id: "id_64",
-    label: "ent_id",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_65": {
-    id: "id_65",
-    label: "labor_sp_short_name",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_66": {
-    id: "id_66",
-    label: "created_tm",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_67": {
-    id: "id_67",
-    label: "mbr_id_card_num",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_68": {
-    id: "id_68",
-    label: "id_card_num",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_45": {
-    id: "id_45",
-    label: "#meta9.sp_id",
-    description: "字段",
-    style: "fill: orange"
-  }
-  };
-
-  // Add states to the graph, set labels, and style
-  Object.keys(states).forEach(function (state) {
-    var value = states[state];
-    value.rx = value.ry = 5;
-    g6.setNode(state, value);
-  });
-
-  // Set up the edges
-  g6.setEdge( "id_ts", "id_1" , { label: "" });
-g6.setEdge( "id_7", "id_16" , { label: "" });
-g6.setEdge( "id_8", "id_17" , { label: "" });
-g6.setEdge( "id_1", "id_18" , { label: "" });
-g6.setEdge( "id_5", "id_19" , { label: "" });
-g6.setEdge( "id_12", "id_20" , { label: "" });
-g6.setEdge( "id_6", "id_21" , { label: "" });
-g6.setEdge( "id_6", "id_22" , { label: "" });
-g6.setEdge( "id_2", "id_23" , { label: "" });
-g6.setEdge( "id_15", "id_24" , { label: "" });
-g6.setEdge( "id_6", "id_25" , { label: "" });
-g6.setEdge( "id_8", "id_26" , { label: "" });
-g6.setEdge( "id_13", "id_27" , { label: "" });
-g6.setEdge( "id_5", "id_28" , { label: "" });
-g6.setEdge( "id_6", "id_29" , { label: "" });
-g6.setEdge( "id_6", "id_30" , { label: "" });
-g6.setEdge( "id_5", "id_31" , { label: "" });
-g6.setEdge( "id_6", "id_32" , { label: "" });
-g6.setEdge( "id_2", "id_33" , { label: "" });
-g6.setEdge( "id_6", "id_34" , { label: "" });
-g6.setEdge( "id_7", "id_35" , { label: "" });
-g6.setEdge( "id_2", "id_36" , { label: "" });
-g6.setEdge( "id_2", "id_37" , { label: "" });
-g6.setEdge( "id_13", "id_38" , { label: "" });
-g6.setEdge( "id_6", "id_39" , { label: "" });
-g6.setEdge( "id_2", "id_40" , { label: "" });
-g6.setEdge( "id_2", "id_41" , { label: "" });
-g6.setEdge( "id_6", "id_42" , { label: "" });
-g6.setEdge( "id_6", "id_43" , { label: "" });
-g6.setEdge( "id_6", "id_44" , { label: "" });
-g6.setEdge( "id_6", "id_45" , { label: "" });
-g6.setEdge( "id_6", "id_46" , { label: "" });
-g6.setEdge( "id_2", "id_47" , { label: "" });
-g6.setEdge( "id_6", "id_48" , { label: "" });
-g6.setEdge( "id_1", "id_49" , { label: "" });
-g6.setEdge( "id_6", "id_50" , { label: "" });
-g6.setEdge( "id_7", "id_51" , { label: "" });
-g6.setEdge( "id_7", "id_52" , { label: "" });
-g6.setEdge( "id_15", "id_53" , { label: "" });
-g6.setEdge( "id_6", "id_54" , { label: "" });
-g6.setEdge( "id_13", "id_55" , { label: "" });
-g6.setEdge( "id_12", "id_56" , { label: "" });
-g6.setEdge( "id_6", "id_57" , { label: "" });
-g6.setEdge( "id_6", "id_58" , { label: "" });
-g6.setEdge( "id_15", "id_59" , { label: "" });
-g6.setEdge( "id_3", "id_60" , { label: "" });
-g6.setEdge( "id_6", "id_61" , { label: "" });
-g6.setEdge( "id_6", "id_62" , { label: "" });
-g6.setEdge( "id_3", "id_63" , { label: "" });
-g6.setEdge( "id_5", "id_64" , { label: "" });
-g6.setEdge( "id_13", "id_65" , { label: "" });
-g6.setEdge( "id_13", "id_66" , { label: "" });
-g6.setEdge( "id_6", "id_67" , { label: "" });
-g6.setEdge( "id_1", "id_68" , { label: "" });
-g6.setEdge( "id_1", "id_4" , { label: "" });
-g6.setEdge( "id_7", "id_9" , { label: "" });
-g6.setEdge( "id_14", "id_15" , { label: "" });
-g6.setEdge( "id_7", "id_12" , { label: "" });
-g6.setEdge( "id_7", "id_10" , { label: "" });
-g6.setEdge( "id_6", "id_7" , { label: "" });
-g6.setEdge( "id_7", "id_14" , { label: "" });
-g6.setEdge( "id_7", "id_11" , { label: "" });
-g6.setEdge( "id_1", "id_5" , { label: "" });
-g6.setEdge( "id_1", "id_3" , { label: "" });
-g6.setEdge( "id_1", "id_6" , { label: "" });
-g6.setEdge( "id_1", "id_2" , { label: "" });
-g6.setEdge( "id_6", "id_8" , { label: "" });
-g6.setEdge( "id_7", "id_13" , { label: "" });
-
-
-  // Create the renderer
-  var render = new dagreD3.render();
-
-  // Set up an SVG group so that we can translate the final graph.
-  var svg = d3.select("#svg6"),
-    inner6 = svg.append("g");
-
-  // Set up zoom support
-  var zoom = d3.zoom()
-    .on("zoom", function () {
-      inner6.attr("transform", d3.event.transform);
-    });
-  svg.call(zoom);
-
-  // Simple function to style the tooltip for the given node.
-  var styleTooltip = function (name, description) {
-    return "<p class='name'>" + name + "</p><p class='description' style='color:orange; width:100%; height:100%; display:inline-block' >" + description +"<br>" + "</p>";
-  };
-
-  // Run the renderer. This is what draws the final graph.
-  render(inner6, g6);
-
-  inner6.selectAll("g.node")
-    .attr("title", function (v) { return styleTooltip(g6.node(v).label, g6.node(v).description) })
-    .each(function (v) { $(this).tipsy({ gravity: "w", opacity: 1, html: true }); });
-
-  inner6.selectAll("g.node").style("stroke-width", initialStrokeWidth);
-
-  // function highlight nodes
-  inner6.selectAll("g.node").on("mouseover", function (d) {
-    inner6.selectAll("rect").style("stroke", highlight_color);
-    g6.predecessors(d).forEach(function (nodeid) {
-      my_node = inner6.select('#' + nodeid + ' rect');
-      my_node.style("stroke", fill_upstream_color);
-    })
-
-    g6.successors(d).forEach(function (nodeid) {
-      my_node = inner6.select('#' + nodeid + ' rect');
-      my_node.style("stroke", fill_downstream_color);
-    })
-  });
-
-  inner6.selectAll("g.node").on("mouseout", function (d) {
-    inner6.selectAll("rect").style("stroke", null);
-    g6.predecessors(d).forEach(function (nodeid) {
-      my_node = inner6.select('#' + nodeid + ' rect');
-      my_node.style("stroke", null);
-    })
-
-    g6.successors(d).forEach(function (nodeid) {
-      my_node = inner6.select('#' + nodeid + ' rect');
-      my_node.style("stroke", null);
-    })
-  });
-  
-  // Center the graph
-  var initialScale = 0.75;
-  svg.call(zoom.transform, d3.zoomIdentity.translate((svg.attr("width") - g6.graph().width * initialScale) / 2, 20).scale(initialScale));
-
-  svg.attr('height', g6.graph().height * initialScale + 40);
 </script>
 
 
