@@ -19,7 +19,7 @@ meta_sql_words = []
 meta_map = {}
 
 # 用于检索sql语句的关键字
-STATE_WORDS_PASS = ['SELECT', 'AS', 'FROM', 'JOIN', 'ON', 'WHERE']
+STATE_WORDS_PASS = ['SELECT', 'AS', 'FROM', 'JOIN', 'ON', 'WHERE', 'GROUP', 'BY']
 # 用于检索前缀表达式的关键字
 OPERATOR_BEFORE = ['IF', 'COUNT', 'if', 'count', 'in', 'IN', 'CURRENT_DATE', 'current_date', 'concat', 'sum',
                    'floor', '@', 'ROUND', 'round', 'MIN', 'min', 'MAX', 'max', 'date_part']
@@ -50,6 +50,7 @@ def sql_to_meta_words(sql):
 
     for v in OPERATOR_MIDDLE:
         sql_format = sql_format.replace(v, ' %s ' % v)
+    # sql_format = sql_format.replace(': =', ':=')
     sql_sep = sql_format.replace('\n', ' ').replace(';', ' ').replace(',', ' ').replace('(', ' ( ').replace(')',
                                                                                                             ' ) ').split(
         ' ')

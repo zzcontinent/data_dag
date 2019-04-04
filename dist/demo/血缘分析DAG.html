@@ -49,7 +49,7 @@
 
 </style>
 
-<h3>jff_online_service中一个案例</h3>
+<h3>1 生成加盟店名单jff_ent_tmp.zhouxinxin_league_name_list</h3>
 <svg width=960 height=800 id="svg1"></svg>
 <script>
   var highlight_color = "#000000";
@@ -68,98 +68,236 @@
     "id_1": {
     id: "id_1",
     label: "SQL",
-    description: "<br>    INSERT INTO transit_jff.direct_store_name_list_sum(sp_id, league_id, league_name, ent_id, ent_short_name, sp_ent_id, sum_wage_min, sum_wage_max, intv_cnt)<br>SELECT a.sp_id,<br>       b.league_id,<br>       b.league_name,<br>       d.ent_id,<br>       d.ent_short_name,<br>       a.sp_ent_id,<br>       d.sum_wage_min,<br>       d.sum_wage_max,<br>       count(1) AS intv_cnt<br>FROM ods_jff.name_list a<br>LEFT JOIN ods_jff.league_store b ON a.sp_id = b.sp_id<br>LEFT JOIN ods_jff.sp_ent c ON a.sp_ent_id = c.sp_ent_id<br>LEFT JOIN ods_jff.ent d ON c.ent_id = d.ent_id<br>WHERE a.is_deleted = 0 -- and b.coop_mode = 3<br>AND b.is_deleted = 0<br>  AND d.ent_id > 0<br>  AND a.intv_dt >= date_sub(current_date(), interval 1 MONTH)<br>GROUP BY a.sp_id,<br>         b.league_id,<br>         b.league_name,<br>         d.ent_id,<br>         d.ent_short_name,<br>         a.sp_ent_id,<br>         d.sum_wage_min,<br>         d.sum_wage_max;<br>    ",
+    description: "<br>    insert into jff_ent_tmp.zhouxinxin_league_name_list(name_list_id, jff_name_list_id, ent_id,<br>ent_short_name, sp_id, sp_short_name, labor_sp_id, labor_sp_short_name, order_id, id_card_num,<br>interview_date, interview_status, work_card_num, work_status, entry_date, leave_date)<br>SELECT a.name_list_id, a.jff_name_list_id, a.ent_id, d.ent_short_name, c.sp_id, c.league_name,<br>e.real_b_sp_id, f.sp_short_name, a.rcrt_order_id, upper(a.id_card_num), a.intv_dt,<br>a.intv_sts, a.work_card_no, a.work_sts, a.entry_dt, a.leave_dt<br>FROM (<br>	select name_list_id, jff_name_list_id, ent_id, id_card_num, if(work_card_no='', null, work_card_no) as work_card_no,<br>	intv_dt, intv_sts, work_sts, entry_dt, leave_dt, rcrt_order_id, srce_sp_id, trgt_sp_id,<br>	if(@intv_dt=temp.intv_dt and @id_card_num=temp.id_card_num, @rank := @rank+1, @rank := 1) as rank,<br>	@intv_dt := temp.intv_dt,  @id_card_num := temp.id_card_num<br>	from (<br>		select name_list_id, jff_name_list_id, ent_id, upper(id_card_num) as id_card_num, trgt_sp_id,<br>		work_card_no, intv_dt, intv_sts, work_sts, entry_dt, leave_dt, rcrt_order_id, srce_sp_id<br>		from `ods_zxx_2.0`.name_list<br>		where is_deleted = 1 <br>		order by intv_dt, id_card_num, name_list_id desc<br>		) temp,<br>		(select @intv_dt := null, @id_card_num := null, @rank := 0) r<br>) a<br>left join `ods_zxx_2.0`.sp_mapping b on a.srce_sp_id = b.virtual_sp_id<br>left join ods_jff.league_store c on b.real_sp_id = c.sp_id<br>left join `ods_zxx_2.0`.ent d on a.ent_id = d.ent_id<br>left join ods_jff.sp_real_coop e on a.trgt_sp_id = e.b_sp_id<br>left join ods_jff.sp f on e.real_b_sp_id = f.sp_id<br>where a.intv_dt >= c.coop_start_dt and a.rank = 1<br>and c.sp_id != 1006;<br>    ",
     style: "fill: lightblue"
   },
   "id_2": {
     id: "id_2",
-    label: "ods_jff.name_list",
-    description: "表",
+    label: "#meta8",
+    description: "表 | ( SELECT name_list_id jff_name_list_id ent_id id_card_num if #meta3 AS work_card_no intv_dt intv_sts work_sts entry_dt leave_dt rcrt_order_id srce_sp_id trgt_sp_id if #meta4 AS rank @intv_dt : = temp.intv_dt @id_card_num : = temp.id_card_num FROM #meta6 TEMP #meta7 r )",
     style: "fill: blue"
   },
   "id_3": {
     id: "id_3",
-    label: "ods_jff.league_store",
+    label: "`ods_zxx_2.0`.sp_mapping",
     description: "表",
     style: "fill: blue"
   },
   "id_4": {
     id: "id_4",
-    label: "ods_jff.sp_ent",
+    label: "ods_jff.league_store",
     description: "表",
     style: "fill: blue"
   },
   "id_5": {
     id: "id_5",
-    label: "ods_jff.ent",
+    label: "`ods_zxx_2.0`.ent",
     description: "表",
     style: "fill: blue"
   },
   "id_6": {
     id: "id_6",
-    label: "sum_wage_max",
-    description: "字段",
-    style: "fill: orange"
+    label: "ods_jff.sp_real_coop",
+    description: "表",
+    style: "fill: blue"
   },
   "id_7": {
     id: "id_7",
-    label: "league_id",
-    description: "字段",
-    style: "fill: orange"
+    label: "ods_jff.sp",
+    description: "表",
+    style: "fill: blue"
   },
   "id_8": {
     id: "id_8",
-    label: "sum_wage_min",
-    description: "字段",
-    style: "fill: orange"
+    label: "#meta6",
+    description: "表 | ( SELECT name_list_id jff_name_list_id ent_id upper #meta5 AS id_card_num trgt_sp_id work_card_no intv_dt intv_sts work_sts entry_dt leave_dt rcrt_order_id srce_sp_id FROM `ods_zxx_2.0`.name_list WHERE is_deleted = 1 ORDER BY intv_dt id_card_num name_list_id DESC )",
+    style: "fill: blue"
   },
   "id_9": {
     id: "id_9",
-    label: "ent_short_name",
-    description: "字段",
-    style: "fill: orange"
+    label: "#meta7",
+    description: "表 | ( SELECT @intv_dt : = NULL @id_card_num : = NULL @rank : = 0 )",
+    style: "fill: blue"
   },
   "id_10": {
     id: "id_10",
-    label: "sp_id",
-    description: "字段",
-    style: "fill: orange"
+    label: "`ods_zxx_2.0`.name_list",
+    description: "表",
+    style: "fill: blue"
   },
   "id_11": {
     id: "id_11",
-    label: "#meta2",
-    description: "字段 | count ( 1 ) ",
+    label: "upper",
+    description: "字段",
     style: "fill: orange"
   },
   "id_12": {
     id: "id_12",
-    label: "sp_ent_id",
+    label: "@intv_dt",
     description: "字段",
     style: "fill: orange"
+  },
+  "id_13": {
+    id: "id_13",
+    label: "jff_name_list_id",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_14": {
+    id: "id_14",
+    label: "work_sts",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_15": {
+    id: "id_15",
+    label: "sp_short_name",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_16": {
+    id: "id_16",
+    label: "leave_dt",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_17": {
+    id: "id_17",
+    label: " ",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_18": {
+    id: "id_18",
+    label: "ent_short_name",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_19": {
+    id: "id_19",
+    label: "sp_id",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_20": {
+    id: "id_20",
+    label: "@id_card_num",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_21": {
+    id: "id_21",
+    label: "trgt_sp_id",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_22": {
+    id: "id_22",
+    label: "real_b_sp_id",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_23": {
+    id: "id_23",
+    label: "@rank",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_24": {
+    id: "id_24",
+    label: "intv_dt",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_25": {
+    id: "id_25",
+    label: "srce_sp_id",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_26": {
+    id: "id_26",
+    label: "#meta2",
+    description: "字段 | ( a.id_card_num ) ",
+    style: "fill: orange"
+  },
+  "id_27": {
+    id: "id_27",
+    label: "#meta3",
+    description: "字段 | if ( work_card_no = '' NULL work_card_no ) ",
+    style: "fill: orange"
+  },
+  "id_28": {
+    id: "id_28",
+    label: "entry_dt",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_29": {
+    id: "id_29",
+    label: "#meta4",
+    description: "字段 | if ( @intv_dt = temp.intv_dt AND @id_card_num = temp.id_card_num @rank : = @rank + 1 @rank : = 1 ) ",
+    style: "fill: orange"
+  },
+  "id_30": {
+    id: "id_30",
+    label: "#meta5",
+    description: "字段 | ( id_card_num ) ",
+    style: "fill: orange"
+  },
+  "id_31": {
+    id: "id_31",
+    label: "name_list_id",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_32": {
+    id: "id_32",
+    label: "rcrt_order_id",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_33": {
+    id: "id_33",
+    label: "intv_sts",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_34": {
+    id: "id_34",
+    label: "league_name",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_35": {
+    id: "id_35",
+    label: "ent_id",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_36": {
+    id: "id_36",
+    label: "work_card_no",
+    description: "字段别名",
+    style: "fill: pink"
+  },
+  "id_37": {
+    id: "id_37",
+    label: "rank",
+    description: "字段别名",
+    style: "fill: pink"
+  },
+  "id_38": {
+    id: "id_38",
+    label: "id_card_num",
+    description: "字段别名",
+    style: "fill: pink"
   },
   "id_ts": {
     id: "id_ts",
     label: "开始",
     description: "开始",
     style: "fill: red"
-  },
-  "id_14": {
-    id: "id_14",
-    label: "league_name",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_13": {
-    id: "id_13",
-    label: "ent_id",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_15": {
-    id: "id_15",
-    label: "intv_cnt",
-    description: "字段别名",
-    style: "fill: pink"
   }
   };
 
@@ -172,18 +310,41 @@
 
   // Set up the edges
   g1.setEdge( "id_ts", "id_1" , { label: "" });
-g1.setEdge( "id_11", "id_15" , { label: "" });
-g1.setEdge( "id_5", "id_6" , { label: "" });
-g1.setEdge( "id_3", "id_7" , { label: "" });
-g1.setEdge( "id_5", "id_8" , { label: "" });
-g1.setEdge( "id_5", "id_9" , { label: "" });
-g1.setEdge( "id_2", "id_10" , { label: "" });
-g1.setEdge( "id_1", "id_11" , { label: "" });
-g1.setEdge( "id_2", "id_12" , { label: "" });
-g1.setEdge( "id_5", "id_13" , { label: "" });
-g1.setEdge( "id_3", "id_14" , { label: "" });
-g1.setEdge( "id_1", "id_5" , { label: "" });
+g1.setEdge( "id_27", "id_36" , { label: "" });
+g1.setEdge( "id_29", "id_37" , { label: "" });
+g1.setEdge( "id_30", "id_38" , { label: "" });
+g1.setEdge( "id_10", "id_11" , { label: "" });
+g1.setEdge( "id_9", "id_12" , { label: "" });
+g1.setEdge( "id_10", "id_13" , { label: "" });
+g1.setEdge( "id_10", "id_14" , { label: "" });
+g1.setEdge( "id_7", "id_15" , { label: "" });
+g1.setEdge( "id_10", "id_16" , { label: "" });
+g1.setEdge( "id_9", "id_17" , { label: "" });
+g1.setEdge( "id_5", "id_18" , { label: "" });
+g1.setEdge( "id_4", "id_19" , { label: "" });
+g1.setEdge( "id_9", "id_20" , { label: "" });
+g1.setEdge( "id_10", "id_21" , { label: "" });
+g1.setEdge( "id_6", "id_22" , { label: "" });
+g1.setEdge( "id_9", "id_23" , { label: "" });
+g1.setEdge( "id_10", "id_24" , { label: "" });
+g1.setEdge( "id_10", "id_25" , { label: "" });
+g1.setEdge( "id_1", "id_26" , { label: "" });
+g1.setEdge( "id_2", "id_27" , { label: "" });
+g1.setEdge( "id_10", "id_28" , { label: "" });
+g1.setEdge( "id_2", "id_29" , { label: "" });
+g1.setEdge( "id_10", "id_30" , { label: "" });
+g1.setEdge( "id_10", "id_31" , { label: "" });
+g1.setEdge( "id_10", "id_32" , { label: "" });
+g1.setEdge( "id_10", "id_33" , { label: "" });
+g1.setEdge( "id_4", "id_34" , { label: "" });
+g1.setEdge( "id_10", "id_35" , { label: "" });
+g1.setEdge( "id_8", "id_10" , { label: "" });
 g1.setEdge( "id_1", "id_3" , { label: "" });
+g1.setEdge( "id_1", "id_7" , { label: "" });
+g1.setEdge( "id_2", "id_8" , { label: "" });
+g1.setEdge( "id_2", "id_9" , { label: "" });
+g1.setEdge( "id_1", "id_5" , { label: "" });
+g1.setEdge( "id_1", "id_6" , { label: "" });
 g1.setEdge( "id_1", "id_2" , { label: "" });
 g1.setEdge( "id_1", "id_4" , { label: "" });
 
@@ -250,7 +411,7 @@ g1.setEdge( "id_1", "id_4" , { label: "" });
   svg.attr('height', g1.graph().height * initialScale + 40);
 </script>
 
-<h3>周鑫案例1</h3>
+<h3>2.1 根据周薪薪的周月薪名单补充入职状态, 月+周账单里存在的，就是在职，没有的就是离职</h3>
 <svg width=960 height=800 id="svg2"></svg>
 <script>
   var highlight_color = "#000000";
@@ -269,138 +430,150 @@ g1.setEdge( "id_1", "id_4" , { label: "" });
     "id_1": {
     id: "id_1",
     label: "SQL",
-    description: "<br>        SELECT user_sk, count(distinct (intv_dt_sk, ent_sk)) as intv_cnt, <br>round(count(distinct (case when intv_sts=2 then (intv_dt_sk, ent_sk) else null end))/(count(distinct (intv_dt_sk, ent_sk))+0),2) as intv_sccs_rt, <br>round(count(distinct (case when fdbk_sts=2 then (intv_dt_sk, ent_sk) else null end))/(count(distinct (intv_dt_sk, ent_sk))+0),2) as hr_rt,<br>case when count(fdbk_sts=2 or null)=0 then count(distinct (intv_dt_sk, ent_sk)) else<br>round((count(distinct (intv_dt_sk, ent_sk))+0.0)/count(distinct (case when fdbk_sts=2 then (intv_dt_sk, ent_sk) else null end))) end as hr_per_intv_cnt<br>, max(event_tm) as max_intv_dt, min(event_tm) as min_intv_dt,<br>date_part('day', CURRENT_TIMESTAMP-min(event_tm))+1 as intv_dys,<br>round(count(distinct (intv_dt_sk, ent_sk))/(date_part('year', CURRENT_TIMESTAMP-min(event_tm))+1)::numeric,2) as intv_frq,<br>round(count(distinct (case when is_inner<2 then (intv_dt_sk, ent_sk) else null end))/count(distinct (intv_dt_sk, ent_sk))::numeric,2) as zxx_intv_rt,<br>min(case when is_inner<2 then event_tm else CURRENT_DATE end) as first_intv_zxx_tm<br>FROM dm.fact_interview<br>where is_deleted=0 and user_sk!=''<br>group by user_sk",
+    description: "<br>        update jff_ent_tmp.zhouxinxin_league_name_list a<br>inner join (<br>	select ent_id, if(work_card_no='', null, work_card_no) as work_card_num, id_card_num, entry_dt as entry_date, leave_dt as leave_date,<br>	if(@entry_dt=temp.entry_dt and @id_card_num=temp.id_card_num, @rank := @rank+1, @rank := 1) as rank,<br>	@entry_dt := temp.entry_dt, @id_card_num := temp.id_card_num<br>	from (<br>		SELECT upper(id_card_num) as id_card_num, work_card_no, entry_dt, ent_id, max(leave_dt) as leave_dt, count(1) as num <br>		FROM `ods_zxx_2.0`.bill_monthly_batch_import_detail<br>		where entry_dt > '1970-01-01'<br>		group by ent_id, upper(id_card_num), work_card_no, entry_dt<br>		order by ent_id, id_card_num, entry_dt, num desc<br>	)temp,<br>	(select @entry_dt := null, @id_card_num := null, @rank := 0) r<br>) b on b.rank = 1 and a.id_card_num = b.id_card_num and coalesce(a.fixed_work_card_num, a.work_card_num) = b.work_card_num<br>set a.hire_status = 1<br>where a.interview_date >= '${MIN_INTV_DT}';",
     style: "fill: lightblue"
   },
   "id_2": {
     id: "id_2",
-    label: "dm.fact_interview",
-    description: "表",
+    label: "#meta9",
+    description: "表 | ( SELECT ent_id if #meta1 AS work_card_num id_card_num entry_dt AS entry_date leave_dt AS leave_date if #meta2 AS rank @entry_dt : = temp.entry_dt @id_card_num : = temp.id_card_num FROM #meta7 TEMP #meta8 r )",
     style: "fill: blue"
   },
   "id_3": {
     id: "id_3",
-    label: "#meta44",
-    description: "字段 | CASE WHEN count ( fdbk_sts = 2 OR NULL ) = 0 THEN count ( ( intv_dt_sk ent_sk ) ) ELSE round ( ( count ( ( intv_dt_sk ent_sk ) ) + 0.0 ) / count ( ( CASE WHEN fdbk_sts = 2 THEN ( intv_dt_sk ent_sk ) ELSE NULL END ) ) ) END ",
-    style: "fill: orange"
+    label: "#meta7",
+    description: "表 | ( SELECT upper #meta3 AS id_card_num work_card_no entry_dt ent_id max #meta4 AS leave_dt count #meta5 AS num FROM `ods_zxx_2.0`.bill_monthly_batch_import_detail WHERE entry_dt > '1970 - 01 - 01' GROUP BY ent_id upper #meta6 work_card_no entry_dt ORDER BY ent_id id_card_num entry_dt num DESC )",
+    style: "fill: blue"
   },
   "id_4": {
     id: "id_4",
-    label: "#meta43",
-    description: "字段 | min ( CASE WHEN is_inner<2 THEN event_tm ELSE CURRENT_DATE END ) ",
-    style: "fill: orange"
+    label: "#meta8",
+    description: "表 | ( SELECT @entry_dt : = NULL @id_card_num : = NULL @rank : = 0 )",
+    style: "fill: blue"
   },
   "id_5": {
     id: "id_5",
-    label: "#meta42",
-    description: "字段 | round ( count ( ( CASE WHEN is_inner<2 THEN ( intv_dt_sk ent_sk ) ELSE NULL END ) ) / count ( ( intv_dt_sk ent_sk ) ) :: numeric 2 ) ",
-    style: "fill: orange"
+    label: "`ods_zxx_2.0`.bill_monthly_batch_import_detail",
+    description: "表",
+    style: "fill: blue"
   },
   "id_6": {
     id: "id_6",
-    label: "user_sk",
-    description: "字段",
+    label: "#meta2",
+    description: "字段 | if ( @entry_dt = temp.entry_dt AND @id_card_num = temp.id_card_num @rank : = @rank + 1 @rank : = 1 ) ",
     style: "fill: orange"
   },
   "id_7": {
     id: "id_7",
-    label: "#meta27",
-    description: "字段 | max ( event_tm ) ",
+    label: "#meta1",
+    description: "字段 | if ( work_card_no = '' NULL work_card_no ) ",
     style: "fill: orange"
   },
   "id_8": {
     id: "id_8",
-    label: "#meta16",
-    description: "字段 | round ( count ( ( CASE WHEN fdbk_sts = 2 THEN ( intv_dt_sk ent_sk ) ELSE NULL END ) ) / ( count ( ( intv_dt_sk ent_sk ) ) + 0 ) 2 ) ",
+    label: " ",
+    description: "字段",
     style: "fill: orange"
   },
   "id_9": {
     id: "id_9",
-    label: "#meta2",
-    description: "字段 | count ( ( intv_dt_sk ent_sk ) ) ",
+    label: "upper",
+    description: "字段",
     style: "fill: orange"
   },
   "id_10": {
     id: "id_10",
-    label: "#meta30",
-    description: "字段 | date_part ( 'day' CURRENT_TIMESTAMP - min ( event_tm ) ) + 1 ",
+    label: "#meta5",
+    description: "字段 | count ( 1 ) ",
     style: "fill: orange"
   },
   "id_11": {
     id: "id_11",
-    label: "#meta36",
-    description: "字段 | round ( count ( ( intv_dt_sk ent_sk ) ) / ( date_part ( 'year' CURRENT_TIMESTAMP - min ( event_tm ) ) + 1 ) :: numeric 2 ) ",
+    label: "work_card_no",
+    description: "字段",
     style: "fill: orange"
   },
   "id_12": {
     id: "id_12",
-    label: "#meta9",
-    description: "字段 | round ( count ( ( CASE WHEN intv_sts = 2 THEN ( intv_dt_sk ent_sk ) ELSE NULL END ) ) / ( count ( ( intv_dt_sk ent_sk ) ) + 0 ) 2 ) ",
+    label: "@rank",
+    description: "字段",
     style: "fill: orange"
   },
   "id_13": {
     id: "id_13",
-    label: "#meta28",
-    description: "字段 | min ( event_tm ) ",
+    label: "#meta3",
+    description: "字段 | ( id_card_num ) ",
     style: "fill: orange"
   },
   "id_14": {
     id: "id_14",
-    label: "hr_per_intv_cnt",
-    description: "字段别名",
-    style: "fill: pink"
+    label: "@entry_dt",
+    description: "字段",
+    style: "fill: orange"
   },
   "id_15": {
     id: "id_15",
-    label: "first_intv_zxx_tm",
-    description: "字段别名",
-    style: "fill: pink"
+    label: "entry_dt",
+    description: "字段",
+    style: "fill: orange"
   },
   "id_16": {
     id: "id_16",
-    label: "zxx_intv_rt",
-    description: "字段别名",
-    style: "fill: pink"
+    label: "#meta4",
+    description: "字段 | max ( leave_dt ) ",
+    style: "fill: orange"
   },
   "id_17": {
     id: "id_17",
-    label: "max_intv_dt",
-    description: "字段别名",
-    style: "fill: pink"
+    label: "ent_id",
+    description: "字段",
+    style: "fill: orange"
   },
   "id_18": {
     id: "id_18",
-    label: "hr_rt",
-    description: "字段别名",
-    style: "fill: pink"
+    label: "@id_card_num",
+    description: "字段",
+    style: "fill: orange"
   },
   "id_19": {
     id: "id_19",
-    label: "intv_cnt",
+    label: "rank",
     description: "字段别名",
     style: "fill: pink"
   },
   "id_20": {
     id: "id_20",
-    label: "intv_dys",
+    label: "work_card_num",
     description: "字段别名",
     style: "fill: pink"
   },
   "id_21": {
     id: "id_21",
-    label: "intv_frq",
+    label: "leave_date",
     description: "字段别名",
     style: "fill: pink"
   },
   "id_22": {
     id: "id_22",
-    label: "intv_sccs_rt",
+    label: "id_card_num",
     description: "字段别名",
     style: "fill: pink"
   },
   "id_23": {
     id: "id_23",
-    label: "min_intv_dt",
+    label: "entry_date",
+    description: "字段别名",
+    style: "fill: pink"
+  },
+  "id_24": {
+    id: "id_24",
+    label: "leave_dt",
+    description: "字段别名",
+    style: "fill: pink"
+  },
+  "id_25": {
+    id: "id_25",
+    label: "num",
     description: "字段别名",
     style: "fill: pink"
   },
@@ -421,28 +594,30 @@ g1.setEdge( "id_1", "id_4" , { label: "" });
 
   // Set up the edges
   g2.setEdge( "id_ts", "id_1" , { label: "" });
-g2.setEdge( "id_3", "id_14" , { label: "" });
-g2.setEdge( "id_4", "id_15" , { label: "" });
-g2.setEdge( "id_5", "id_16" , { label: "" });
-g2.setEdge( "id_7", "id_17" , { label: "" });
-g2.setEdge( "id_8", "id_18" , { label: "" });
-g2.setEdge( "id_9", "id_19" , { label: "" });
-g2.setEdge( "id_10", "id_20" , { label: "" });
-g2.setEdge( "id_11", "id_21" , { label: "" });
-g2.setEdge( "id_12", "id_22" , { label: "" });
-g2.setEdge( "id_13", "id_23" , { label: "" });
-g2.setEdge( "id_2", "id_3" , { label: "" });
-g2.setEdge( "id_2", "id_4" , { label: "" });
-g2.setEdge( "id_2", "id_5" , { label: "" });
+g2.setEdge( "id_6", "id_19" , { label: "" });
+g2.setEdge( "id_7", "id_20" , { label: "" });
+g2.setEdge( "id_24", "id_21" , { label: "" });
+g2.setEdge( "id_13", "id_22" , { label: "" });
+g2.setEdge( "id_15", "id_23" , { label: "" });
+g2.setEdge( "id_16", "id_24" , { label: "" });
+g2.setEdge( "id_10", "id_25" , { label: "" });
 g2.setEdge( "id_2", "id_6" , { label: "" });
 g2.setEdge( "id_2", "id_7" , { label: "" });
-g2.setEdge( "id_2", "id_8" , { label: "" });
-g2.setEdge( "id_2", "id_9" , { label: "" });
-g2.setEdge( "id_2", "id_10" , { label: "" });
-g2.setEdge( "id_2", "id_11" , { label: "" });
-g2.setEdge( "id_2", "id_12" , { label: "" });
-g2.setEdge( "id_2", "id_13" , { label: "" });
+g2.setEdge( "id_4", "id_8" , { label: "" });
+g2.setEdge( "id_5", "id_9" , { label: "" });
+g2.setEdge( "id_5", "id_10" , { label: "" });
+g2.setEdge( "id_5", "id_11" , { label: "" });
+g2.setEdge( "id_4", "id_12" , { label: "" });
+g2.setEdge( "id_5", "id_13" , { label: "" });
+g2.setEdge( "id_4", "id_14" , { label: "" });
+g2.setEdge( "id_5", "id_15" , { label: "" });
+g2.setEdge( "id_5", "id_16" , { label: "" });
+g2.setEdge( "id_5", "id_17" , { label: "" });
+g2.setEdge( "id_4", "id_18" , { label: "" });
+g2.setEdge( "id_2", "id_4" , { label: "" });
 g2.setEdge( "id_1", "id_2" , { label: "" });
+g2.setEdge( "id_2", "id_3" , { label: "" });
+g2.setEdge( "id_3", "id_5" , { label: "" });
 
 
   // Create the renderer
@@ -505,6 +680,679 @@ g2.setEdge( "id_1", "id_2" , { label: "" });
   svg.call(zoom.transform, d3.zoomIdentity.translate((svg.attr("width") - g2.graph().width * initialScale) / 2, 20).scale(initialScale));
 
   svg.attr('height', g2.graph().height * initialScale + 40);
+</script>
+
+<h3>2.2 根据周薪薪的周月薪名单补充入职状态, 月+周账单里存在的，就是在职，没有的就是离职</h3>
+<svg width=960 height=800 id="svg3"></svg>
+<script>
+  var highlight_color = "#000000";
+  var upstream_color = "#0000FF";
+  var downstream_color = "#0000FF"
+  var fill_default_color = "rgb(240, 237, 228)"
+  var fill_upstream_color = "orange"
+  var fill_downstream_color = "orange"
+  var initialStrokeWidth = '3px';
+  
+  // Create a new directed graph
+  var g3 = new dagreD3.graphlib.Graph().setGraph({});
+
+  // States and transitions from RFC 793
+  var states = {
+    "id_1": {
+    id: "id_1",
+    label: "SQL",
+    description: "<br>        update jff_ent_tmp.zhouxinxin_league_name_list a<br>inner join (<br>	select ent_id, if(work_card_no='', null, work_card_no) as work_card_num, id_card_num, entry_dt as entry_date, leave_dt as leave_date,<br>	if(@entry_dt=temp.entry_dt and @id_card_num=temp.id_card_num, @rank := @rank+1, @rank := 1) as rank,<br>	@entry_dt := temp.entry_dt, @id_card_num := temp.id_card_num<br>	from (<br>		SELECT upper(id_card_num) as id_card_num, work_card_no, entry_dt, ent_id, max(leave_dt) as leave_dt, count(1) as num <br>		FROM `ods_zxx_2.0`.bill_weekly_batch_import_detail<br>		where entry_dt > '1970-01-01'<br>		group by ent_id, upper(id_card_num), work_card_no, entry_dt<br>		order by ent_id, id_card_num, entry_dt, num desc<br>	)temp,<br>	(select @entry_dt := null, @id_card_num := null, @rank := 0) r<br>) b on b.rank = 1 and a.id_card_num = b.id_card_num and coalesce(a.fixed_work_card_num, a.work_card_num) = b.work_card_num<br>set a.hire_status = 1<br>where a.interview_date >= '${MIN_INTV_DT}';<br><br>update jff_ent_tmp.zhouxinxin_league_name_list<br>set hire_status = 0<br>where hire_status is null<br>and interview_date >= '${MIN_INTV_D}' ",
+    style: "fill: lightblue"
+  },
+  "id_2": {
+    id: "id_2",
+    label: "#meta9",
+    description: "表 | ( SELECT ent_id if #meta1 AS work_card_num id_card_num entry_dt AS entry_date leave_dt AS leave_date if #meta2 AS rank @entry_dt : = temp.entry_dt @id_card_num : = temp.id_card_num FROM #meta7 TEMP #meta8 r )",
+    style: "fill: blue"
+  },
+  "id_3": {
+    id: "id_3",
+    label: "#meta7",
+    description: "表 | ( SELECT upper #meta3 AS id_card_num work_card_no entry_dt ent_id max #meta4 AS leave_dt count #meta5 AS num FROM `ods_zxx_2.0`.bill_weekly_batch_import_detail WHERE entry_dt > '1970 - 01 - 01' GROUP BY ent_id upper #meta6 work_card_no entry_dt ORDER BY ent_id id_card_num entry_dt num DESC )",
+    style: "fill: blue"
+  },
+  "id_4": {
+    id: "id_4",
+    label: "#meta8",
+    description: "表 | ( SELECT @entry_dt : = NULL @id_card_num : = NULL @rank : = 0 )",
+    style: "fill: blue"
+  },
+  "id_5": {
+    id: "id_5",
+    label: "`ods_zxx_2.0`.bill_weekly_batch_import_detail",
+    description: "表",
+    style: "fill: blue"
+  },
+  "id_6": {
+    id: "id_6",
+    label: "#meta2",
+    description: "字段 | if ( @entry_dt = temp.entry_dt AND @id_card_num = temp.id_card_num @rank : = @rank + 1 @rank : = 1 ) ",
+    style: "fill: orange"
+  },
+  "id_7": {
+    id: "id_7",
+    label: "#meta1",
+    description: "字段 | if ( work_card_no = '' NULL work_card_no ) ",
+    style: "fill: orange"
+  },
+  "id_8": {
+    id: "id_8",
+    label: " ",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_9": {
+    id: "id_9",
+    label: "upper",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_10": {
+    id: "id_10",
+    label: "#meta5",
+    description: "字段 | count ( 1 ) ",
+    style: "fill: orange"
+  },
+  "id_11": {
+    id: "id_11",
+    label: "work_card_no",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_12": {
+    id: "id_12",
+    label: "@rank",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_13": {
+    id: "id_13",
+    label: "#meta3",
+    description: "字段 | ( id_card_num ) ",
+    style: "fill: orange"
+  },
+  "id_14": {
+    id: "id_14",
+    label: "@entry_dt",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_15": {
+    id: "id_15",
+    label: "entry_dt",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_16": {
+    id: "id_16",
+    label: "#meta4",
+    description: "字段 | max ( leave_dt ) ",
+    style: "fill: orange"
+  },
+  "id_17": {
+    id: "id_17",
+    label: "ent_id",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_18": {
+    id: "id_18",
+    label: "@id_card_num",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_19": {
+    id: "id_19",
+    label: "rank",
+    description: "字段别名",
+    style: "fill: pink"
+  },
+  "id_20": {
+    id: "id_20",
+    label: "work_card_num",
+    description: "字段别名",
+    style: "fill: pink"
+  },
+  "id_21": {
+    id: "id_21",
+    label: "leave_date",
+    description: "字段别名",
+    style: "fill: pink"
+  },
+  "id_22": {
+    id: "id_22",
+    label: "id_card_num",
+    description: "字段别名",
+    style: "fill: pink"
+  },
+  "id_23": {
+    id: "id_23",
+    label: "entry_date",
+    description: "字段别名",
+    style: "fill: pink"
+  },
+  "id_24": {
+    id: "id_24",
+    label: "leave_dt",
+    description: "字段别名",
+    style: "fill: pink"
+  },
+  "id_25": {
+    id: "id_25",
+    label: "num",
+    description: "字段别名",
+    style: "fill: pink"
+  },
+  "id_ts": {
+    id: "id_ts",
+    label: "开始",
+    description: "开始",
+    style: "fill: red"
+  }
+  };
+
+  // Add states to the graph, set labels, and style
+  Object.keys(states).forEach(function (state) {
+    var value = states[state];
+    value.rx = value.ry = 5;
+    g3.setNode(state, value);
+  });
+
+  // Set up the edges
+  g3.setEdge( "id_ts", "id_1" , { label: "" });
+g3.setEdge( "id_6", "id_19" , { label: "" });
+g3.setEdge( "id_7", "id_20" , { label: "" });
+g3.setEdge( "id_24", "id_21" , { label: "" });
+g3.setEdge( "id_13", "id_22" , { label: "" });
+g3.setEdge( "id_15", "id_23" , { label: "" });
+g3.setEdge( "id_16", "id_24" , { label: "" });
+g3.setEdge( "id_10", "id_25" , { label: "" });
+g3.setEdge( "id_2", "id_6" , { label: "" });
+g3.setEdge( "id_2", "id_7" , { label: "" });
+g3.setEdge( "id_4", "id_8" , { label: "" });
+g3.setEdge( "id_5", "id_9" , { label: "" });
+g3.setEdge( "id_5", "id_10" , { label: "" });
+g3.setEdge( "id_5", "id_11" , { label: "" });
+g3.setEdge( "id_4", "id_12" , { label: "" });
+g3.setEdge( "id_5", "id_13" , { label: "" });
+g3.setEdge( "id_4", "id_14" , { label: "" });
+g3.setEdge( "id_5", "id_15" , { label: "" });
+g3.setEdge( "id_5", "id_16" , { label: "" });
+g3.setEdge( "id_5", "id_17" , { label: "" });
+g3.setEdge( "id_4", "id_18" , { label: "" });
+g3.setEdge( "id_2", "id_4" , { label: "" });
+g3.setEdge( "id_1", "id_2" , { label: "" });
+g3.setEdge( "id_2", "id_3" , { label: "" });
+g3.setEdge( "id_3", "id_5" , { label: "" });
+
+
+  // Create the renderer
+  var render = new dagreD3.render();
+
+  // Set up an SVG group so that we can translate the final graph.
+  var svg = d3.select("#svg3"),
+    inner3 = svg.append("g");
+
+  // Set up zoom support
+  var zoom = d3.zoom()
+    .on("zoom", function () {
+      inner3.attr("transform", d3.event.transform);
+    });
+  svg.call(zoom);
+
+  // Simple function to style the tooltip for the given node.
+  var styleTooltip = function (name, description) {
+    return "<p class='name'>" + name + "</p><p class='description' style='color:orange; width:100%; height:100%; display:inline-block' >" + description +"<br>" + "</p>";
+  };
+
+  // Run the renderer. This is what draws the final graph.
+  render(inner3, g3);
+
+  inner3.selectAll("g.node")
+    .attr("title", function (v) { return styleTooltip(g3.node(v).label, g3.node(v).description) })
+    .each(function (v) { $(this).tipsy({ gravity: "w", opacity: 1, html: true }); });
+
+  inner3.selectAll("g.node").style("stroke-width", initialStrokeWidth);
+
+  // function highlight nodes
+  inner3.selectAll("g.node").on("mouseover", function (d) {
+    inner3.selectAll("rect").style("stroke", highlight_color);
+    g3.predecessors(d).forEach(function (nodeid) {
+      my_node = inner3.select('#' + nodeid + ' rect');
+      my_node.style("stroke", fill_upstream_color);
+    })
+
+    g3.successors(d).forEach(function (nodeid) {
+      my_node = inner3.select('#' + nodeid + ' rect');
+      my_node.style("stroke", fill_downstream_color);
+    })
+  });
+
+  inner3.selectAll("g.node").on("mouseout", function (d) {
+    inner3.selectAll("rect").style("stroke", null);
+    g3.predecessors(d).forEach(function (nodeid) {
+      my_node = inner3.select('#' + nodeid + ' rect');
+      my_node.style("stroke", null);
+    })
+
+    g3.successors(d).forEach(function (nodeid) {
+      my_node = inner3.select('#' + nodeid + ' rect');
+      my_node.style("stroke", null);
+    })
+  });
+  
+  // Center the graph
+  var initialScale = 0.75;
+  svg.call(zoom.transform, d3.zoomIdentity.translate((svg.attr("width") - g3.graph().width * initialScale) / 2, 20).scale(initialScale));
+
+  svg.attr('height', g3.graph().height * initialScale + 40);
+</script>
+
+<h3>3 抽取字段生成简易加盟店名单jff_ent_tmp.jff_cb_name_list</h3>
+<svg width=960 height=800 id="svg4"></svg>
+<script>
+  var highlight_color = "#000000";
+  var upstream_color = "#0000FF";
+  var downstream_color = "#0000FF"
+  var fill_default_color = "rgb(240, 237, 228)"
+  var fill_upstream_color = "orange"
+  var fill_downstream_color = "orange"
+  var initialStrokeWidth = '3px';
+  
+  // Create a new directed graph
+  var g4 = new dagreD3.graphlib.Graph().setGraph({});
+
+  // States and transitions from RFC 793
+  var states = {
+    "id_1": {
+    id: "id_1",
+    label: "SQL",
+    description: "<br>        insert data into jff_cb_name_list：<br>SELECT distinct a.name_list_id, a.mbr_id_card_num,<br>c.sp_id,  a.intv_dt, a.rcrt_typ,<br>a.intv_sts, b.hire_status<br>FROM `ods_jff`.name_list a<br>left join ods_jff.league_store c on a.sp_id = c.sp_id<br>left join jff_ent_tmp.zhouxinxin_league_name_list b<br>on upper(a.mbr_id_card_num)=b.id_card_num and a.intv_dt=b.interview_date<br>where a.intv_dt >= c.coop_start_dt<br>and a.intv_dt <= CURRENT_DATE<br>and c.sp_id != 1006 and a.is_deleted = 0; ",
+    style: "fill: lightblue"
+  },
+  "id_2": {
+    id: "id_2",
+    label: "`ods_jff`.name_list",
+    description: "表",
+    style: "fill: blue"
+  },
+  "id_3": {
+    id: "id_3",
+    label: "ods_jff.league_store",
+    description: "表",
+    style: "fill: blue"
+  },
+  "id_4": {
+    id: "id_4",
+    label: "jff_ent_tmp.zhouxinxin_league_name_list",
+    description: "表",
+    style: "fill: blue"
+  },
+  "id_5": {
+    id: "id_5",
+    label: "hire_status",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_6": {
+    id: "id_6",
+    label: "intv_dt",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_7": {
+    id: "id_7",
+    label: "sp_id",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_8": {
+    id: "id_8",
+    label: "intv_sts",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_9": {
+    id: "id_9",
+    label: "name_list_id",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_10": {
+    id: "id_10",
+    label: "rcrt_typ",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_11": {
+    id: "id_11",
+    label: "mbr_id_card_num",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_ts": {
+    id: "id_ts",
+    label: "开始",
+    description: "开始",
+    style: "fill: red"
+  }
+  };
+
+  // Add states to the graph, set labels, and style
+  Object.keys(states).forEach(function (state) {
+    var value = states[state];
+    value.rx = value.ry = 5;
+    g4.setNode(state, value);
+  });
+
+  // Set up the edges
+  g4.setEdge( "id_ts", "id_1" , { label: "" });
+g4.setEdge( "id_4", "id_5" , { label: "" });
+g4.setEdge( "id_2", "id_6" , { label: "" });
+g4.setEdge( "id_3", "id_7" , { label: "" });
+g4.setEdge( "id_2", "id_8" , { label: "" });
+g4.setEdge( "id_2", "id_9" , { label: "" });
+g4.setEdge( "id_2", "id_10" , { label: "" });
+g4.setEdge( "id_2", "id_11" , { label: "" });
+g4.setEdge( "id_1", "id_2" , { label: "" });
+g4.setEdge( "id_1", "id_3" , { label: "" });
+g4.setEdge( "id_1", "id_4" , { label: "" });
+
+
+  // Create the renderer
+  var render = new dagreD3.render();
+
+  // Set up an SVG group so that we can translate the final graph.
+  var svg = d3.select("#svg4"),
+    inner4 = svg.append("g");
+
+  // Set up zoom support
+  var zoom = d3.zoom()
+    .on("zoom", function () {
+      inner4.attr("transform", d3.event.transform);
+    });
+  svg.call(zoom);
+
+  // Simple function to style the tooltip for the given node.
+  var styleTooltip = function (name, description) {
+    return "<p class='name'>" + name + "</p><p class='description' style='color:orange; width:100%; height:100%; display:inline-block' >" + description +"<br>" + "</p>";
+  };
+
+  // Run the renderer. This is what draws the final graph.
+  render(inner4, g4);
+
+  inner4.selectAll("g.node")
+    .attr("title", function (v) { return styleTooltip(g4.node(v).label, g4.node(v).description) })
+    .each(function (v) { $(this).tipsy({ gravity: "w", opacity: 1, html: true }); });
+
+  inner4.selectAll("g.node").style("stroke-width", initialStrokeWidth);
+
+  // function highlight nodes
+  inner4.selectAll("g.node").on("mouseover", function (d) {
+    inner4.selectAll("rect").style("stroke", highlight_color);
+    g4.predecessors(d).forEach(function (nodeid) {
+      my_node = inner4.select('#' + nodeid + ' rect');
+      my_node.style("stroke", fill_upstream_color);
+    })
+
+    g4.successors(d).forEach(function (nodeid) {
+      my_node = inner4.select('#' + nodeid + ' rect');
+      my_node.style("stroke", fill_downstream_color);
+    })
+  });
+
+  inner4.selectAll("g.node").on("mouseout", function (d) {
+    inner4.selectAll("rect").style("stroke", null);
+    g4.predecessors(d).forEach(function (nodeid) {
+      my_node = inner4.select('#' + nodeid + ' rect');
+      my_node.style("stroke", null);
+    })
+
+    g4.successors(d).forEach(function (nodeid) {
+      my_node = inner4.select('#' + nodeid + ' rect');
+      my_node.style("stroke", null);
+    })
+  });
+  
+  // Center the graph
+  var initialScale = 0.75;
+  svg.call(zoom.transform, d3.zoomIdentity.translate((svg.attr("width") - g4.graph().width * initialScale) / 2, 20).scale(initialScale));
+
+  svg.attr('height', g4.graph().height * initialScale + 40);
+</script>
+
+<h3>4 生成统计结果</h3>
+<svg width=960 height=800 id="svg5"></svg>
+<script>
+  var highlight_color = "#000000";
+  var upstream_color = "#0000FF";
+  var downstream_color = "#0000FF"
+  var fill_default_color = "rgb(240, 237, 228)"
+  var fill_upstream_color = "orange"
+  var fill_downstream_color = "orange"
+  var initialStrokeWidth = '3px';
+  
+  // Create a new directed graph
+  var g5 = new dagreD3.graphlib.Graph().setGraph({});
+
+  // States and transitions from RFC 793
+  var states = {
+    "id_1": {
+    id: "id_1",
+    label: "SQL",
+    description: "<br>        select intv_dt, DATE_FORMAT(intv_dt, '%Y-%m') as interview_month, <br>count(*) as d_total,<br>count(rcrt_typ=2 or null) as d_zxx_total, <br>count(intv_sts=2 or null) as d_intv,<br>count(rcrt_typ=2 and intv_sts=2 or null) as d_zxx_intv, <br>count(rcrt_typ=2 and intv_sts=2 and hire_status=1 or null) as d_zxx_hire, <br>count(rcrt_typ=0 or null) as d_nzxx_total, <br>count(rcrt_typ=0 and intv_sts=2 or null) as d_nzxx_intv<br>from jff_ent_tmp.jff_cb_name_list<br>group by intv_dt ",
+    style: "fill: lightblue"
+  },
+  "id_2": {
+    id: "id_2",
+    label: "DATE_FORMAT",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_3": {
+    id: "id_3",
+    label: "intv_dt",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_4": {
+    id: "id_4",
+    label: "#meta2",
+    description: "字段 | count ( * ) ",
+    style: "fill: orange"
+  },
+  "id_5": {
+    id: "id_5",
+    label: "#meta3",
+    description: "字段 | count ( rcrt_typ = 2 OR NULL ) ",
+    style: "fill: orange"
+  },
+  "id_6": {
+    id: "id_6",
+    label: "#meta1",
+    description: "字段 | ( intv_dt '%Y - %m' ) ",
+    style: "fill: orange"
+  },
+  "id_7": {
+    id: "id_7",
+    label: "#meta6",
+    description: "字段 | count ( rcrt_typ = 2 AND intv_sts = 2 AND hire_status = 1 OR NULL ) ",
+    style: "fill: orange"
+  },
+  "id_8": {
+    id: "id_8",
+    label: "#meta7",
+    description: "字段 | count ( rcrt_typ = 0 OR NULL ) ",
+    style: "fill: orange"
+  },
+  "id_9": {
+    id: "id_9",
+    label: "#meta4",
+    description: "字段 | count ( intv_sts = 2 OR NULL ) ",
+    style: "fill: orange"
+  },
+  "id_10": {
+    id: "id_10",
+    label: "#meta5",
+    description: "字段 | count ( rcrt_typ = 2 AND intv_sts = 2 OR NULL ) ",
+    style: "fill: orange"
+  },
+  "id_11": {
+    id: "id_11",
+    label: "#meta8",
+    description: "字段 | count ( rcrt_typ = 0 AND intv_sts = 2 OR NULL ) ",
+    style: "fill: orange"
+  },
+  "id_12": {
+    id: "id_12",
+    label: "d_total",
+    description: "字段别名",
+    style: "fill: pink"
+  },
+  "id_ts": {
+    id: "id_ts",
+    label: "开始",
+    description: "开始",
+    style: "fill: red"
+  },
+  "id_14": {
+    id: "id_14",
+    label: "interview_month",
+    description: "字段别名",
+    style: "fill: pink"
+  },
+  "id_13": {
+    id: "id_13",
+    label: "d_zxx_total",
+    description: "字段别名",
+    style: "fill: pink"
+  },
+  "id_16": {
+    id: "id_16",
+    label: "d_nzxx_total",
+    description: "字段别名",
+    style: "fill: pink"
+  },
+  "id_17": {
+    id: "id_17",
+    label: "d_intv",
+    description: "字段别名",
+    style: "fill: pink"
+  },
+  "id_18": {
+    id: "id_18",
+    label: "d_zxx_intv",
+    description: "字段别名",
+    style: "fill: pink"
+  },
+  "id_19": {
+    id: "id_19",
+    label: "d_nzxx_intv",
+    description: "字段别名",
+    style: "fill: pink"
+  },
+  "id_15": {
+    id: "id_15",
+    label: "d_zxx_hire",
+    description: "字段别名",
+    style: "fill: pink"
+  }
+  };
+
+  // Add states to the graph, set labels, and style
+  Object.keys(states).forEach(function (state) {
+    var value = states[state];
+    value.rx = value.ry = 5;
+    g5.setNode(state, value);
+  });
+
+  // Set up the edges
+  g5.setEdge( "id_ts", "id_1" , { label: "" });
+g5.setEdge( "id_4", "id_12" , { label: "" });
+g5.setEdge( "id_5", "id_13" , { label: "" });
+g5.setEdge( "id_6", "id_14" , { label: "" });
+g5.setEdge( "id_7", "id_15" , { label: "" });
+g5.setEdge( "id_8", "id_16" , { label: "" });
+g5.setEdge( "id_9", "id_17" , { label: "" });
+g5.setEdge( "id_10", "id_18" , { label: "" });
+g5.setEdge( "id_11", "id_19" , { label: "" });
+g5.setEdge( "id_1", "id_2" , { label: "" });
+g5.setEdge( "id_1", "id_3" , { label: "" });
+g5.setEdge( "id_1", "id_4" , { label: "" });
+g5.setEdge( "id_1", "id_5" , { label: "" });
+g5.setEdge( "id_1", "id_6" , { label: "" });
+g5.setEdge( "id_1", "id_7" , { label: "" });
+g5.setEdge( "id_1", "id_8" , { label: "" });
+g5.setEdge( "id_1", "id_9" , { label: "" });
+g5.setEdge( "id_1", "id_10" , { label: "" });
+g5.setEdge( "id_1", "id_11" , { label: "" });
+
+
+  // Create the renderer
+  var render = new dagreD3.render();
+
+  // Set up an SVG group so that we can translate the final graph.
+  var svg = d3.select("#svg5"),
+    inner5 = svg.append("g");
+
+  // Set up zoom support
+  var zoom = d3.zoom()
+    .on("zoom", function () {
+      inner5.attr("transform", d3.event.transform);
+    });
+  svg.call(zoom);
+
+  // Simple function to style the tooltip for the given node.
+  var styleTooltip = function (name, description) {
+    return "<p class='name'>" + name + "</p><p class='description' style='color:orange; width:100%; height:100%; display:inline-block' >" + description +"<br>" + "</p>";
+  };
+
+  // Run the renderer. This is what draws the final graph.
+  render(inner5, g5);
+
+  inner5.selectAll("g.node")
+    .attr("title", function (v) { return styleTooltip(g5.node(v).label, g5.node(v).description) })
+    .each(function (v) { $(this).tipsy({ gravity: "w", opacity: 1, html: true }); });
+
+  inner5.selectAll("g.node").style("stroke-width", initialStrokeWidth);
+
+  // function highlight nodes
+  inner5.selectAll("g.node").on("mouseover", function (d) {
+    inner5.selectAll("rect").style("stroke", highlight_color);
+    g5.predecessors(d).forEach(function (nodeid) {
+      my_node = inner5.select('#' + nodeid + ' rect');
+      my_node.style("stroke", fill_upstream_color);
+    })
+
+    g5.successors(d).forEach(function (nodeid) {
+      my_node = inner5.select('#' + nodeid + ' rect');
+      my_node.style("stroke", fill_downstream_color);
+    })
+  });
+
+  inner5.selectAll("g.node").on("mouseout", function (d) {
+    inner5.selectAll("rect").style("stroke", null);
+    g5.predecessors(d).forEach(function (nodeid) {
+      my_node = inner5.select('#' + nodeid + ' rect');
+      my_node.style("stroke", null);
+    })
+
+    g5.successors(d).forEach(function (nodeid) {
+      my_node = inner5.select('#' + nodeid + ' rect');
+      my_node.style("stroke", null);
+    })
+  });
+  
+  // Center the graph
+  var initialScale = 0.75;
+  svg.call(zoom.transform, d3.zoomIdentity.translate((svg.attr("width") - g5.graph().width * initialScale) / 2, 20).scale(initialScale));
+
+  svg.attr('height', g5.graph().height * initialScale + 40);
 </script>
 
 
