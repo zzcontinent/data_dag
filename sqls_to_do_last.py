@@ -111,6 +111,36 @@ count(rcrt_typ=0 or null) as d_nzxx_total,
 count(rcrt_typ=0 and intv_sts=2 or null) as d_nzxx_intv
 from jff_ent_tmp.jff_cb_name_list
 group by intv_dt '''
+    },
+    {
+        'TITLE': '4 生成统计结果',
+        'SQL': '''
+        select 
+count(distinct vIDCardNum) as cnt
+from 
+ods_woda.tbbrokeruserorderstatus ta
+where 
+eStatus=1
+and dtcheckintime>=%s
+and dtcheckintime<%s
+and  iCheckinRecruitTmpID in (
+        select iRecruitTmpID from ods_woda.tbRecruitTmp where vPositionName like '%%周薪薪%%' and eStatus=1
+)
+and eInterviewStatus in(1,2)
+and eJFFInterviewStatus=2
+and exists(
+select 
+mbr_id_card_num
+from 
+ods_jff.name_list 
+where 
+intv_dt>=%s
+and intv_dt<%s
+and rcrt_typ=1
+and is_deleted=0
+and left(ta.dtCheckinTime,10) = intv_dt
+and ta.vIDCardNum = mbr_id_card_num
+)'''
     }
 
 ]

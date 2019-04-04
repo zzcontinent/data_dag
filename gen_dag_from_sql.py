@@ -22,7 +22,7 @@ meta_map = {}
 STATE_WORDS_PASS = ['SELECT', 'AS', 'FROM', 'JOIN', 'ON', 'WHERE', 'GROUP', 'BY']
 # 用于检索前缀表达式的关键字
 OPERATOR_BEFORE = ['IF', 'COUNT', 'if', 'count', 'in', 'IN', 'CURRENT_DATE', 'current_date', 'concat', 'sum',
-                   'floor', '@', 'ROUND', 'round', 'MIN', 'min', 'MAX', 'max', 'date_part']
+                   'floor', '@', 'ROUND', 'round', 'MIN', 'min', 'MAX', 'max', 'date_part', 'DATE_FORMAT']
 # 用于检索中缀表达式的关键字
 OPERATOR_MIDDLE = [':=', '=', '/', '+', '-', '::']
 
