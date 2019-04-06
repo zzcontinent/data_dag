@@ -74,7 +74,7 @@
   "id_2": {
     id: "id_2",
     label: "#meta8",
-    description: "表 | ( SELECT name_list_id jff_name_list_id ent_id id_card_num if #meta3 AS work_card_no intv_dt intv_sts work_sts entry_dt leave_dt rcrt_order_id srce_sp_id trgt_sp_id if #meta4 AS rank @intv_dt : = temp.intv_dt @id_card_num : = temp.id_card_num FROM #meta6 TEMP #meta7 r )",
+    description: "表 | ( SELECT name_list_id jff_name_list_id ent_id id_card_num if #meta3 AS work_card_no intv_dt intv_sts work_sts entry_dt leave_dt rcrt_order_id srce_sp_id trgt_sp_id if #meta4 AS rank @intv_dt := temp.intv_dt @id_card_num := temp.id_card_num FROM #meta6 TEMP #meta7 r )",
     style: "fill: blue"
   },
   "id_3": {
@@ -116,7 +116,7 @@
   "id_9": {
     id: "id_9",
     label: "#meta7",
-    description: "表 | ( SELECT @intv_dt : = NULL @id_card_num : = NULL @rank : = 0 )",
+    description: "表 | ( SELECT @intv_dt := NULL @id_card_num := NULL @rank := 0 )",
     style: "fill: blue"
   },
   "id_10": {
@@ -133,7 +133,7 @@
   },
   "id_12": {
     id: "id_12",
-    label: "@intv_dt",
+    label: "@intv_dt := NULL",
     description: "字段",
     style: "fill: orange"
   },
@@ -157,7 +157,7 @@
   },
   "id_16": {
     id: "id_16",
-    label: " ",
+    label: "@id_card_num := NULL",
     description: "字段",
     style: "fill: orange"
   },
@@ -175,7 +175,7 @@
   },
   "id_19": {
     id: "id_19",
-    label: "@id_card_num",
+    label: "@intv_dt := temp.intv_dt",
     description: "字段",
     style: "fill: orange"
   },
@@ -193,7 +193,7 @@
   },
   "id_22": {
     id: "id_22",
-    label: "@rank",
+    label: "@id_card_num := temp.id_card_num",
     description: "字段",
     style: "fill: orange"
   },
@@ -230,7 +230,7 @@
   "id_28": {
     id: "id_28",
     label: "#meta4",
-    description: "字段 | if ( @intv_dt = temp.intv_dt AND @id_card_num = temp.id_card_num @rank : = @rank + 1 @rank : = 1 ) ",
+    description: "字段 | if ( @intv_dt = temp.intv_dt AND @id_card_num = temp.id_card_num @rank := @rank + 1 @rank := 1 ) ",
     style: "fill: orange"
   },
   "id_29": {
@@ -271,18 +271,24 @@
   },
   "id_35": {
     id: "id_35",
-    label: "work_card_no",
-    description: "字段别名",
-    style: "fill: pink"
+    label: "@rank := 0",
+    description: "字段",
+    style: "fill: orange"
   },
   "id_36": {
     id: "id_36",
-    label: "rank",
+    label: "work_card_no",
     description: "字段别名",
     style: "fill: pink"
   },
   "id_37": {
     id: "id_37",
+    label: "rank",
+    description: "字段别名",
+    style: "fill: pink"
+  },
+  "id_38": {
+    id: "id_38",
     label: "id_card_num",
     description: "字段别名",
     style: "fill: pink"
@@ -304,9 +310,9 @@
 
   // Set up the edges
   g1.setEdge( "id_ts", "id_1" , { label: "" });
-g1.setEdge( "id_26", "id_35" , { label: "" });
-g1.setEdge( "id_28", "id_36" , { label: "" });
-g1.setEdge( "id_29", "id_37" , { label: "" });
+g1.setEdge( "id_26", "id_36" , { label: "" });
+g1.setEdge( "id_28", "id_37" , { label: "" });
+g1.setEdge( "id_29", "id_38" , { label: "" });
 g1.setEdge( "id_10", "id_11" , { label: "" });
 g1.setEdge( "id_9", "id_12" , { label: "" });
 g1.setEdge( "id_10", "id_13" , { label: "" });
@@ -315,10 +321,10 @@ g1.setEdge( "id_10", "id_15" , { label: "" });
 g1.setEdge( "id_9", "id_16" , { label: "" });
 g1.setEdge( "id_5", "id_17" , { label: "" });
 g1.setEdge( "id_4", "id_18" , { label: "" });
-g1.setEdge( "id_9", "id_19" , { label: "" });
+g1.setEdge( "id_2", "id_19" , { label: "" });
 g1.setEdge( "id_10", "id_20" , { label: "" });
 g1.setEdge( "id_6", "id_21" , { label: "" });
-g1.setEdge( "id_9", "id_22" , { label: "" });
+g1.setEdge( "id_2", "id_22" , { label: "" });
 g1.setEdge( "id_10", "id_23" , { label: "" });
 g1.setEdge( "id_10", "id_24" , { label: "" });
 g1.setEdge( "id_1", "id_25" , { label: "" });
@@ -331,6 +337,7 @@ g1.setEdge( "id_10", "id_31" , { label: "" });
 g1.setEdge( "id_10", "id_32" , { label: "" });
 g1.setEdge( "id_4", "id_33" , { label: "" });
 g1.setEdge( "id_10", "id_34" , { label: "" });
+g1.setEdge( "id_9", "id_35" , { label: "" });
 g1.setEdge( "id_8", "id_10" , { label: "" });
 g1.setEdge( "id_1", "id_3" , { label: "" });
 g1.setEdge( "id_1", "id_7" , { label: "" });
@@ -429,7 +436,7 @@ g1.setEdge( "id_1", "id_4" , { label: "" });
   "id_2": {
     id: "id_2",
     label: "#meta9",
-    description: "表 | ( SELECT ent_id if #meta1 AS work_card_num id_card_num entry_dt AS entry_date leave_dt AS leave_date if #meta2 AS rank @entry_dt : = temp.entry_dt @id_card_num : = temp.id_card_num FROM #meta7 TEMP #meta8 r )",
+    description: "表 | ( SELECT ent_id if #meta1 AS work_card_num id_card_num entry_dt AS entry_date leave_dt AS leave_date if #meta2 AS rank @entry_dt := temp.entry_dt @id_card_num := temp.id_card_num FROM #meta7 TEMP #meta8 r )",
     style: "fill: blue"
   },
   "id_3": {
@@ -441,7 +448,7 @@ g1.setEdge( "id_1", "id_4" , { label: "" });
   "id_4": {
     id: "id_4",
     label: "#meta8",
-    description: "表 | ( SELECT @entry_dt : = NULL @id_card_num : = NULL @rank : = 0 )",
+    description: "表 | ( SELECT @entry_dt := NULL @id_card_num := NULL @rank := 0 )",
     style: "fill: blue"
   },
   "id_5": {
@@ -453,49 +460,49 @@ g1.setEdge( "id_1", "id_4" , { label: "" });
   "id_6": {
     id: "id_6",
     label: "#meta2",
-    description: "字段 | if ( @entry_dt = temp.entry_dt AND @id_card_num = temp.id_card_num @rank : = @rank + 1 @rank : = 1 ) ",
+    description: "字段 | if ( @entry_dt = temp.entry_dt AND @id_card_num = temp.id_card_num @rank := @rank + 1 @rank := 1 ) ",
     style: "fill: orange"
   },
   "id_7": {
     id: "id_7",
-    label: "#meta1",
-    description: "字段 | if ( work_card_no = '' NULL work_card_no ) ",
+    label: "@id_card_num := temp.id_card_num",
+    description: "字段",
     style: "fill: orange"
   },
   "id_8": {
     id: "id_8",
-    label: " ",
-    description: "字段",
+    label: "#meta1",
+    description: "字段 | if ( work_card_no = '' NULL work_card_no ) ",
     style: "fill: orange"
   },
   "id_9": {
     id: "id_9",
-    label: "#meta5",
-    description: "字段 | count ( 1 ) ",
+    label: "@id_card_num := NULL",
+    description: "字段",
     style: "fill: orange"
   },
   "id_10": {
     id: "id_10",
-    label: "work_card_no",
-    description: "字段",
+    label: "#meta5",
+    description: "字段 | count ( 1 ) ",
     style: "fill: orange"
   },
   "id_11": {
     id: "id_11",
-    label: "@rank",
+    label: "@entry_dt := NULL",
     description: "字段",
     style: "fill: orange"
   },
   "id_12": {
     id: "id_12",
-    label: "#meta3",
-    description: "字段 | upper ( id_card_num ) ",
+    label: "work_card_no",
+    description: "字段",
     style: "fill: orange"
   },
   "id_13": {
     id: "id_13",
-    label: "@entry_dt",
-    description: "字段",
+    label: "#meta3",
+    description: "字段 | upper ( id_card_num ) ",
     style: "fill: orange"
   },
   "id_14": {
@@ -506,60 +513,66 @@ g1.setEdge( "id_1", "id_4" , { label: "" });
   },
   "id_15": {
     id: "id_15",
-    label: "#meta4",
-    description: "字段 | max ( leave_dt ) ",
+    label: "@entry_dt := temp.entry_dt",
+    description: "字段",
     style: "fill: orange"
   },
   "id_16": {
     id: "id_16",
-    label: "ent_id",
-    description: "字段",
+    label: "#meta4",
+    description: "字段 | max ( leave_dt ) ",
     style: "fill: orange"
   },
   "id_17": {
     id: "id_17",
-    label: "@id_card_num",
+    label: "ent_id",
     description: "字段",
     style: "fill: orange"
   },
   "id_18": {
     id: "id_18",
-    label: "rank",
-    description: "字段别名",
-    style: "fill: pink"
+    label: "@rank := 0",
+    description: "字段",
+    style: "fill: orange"
   },
   "id_19": {
     id: "id_19",
-    label: "work_card_num",
+    label: "rank",
     description: "字段别名",
     style: "fill: pink"
   },
   "id_20": {
     id: "id_20",
-    label: "leave_date",
+    label: "work_card_num",
     description: "字段别名",
     style: "fill: pink"
   },
   "id_21": {
     id: "id_21",
-    label: "id_card_num",
+    label: "leave_date",
     description: "字段别名",
     style: "fill: pink"
   },
   "id_22": {
     id: "id_22",
-    label: "entry_date",
+    label: "id_card_num",
     description: "字段别名",
     style: "fill: pink"
   },
   "id_23": {
     id: "id_23",
-    label: "leave_dt",
+    label: "entry_date",
     description: "字段别名",
     style: "fill: pink"
   },
   "id_24": {
     id: "id_24",
+    label: "leave_dt",
+    description: "字段别名",
+    style: "fill: pink"
+  },
+  "id_25": {
+    id: "id_25",
     label: "num",
     description: "字段别名",
     style: "fill: pink"
@@ -581,25 +594,26 @@ g1.setEdge( "id_1", "id_4" , { label: "" });
 
   // Set up the edges
   g2.setEdge( "id_ts", "id_1" , { label: "" });
-g2.setEdge( "id_6", "id_18" , { label: "" });
-g2.setEdge( "id_7", "id_19" , { label: "" });
-g2.setEdge( "id_23", "id_20" , { label: "" });
-g2.setEdge( "id_12", "id_21" , { label: "" });
-g2.setEdge( "id_14", "id_22" , { label: "" });
-g2.setEdge( "id_15", "id_23" , { label: "" });
-g2.setEdge( "id_9", "id_24" , { label: "" });
+g2.setEdge( "id_6", "id_19" , { label: "" });
+g2.setEdge( "id_8", "id_20" , { label: "" });
+g2.setEdge( "id_24", "id_21" , { label: "" });
+g2.setEdge( "id_13", "id_22" , { label: "" });
+g2.setEdge( "id_14", "id_23" , { label: "" });
+g2.setEdge( "id_16", "id_24" , { label: "" });
+g2.setEdge( "id_10", "id_25" , { label: "" });
 g2.setEdge( "id_2", "id_6" , { label: "" });
 g2.setEdge( "id_2", "id_7" , { label: "" });
-g2.setEdge( "id_4", "id_8" , { label: "" });
-g2.setEdge( "id_5", "id_9" , { label: "" });
+g2.setEdge( "id_2", "id_8" , { label: "" });
+g2.setEdge( "id_4", "id_9" , { label: "" });
 g2.setEdge( "id_5", "id_10" , { label: "" });
 g2.setEdge( "id_4", "id_11" , { label: "" });
 g2.setEdge( "id_5", "id_12" , { label: "" });
-g2.setEdge( "id_4", "id_13" , { label: "" });
+g2.setEdge( "id_5", "id_13" , { label: "" });
 g2.setEdge( "id_5", "id_14" , { label: "" });
-g2.setEdge( "id_5", "id_15" , { label: "" });
+g2.setEdge( "id_2", "id_15" , { label: "" });
 g2.setEdge( "id_5", "id_16" , { label: "" });
-g2.setEdge( "id_4", "id_17" , { label: "" });
+g2.setEdge( "id_5", "id_17" , { label: "" });
+g2.setEdge( "id_4", "id_18" , { label: "" });
 g2.setEdge( "id_2", "id_4" , { label: "" });
 g2.setEdge( "id_1", "id_2" , { label: "" });
 g2.setEdge( "id_2", "id_3" , { label: "" });
@@ -693,7 +707,7 @@ g2.setEdge( "id_3", "id_5" , { label: "" });
   "id_2": {
     id: "id_2",
     label: "#meta9",
-    description: "表 | ( SELECT ent_id if #meta1 AS work_card_num id_card_num entry_dt AS entry_date leave_dt AS leave_date if #meta2 AS rank @entry_dt : = temp.entry_dt @id_card_num : = temp.id_card_num FROM #meta7 TEMP #meta8 r )",
+    description: "表 | ( SELECT ent_id if #meta1 AS work_card_num id_card_num entry_dt AS entry_date leave_dt AS leave_date if #meta2 AS rank @entry_dt := temp.entry_dt @id_card_num := temp.id_card_num FROM #meta7 TEMP #meta8 r )",
     style: "fill: blue"
   },
   "id_3": {
@@ -705,7 +719,7 @@ g2.setEdge( "id_3", "id_5" , { label: "" });
   "id_4": {
     id: "id_4",
     label: "#meta8",
-    description: "表 | ( SELECT @entry_dt : = NULL @id_card_num : = NULL @rank : = 0 )",
+    description: "表 | ( SELECT @entry_dt := NULL @id_card_num := NULL @rank := 0 )",
     style: "fill: blue"
   },
   "id_5": {
@@ -717,49 +731,49 @@ g2.setEdge( "id_3", "id_5" , { label: "" });
   "id_6": {
     id: "id_6",
     label: "#meta2",
-    description: "字段 | if ( @entry_dt = temp.entry_dt AND @id_card_num = temp.id_card_num @rank : = @rank + 1 @rank : = 1 ) ",
+    description: "字段 | if ( @entry_dt = temp.entry_dt AND @id_card_num = temp.id_card_num @rank := @rank + 1 @rank := 1 ) ",
     style: "fill: orange"
   },
   "id_7": {
     id: "id_7",
-    label: "#meta1",
-    description: "字段 | if ( work_card_no = '' NULL work_card_no ) ",
+    label: "@id_card_num := temp.id_card_num",
+    description: "字段",
     style: "fill: orange"
   },
   "id_8": {
     id: "id_8",
-    label: " ",
-    description: "字段",
+    label: "#meta1",
+    description: "字段 | if ( work_card_no = '' NULL work_card_no ) ",
     style: "fill: orange"
   },
   "id_9": {
     id: "id_9",
-    label: "#meta5",
-    description: "字段 | count ( 1 ) ",
+    label: "@id_card_num := NULL",
+    description: "字段",
     style: "fill: orange"
   },
   "id_10": {
     id: "id_10",
-    label: "work_card_no",
-    description: "字段",
+    label: "#meta5",
+    description: "字段 | count ( 1 ) ",
     style: "fill: orange"
   },
   "id_11": {
     id: "id_11",
-    label: "@rank",
+    label: "@entry_dt := NULL",
     description: "字段",
     style: "fill: orange"
   },
   "id_12": {
     id: "id_12",
-    label: "#meta3",
-    description: "字段 | upper ( id_card_num ) ",
+    label: "work_card_no",
+    description: "字段",
     style: "fill: orange"
   },
   "id_13": {
     id: "id_13",
-    label: "@entry_dt",
-    description: "字段",
+    label: "#meta3",
+    description: "字段 | upper ( id_card_num ) ",
     style: "fill: orange"
   },
   "id_14": {
@@ -770,60 +784,66 @@ g2.setEdge( "id_3", "id_5" , { label: "" });
   },
   "id_15": {
     id: "id_15",
-    label: "#meta4",
-    description: "字段 | max ( leave_dt ) ",
+    label: "@entry_dt := temp.entry_dt",
+    description: "字段",
     style: "fill: orange"
   },
   "id_16": {
     id: "id_16",
-    label: "ent_id",
-    description: "字段",
+    label: "#meta4",
+    description: "字段 | max ( leave_dt ) ",
     style: "fill: orange"
   },
   "id_17": {
     id: "id_17",
-    label: "@id_card_num",
+    label: "ent_id",
     description: "字段",
     style: "fill: orange"
   },
   "id_18": {
     id: "id_18",
-    label: "rank",
-    description: "字段别名",
-    style: "fill: pink"
+    label: "@rank := 0",
+    description: "字段",
+    style: "fill: orange"
   },
   "id_19": {
     id: "id_19",
-    label: "work_card_num",
+    label: "rank",
     description: "字段别名",
     style: "fill: pink"
   },
   "id_20": {
     id: "id_20",
-    label: "leave_date",
+    label: "work_card_num",
     description: "字段别名",
     style: "fill: pink"
   },
   "id_21": {
     id: "id_21",
-    label: "id_card_num",
+    label: "leave_date",
     description: "字段别名",
     style: "fill: pink"
   },
   "id_22": {
     id: "id_22",
-    label: "entry_date",
+    label: "id_card_num",
     description: "字段别名",
     style: "fill: pink"
   },
   "id_23": {
     id: "id_23",
-    label: "leave_dt",
+    label: "entry_date",
     description: "字段别名",
     style: "fill: pink"
   },
   "id_24": {
     id: "id_24",
+    label: "leave_dt",
+    description: "字段别名",
+    style: "fill: pink"
+  },
+  "id_25": {
+    id: "id_25",
     label: "num",
     description: "字段别名",
     style: "fill: pink"
@@ -845,25 +865,26 @@ g2.setEdge( "id_3", "id_5" , { label: "" });
 
   // Set up the edges
   g3.setEdge( "id_ts", "id_1" , { label: "" });
-g3.setEdge( "id_6", "id_18" , { label: "" });
-g3.setEdge( "id_7", "id_19" , { label: "" });
-g3.setEdge( "id_23", "id_20" , { label: "" });
-g3.setEdge( "id_12", "id_21" , { label: "" });
-g3.setEdge( "id_14", "id_22" , { label: "" });
-g3.setEdge( "id_15", "id_23" , { label: "" });
-g3.setEdge( "id_9", "id_24" , { label: "" });
+g3.setEdge( "id_6", "id_19" , { label: "" });
+g3.setEdge( "id_8", "id_20" , { label: "" });
+g3.setEdge( "id_24", "id_21" , { label: "" });
+g3.setEdge( "id_13", "id_22" , { label: "" });
+g3.setEdge( "id_14", "id_23" , { label: "" });
+g3.setEdge( "id_16", "id_24" , { label: "" });
+g3.setEdge( "id_10", "id_25" , { label: "" });
 g3.setEdge( "id_2", "id_6" , { label: "" });
 g3.setEdge( "id_2", "id_7" , { label: "" });
-g3.setEdge( "id_4", "id_8" , { label: "" });
-g3.setEdge( "id_5", "id_9" , { label: "" });
+g3.setEdge( "id_2", "id_8" , { label: "" });
+g3.setEdge( "id_4", "id_9" , { label: "" });
 g3.setEdge( "id_5", "id_10" , { label: "" });
 g3.setEdge( "id_4", "id_11" , { label: "" });
 g3.setEdge( "id_5", "id_12" , { label: "" });
-g3.setEdge( "id_4", "id_13" , { label: "" });
+g3.setEdge( "id_5", "id_13" , { label: "" });
 g3.setEdge( "id_5", "id_14" , { label: "" });
-g3.setEdge( "id_5", "id_15" , { label: "" });
+g3.setEdge( "id_2", "id_15" , { label: "" });
 g3.setEdge( "id_5", "id_16" , { label: "" });
-g3.setEdge( "id_4", "id_17" , { label: "" });
+g3.setEdge( "id_5", "id_17" , { label: "" });
+g3.setEdge( "id_4", "id_18" , { label: "" });
 g3.setEdge( "id_2", "id_4" , { label: "" });
 g3.setEdge( "id_1", "id_2" , { label: "" });
 g3.setEdge( "id_2", "id_3" , { label: "" });

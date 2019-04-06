@@ -50,7 +50,7 @@ def sql_to_meta_words(sql):
 
     for v in OPERATOR_MIDDLE:
         sql_format = sql_format.replace(v, ' %s ' % v)
-    # sql_format = sql_format.replace(': =', ':=')
+    sql_format = sql_format.replace(': =', ':=')
     sql_sep = sql_format.replace('\n', ' ').replace(';', ' ').replace(',', ' ').replace('(', ' ( ').replace(')',
                                                                                                             ' ) ').split(
         ' ')
@@ -102,6 +102,7 @@ def merge_meta_words_to_operator(meta_sql_words, meta_map):
             merge_sql_words.pop()
             merge_sql_words.pop()
             is_meta_in = 0
+            # 单元与运算符结合，需要单独判断
             if '#meta' in seg_tmp[0]:
                 is_meta_in += 1
                 merge_sql_words.append(seg_tmp[0])
@@ -112,7 +113,7 @@ def merge_meta_words_to_operator(meta_sql_words, meta_map):
                 merge_meta_map[seg_tmp[2]] = seg_tmp[:2] + merge_meta_map[seg_tmp[2]]
 
             if is_meta_in == 0:
-                merge_sql_words.append(merge_one[1])
+                merge_sql_words.append(merge_one)
 
             i += 2
             continue
