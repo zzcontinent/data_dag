@@ -141,6 +141,25 @@ and is_deleted=0
 and left(ta.dtCheckinTime,10) = intv_dt
 and ta.vIDCardNum = mbr_id_card_num
 )'''
+    },
+    {
+        'TITLE': '测试',
+        'SQL': '''
+        truncate transit_jff.direct_store_name_list_sum;
+
+insert into transit_jff.direct_store_name_list_sum(sp_id, league_id, league_name,
+ent_id, ent_short_name, sp_ent_id, sum_wage_min, sum_wage_max, intv_cnt)
+select a.sp_id, b.league_id, b.league_name, d.ent_id, d.ent_short_name, a.sp_ent_id,
+d.sum_wage_min, d.sum_wage_max, count(1) as intv_cnt
+from ods_jff.name_list a
+left join ods_jff.league_store b on a.sp_id = b.sp_id
+left join ods_jff.sp_ent c on a.sp_ent_id = c.sp_ent_id
+left join ods_jff.ent d on c.ent_id = d.ent_id
+where a.is_deleted = 0 -- and b.coop_mode = 3 
+and b.is_deleted = 0 and d.ent_id > 0 and a.intv_dt >= date_sub(current_date(), interval 1 month)
+group by a.sp_id, b.league_id, b.league_name, d.ent_id, d.ent_short_name, a.sp_ent_id,
+d.sum_wage_min, d.sum_wage_max;
+        '''
     }
 
 ]

@@ -1472,4 +1472,205 @@ g6.setEdge( "id_1", "id_2" , { label: "" });
   svg.attr('height', g6.graph().height * initialScale + 40);
 </script>
 
+<h3>测试</h3>
+<svg width=960 height=800 id="svg7"></svg>
+<script>
+  var highlight_color = "#000000";
+  var upstream_color = "#0000FF";
+  var downstream_color = "#0000FF"
+  var fill_default_color = "rgb(240, 237, 228)"
+  var fill_upstream_color = "orange"
+  var fill_downstream_color = "orange"
+  var initialStrokeWidth = '3px';
+  
+  // Create a new directed graph
+  var g7 = new dagreD3.graphlib.Graph().setGraph({});
+
+  // States and transitions from RFC 793
+  var states = {
+    "id_1": {
+    id: "id_1",
+    label: "SQL",
+    description: "<br>        truncate transit_jff.direct_store_name_list_sum;<br><br>insert into transit_jff.direct_store_name_list_sum(sp_id, league_id, league_name,<br>ent_id, ent_short_name, sp_ent_id, sum_wage_min, sum_wage_max, intv_cnt)<br>select a.sp_id, b.league_id, b.league_name, d.ent_id, d.ent_short_name, a.sp_ent_id,<br>d.sum_wage_min, d.sum_wage_max, count(1) as intv_cnt<br>from ods_jff.name_list a<br>left join ods_jff.league_store b on a.sp_id = b.sp_id<br>left join ods_jff.sp_ent c on a.sp_ent_id = c.sp_ent_id<br>left join ods_jff.ent d on c.ent_id = d.ent_id<br>where a.is_deleted = 0 -- and b.coop_mode = 3 <br>and b.is_deleted = 0 and d.ent_id > 0 and a.intv_dt >= date_sub(current_date(), interval 1 month)<br>group by a.sp_id, b.league_id, b.league_name, d.ent_id, d.ent_short_name, a.sp_ent_id,<br>d.sum_wage_min, d.sum_wage_max;<br>        ",
+    style: "fill: lightblue"
+  },
+  "id_2": {
+    id: "id_2",
+    label: "ods_jff.name_list",
+    description: "表",
+    style: "fill: blue"
+  },
+  "id_3": {
+    id: "id_3",
+    label: "ods_jff.league_store",
+    description: "表",
+    style: "fill: blue"
+  },
+  "id_4": {
+    id: "id_4",
+    label: "ods_jff.sp_ent",
+    description: "表",
+    style: "fill: blue"
+  },
+  "id_5": {
+    id: "id_5",
+    label: "ods_jff.ent",
+    description: "表",
+    style: "fill: blue"
+  },
+  "id_6": {
+    id: "id_6",
+    label: "sum_wage_max",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_7": {
+    id: "id_7",
+    label: "league_id",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_8": {
+    id: "id_8",
+    label: "sum_wage_min",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_9": {
+    id: "id_9",
+    label: "ent_short_name",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_10": {
+    id: "id_10",
+    label: "sp_id",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_11": {
+    id: "id_11",
+    label: "#meta2",
+    description: "字段 | count ( 1 ) ",
+    style: "fill: orange"
+  },
+  "id_12": {
+    id: "id_12",
+    label: "sp_ent_id",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_ts": {
+    id: "id_ts",
+    label: "开始",
+    description: "开始",
+    style: "fill: red"
+  },
+  "id_14": {
+    id: "id_14",
+    label: "league_name",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_13": {
+    id: "id_13",
+    label: "ent_id",
+    description: "字段",
+    style: "fill: orange"
+  },
+  "id_15": {
+    id: "id_15",
+    label: "intv_cnt",
+    description: "字段别名",
+    style: "fill: pink"
+  }
+  };
+
+  // Add states to the graph, set labels, and style
+  Object.keys(states).forEach(function (state) {
+    var value = states[state];
+    value.rx = value.ry = 5;
+    g7.setNode(state, value);
+  });
+
+  // Set up the edges
+  g7.setEdge( "id_ts", "id_1" , { label: "" });
+g7.setEdge( "id_11", "id_15" , { label: "" });
+g7.setEdge( "id_5", "id_6" , { label: "" });
+g7.setEdge( "id_3", "id_7" , { label: "" });
+g7.setEdge( "id_5", "id_8" , { label: "" });
+g7.setEdge( "id_5", "id_9" , { label: "" });
+g7.setEdge( "id_2", "id_10" , { label: "" });
+g7.setEdge( "id_1", "id_11" , { label: "" });
+g7.setEdge( "id_2", "id_12" , { label: "" });
+g7.setEdge( "id_5", "id_13" , { label: "" });
+g7.setEdge( "id_3", "id_14" , { label: "" });
+g7.setEdge( "id_1", "id_5" , { label: "" });
+g7.setEdge( "id_1", "id_3" , { label: "" });
+g7.setEdge( "id_1", "id_2" , { label: "" });
+g7.setEdge( "id_1", "id_4" , { label: "" });
+
+
+  // Create the renderer
+  var render = new dagreD3.render();
+
+  // Set up an SVG group so that we can translate the final graph.
+  var svg = d3.select("#svg7"),
+    inner7 = svg.append("g");
+
+  // Set up zoom support
+  var zoom = d3.zoom()
+    .on("zoom", function () {
+      inner7.attr("transform", d3.event.transform);
+    });
+  svg.call(zoom);
+
+  // Simple function to style the tooltip for the given node.
+  var styleTooltip = function (name, description) {
+    return "<p class='name'>" + name + "</p><p class='description' style='color:orange; width:100%; height:100%; display:inline-block' >" + description +"<br>" + "</p>";
+  };
+
+  // Run the renderer. This is what draws the final graph.
+  render(inner7, g7);
+
+  inner7.selectAll("g.node")
+    .attr("title", function (v) { return styleTooltip(g7.node(v).label, g7.node(v).description) })
+    .each(function (v) { $(this).tipsy({ gravity: "w", opacity: 1, html: true }); });
+
+  inner7.selectAll("g.node").style("stroke-width", initialStrokeWidth);
+
+  // function highlight nodes
+  inner7.selectAll("g.node").on("mouseover", function (d) {
+    inner7.selectAll("rect").style("stroke", highlight_color);
+    g7.predecessors(d).forEach(function (nodeid) {
+      my_node = inner7.select('#' + nodeid + ' rect');
+      my_node.style("stroke", fill_upstream_color);
+    })
+
+    g7.successors(d).forEach(function (nodeid) {
+      my_node = inner7.select('#' + nodeid + ' rect');
+      my_node.style("stroke", fill_downstream_color);
+    })
+  });
+
+  inner7.selectAll("g.node").on("mouseout", function (d) {
+    inner7.selectAll("rect").style("stroke", null);
+    g7.predecessors(d).forEach(function (nodeid) {
+      my_node = inner7.select('#' + nodeid + ' rect');
+      my_node.style("stroke", null);
+    })
+
+    g7.successors(d).forEach(function (nodeid) {
+      my_node = inner7.select('#' + nodeid + ' rect');
+      my_node.style("stroke", null);
+    })
+  });
+  
+  // Center the graph
+  var initialScale = 0.75;
+  svg.call(zoom.transform, d3.zoomIdentity.translate((svg.attr("width") - g7.graph().width * initialScale) / 2, 20).scale(initialScale));
+
+  svg.attr('height', g7.graph().height * initialScale + 40);
+</script>
+
 
