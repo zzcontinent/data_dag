@@ -19,7 +19,7 @@ meta_sql_words = []
 meta_map = {}
 
 # 用于检索sql语句的关键字
-STATE_WORDS_PASS = ['SELECT', 'AS', 'FROM', 'JOIN', 'ON', 'WHERE', 'GROUP', 'BY']
+STATE_WORDS_PASS = ['SELECT', 'AS', 'FROM', 'JOIN', 'ON', 'WHERE', 'ORDER', 'GROUP', 'LIMIT']
 # 范围操作符
 META_BETWEEN = {'CASE': 'END', '(': ')'}
 
@@ -108,7 +108,6 @@ def merge_meta_words_by_META_BETWEEN(node_name, word_list, meta_map):
                         meta_sql_words.append(meta_map_id)
                         # 新增聚合，需要递归聚合
                         merge_meta_words_by_META_BETWEEN(meta_map_id, meta_map[meta_map_id], meta_map)
-
                         break
 
         meta_map[node_name] = []
@@ -286,11 +285,11 @@ def parse_meta_select_v2(node_name, sql_words):
             while i_tmp < len(seg_x_y) - 1:
                 TABLE_AS[seg_x_y[i_tmp]] = seg_x_y[i_tmp + 1]
                 i_tmp += 2
-        elif 'FROM' == state_y and i_state_y == len(i_STATE) - 1:
-            TABLE += seg_y
+        elif 'FROM' == state_x and state_y != '':
+            TABLE += seg_x_y
             i_tmp = 0
-            while i_tmp < len(seg_y) - 1:
-                TABLE_AS[seg_y[i_tmp]] = seg_y[i_tmp + 1]
+            while i_tmp < len(seg_x_y) - 1:
+                TABLE_AS[seg_x_y[i_tmp]] = seg_x_y[i_tmp + 1]
                 i_tmp += 2
 
     # 1删除select字段表名
