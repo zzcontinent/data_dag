@@ -68,7 +68,7 @@
     "id_1": {
     id: "id_1",
     label: "SQL",
-    description: "<br>    insert into jff_ent_tmp.zhouxinxin_league_name_list(name_list_id, jff_name_list_id, ent_id,<br>ent_short_name, sp_id, sp_short_name, labor_sp_id, labor_sp_short_name, order_id, id_card_num,<br>interview_date, interview_status, work_card_num, work_status, entry_date, leave_date)<br>SELECT a.name_list_id, a.jff_name_list_id, a.ent_id, d.ent_short_name, c.sp_id, c.league_name,<br>e.real_b_sp_id, f.sp_short_name, a.rcrt_order_id, upper(a.id_card_num), a.intv_dt,<br>a.intv_sts, a.work_card_no, a.work_sts, a.entry_dt, a.leave_dt<br>FROM (<br>	select name_list_id, jff_name_list_id, ent_id, id_card_num, if(work_card_no='', null, work_card_no) as work_card_no,<br>	intv_dt, intv_sts, work_sts, entry_dt, leave_dt, rcrt_order_id, srce_sp_id, trgt_sp_id,<br>	if(@intv_dt=temp.intv_dt and @id_card_num=temp.id_card_num, @rank := @rank+1, @rank := 1) as rank,<br>	@intv_dt := temp.intv_dt,  @id_card_num := temp.id_card_num<br>	from (<br>		select name_list_id, jff_name_list_id, ent_id, upper(id_card_num) as id_card_num, trgt_sp_id,<br>		work_card_no, intv_dt, intv_sts, work_sts, entry_dt, leave_dt, rcrt_order_id, srce_sp_id<br>		from `ods_zxx_2.0`.name_list<br>		where is_deleted = 1 <br>		order by intv_dt, id_card_num, name_list_id desc<br>		) temp,<br>		(select @intv_dt := null, @id_card_num := null, @rank := 0) r<br>) a<br>left join `ods_zxx_2.0`.sp_mapping b on a.srce_sp_id = b.virtual_sp_id<br>left join ods_jff.league_store c on b.real_sp_id = c.sp_id<br>left join `ods_zxx_2.0`.ent d on a.ent_id = d.ent_id<br>left join ods_jff.sp_real_coop e on a.trgt_sp_id = e.b_sp_id<br>left join ods_jff.sp f on e.real_b_sp_id = f.sp_id<br>where a.intv_dt >= c.coop_start_dt and a.rank = 1<br>and c.sp_id != 1006;<br>    ",
+    description: "<br>    insert into jff_ent_tmp.zhouxinxin_league_name_list(name_list_id, jff_name_list_id, ent_id,<br>ent_short_name, sp_id, sp_short_name, labor_sp_id, labor_sp_short_name, order_id, id_card_num,<br>interview_date, interview_status, work_card_num, work_status, entry_date, leave_date)<br>SELECT a.name_list_id, a.jff_name_list_id, a.ent_id, d.ent_short_name, c.sp_id, c.league_name,<br>e.real_b_sp_id, f.sp_short_name, a.rcrt_order_id, upper(a.id_card_num), a.intv_dt,<br>a.intv_sts, a.work_card_no, a.work_sts, a.entry_dt, a.leave_dt<br>FROM (<br>	select name_list_id, jff_name_list_id, ent_id, id_card_num, if(work_card_no='', null, work_card_no) as work_card_no,<br>	intv_dt, intv_sts, work_sts, entry_dt, leave_dt, rcrt_order_id, srce_sp_id, trgt_sp_id,<br>	if(@intv_dt=temp.intv_dt and @id_card_num=temp.id_card_num, @rank := @rank+1, @rank := 1) as rank,<br>	@intv_dt := temp.intv_dt,  @id_card_num := temp.id_card_num<br>	from (<br>		select name_list_id, jff_name_list_id, ent_id, upper(id_card_num) as id_card_num, trgt_sp_id,<br>		work_card_no, intv_dt, intv_sts, work_sts, entry_dt, leave_dt, rcrt_order_id, srce_sp_id<br>		from `ods_zxx_2.0`.name_list<br>		where is_deleted = 1<br>		order by intv_dt, id_card_num, name_list_id desc<br>		) temp,<br>		(select @intv_dt := null, @id_card_num := null, @rank := 0) r<br>) a<br>left join `ods_zxx_2.0`.sp_mapping b on a.srce_sp_id = b.virtual_sp_id<br>left join ods_jff.league_store c on b.real_sp_id = c.sp_id<br>left join `ods_zxx_2.0`.ent d on a.ent_id = d.ent_id<br>left join ods_jff.sp_real_coop e on a.trgt_sp_id = e.b_sp_id<br>left join ods_jff.sp f on e.real_b_sp_id = f.sp_id<br>where a.intv_dt >= c.coop_start_dt and a.rank = 1<br>and c.sp_id != 1006;<br>    ",
     style: "fill: lightblue"
   },
   "id_2": {
@@ -430,24 +430,24 @@ g1.setEdge( "id_1", "id_4" , { label: "" });
     "id_1": {
     id: "id_1",
     label: "SQL",
-    description: "<br>        update jff_ent_tmp.zhouxinxin_league_name_list a<br>inner join (<br>	select ent_id, if(work_card_no='', null, work_card_no) as work_card_num, id_card_num, entry_dt as entry_date, leave_dt as leave_date,<br>	if(@entry_dt=temp.entry_dt and @id_card_num=temp.id_card_num, @rank := @rank+1, @rank := 1) as rank,<br>	@entry_dt := temp.entry_dt, @id_card_num := temp.id_card_num<br>	from (<br>		SELECT upper(id_card_num) as id_card_num, work_card_no, entry_dt, ent_id, max(leave_dt) as leave_dt, count(1) as num <br>		FROM `ods_zxx_2.0`.bill_monthly_batch_import_detail<br>		where entry_dt > '1970-01-01'<br>		group by ent_id, upper(id_card_num), work_card_no, entry_dt<br>		order by ent_id, id_card_num, entry_dt, num desc<br>	)temp,<br>	(select @entry_dt := null, @id_card_num := null, @rank := 0) r<br>) b on b.rank = 1 and a.id_card_num = b.id_card_num and coalesce(a.fixed_work_card_num, a.work_card_num) = b.work_card_num<br>set a.hire_status = 1<br>where a.interview_date >= '${MIN_INTV_DT}';",
+    description: "<br>        update jff_ent_tmp.zhouxinxin_league_name_list a<br>inner join (<br>	select ent_id, if(work_card_no='', null, work_card_no) as work_card_num, id_card_num, entry_dt as entry_date, leave_dt as leave_date,<br>	if(@entry_dt=temp.entry_dt and @id_card_num=temp.id_card_num, @rank := @rank+1, @rank := 1) as rank,<br>	@entry_dt := temp.entry_dt, @id_card_num := temp.id_card_num<br>	from (<br>		SELECT upper(id_card_num) as id_card_num, work_card_no, entry_dt, ent_id, max(leave_dt) as leave_dt, count(1) as num<br>		FROM `ods_zxx_2.0`.bill_monthly_batch_import_detail<br>		where entry_dt > '1970-01-01'<br>		group by ent_id, upper(id_card_num), work_card_no, entry_dt<br>		order by ent_id, id_card_num, entry_dt, num desc<br>	)temp,<br>	(select @entry_dt := null, @id_card_num := null, @rank := 0) r<br>) b on b.rank = 1 and a.id_card_num = b.id_card_num and coalesce(a.fixed_work_card_num, a.work_card_num) = b.work_card_num<br>set a.hire_status = 1<br>where a.interview_date >= '${MIN_INTV_DT}';",
     style: "fill: lightblue"
   },
   "id_2": {
     id: "id_2",
-    label: "#meta9",
-    description: "表 | ( SELECT ent_id if #meta1 AS work_card_num id_card_num entry_dt AS entry_date leave_dt AS leave_date if #meta2 AS rank @entry_dt := temp.entry_dt @id_card_num := temp.id_card_num FROM #meta7 TEMP #meta8 r )",
+    label: "#meta17",
+    description: "表 | ( SELECT ent_id if #meta9 AS work_card_num id_card_num entry_dt AS entry_date leave_dt AS leave_date if #meta10 AS rank @entry_dt := temp.entry_dt @id_card_num := temp.id_card_num FROM #meta15 TEMP #meta16 r )",
     style: "fill: blue"
   },
   "id_3": {
     id: "id_3",
-    label: "#meta7",
-    description: "表 | ( SELECT upper #meta3 AS id_card_num work_card_no entry_dt ent_id max #meta4 AS leave_dt count #meta5 AS num FROM `ods_zxx_2.0`.bill_monthly_batch_import_detail WHERE entry_dt > '1970 - 01 - 01' GROUP BY ent_id upper #meta6 work_card_no entry_dt ORDER BY ent_id id_card_num entry_dt num DESC )",
+    label: "#meta15",
+    description: "表 | ( SELECT upper #meta11 AS id_card_num work_card_no entry_dt ent_id max #meta12 AS leave_dt count #meta13 AS num FROM `ods_zxx_2.0`.bill_monthly_batch_import_detail WHERE entry_dt > '1970 - 01 - 01' GROUP BY ent_id upper #meta14 work_card_no entry_dt ORDER BY ent_id id_card_num entry_dt num DESC )",
     style: "fill: blue"
   },
   "id_4": {
     id: "id_4",
-    label: "#meta8",
+    label: "#meta16",
     description: "表 | ( SELECT @entry_dt := NULL @id_card_num := NULL @rank := 0 )",
     style: "fill: blue"
   },
@@ -459,31 +459,31 @@ g1.setEdge( "id_1", "id_4" , { label: "" });
   },
   "id_6": {
     id: "id_6",
-    label: "#meta2",
-    description: "字段 | if ( @entry_dt = temp.entry_dt AND @id_card_num = temp.id_card_num @rank := @rank + 1 @rank := 1 ) ",
-    style: "fill: orange"
-  },
-  "id_7": {
-    id: "id_7",
     label: "@id_card_num := temp.id_card_num",
     description: "字段",
     style: "fill: orange"
   },
+  "id_7": {
+    id: "id_7",
+    label: "#meta10",
+    description: "字段 | if ( @entry_dt = temp.entry_dt AND @id_card_num = temp.id_card_num @rank := @rank + 1 @rank := 1 ) ",
+    style: "fill: orange"
+  },
   "id_8": {
     id: "id_8",
-    label: "#meta1",
-    description: "字段 | if ( work_card_no = '' NULL work_card_no ) ",
+    label: "#meta11",
+    description: "字段 | upper ( id_card_num ) ",
     style: "fill: orange"
   },
   "id_9": {
     id: "id_9",
-    label: "@id_card_num := NULL",
-    description: "字段",
+    label: "#meta12",
+    description: "字段 | max ( leave_dt ) ",
     style: "fill: orange"
   },
   "id_10": {
     id: "id_10",
-    label: "#meta5",
+    label: "#meta13",
     description: "字段 | count ( 1 ) ",
     style: "fill: orange"
   },
@@ -501,32 +501,32 @@ g1.setEdge( "id_1", "id_4" , { label: "" });
   },
   "id_13": {
     id: "id_13",
-    label: "#meta3",
-    description: "字段 | upper ( id_card_num ) ",
+    label: "entry_dt",
+    description: "字段",
     style: "fill: orange"
   },
   "id_14": {
     id: "id_14",
-    label: "entry_dt",
+    label: "@entry_dt := temp.entry_dt",
     description: "字段",
     style: "fill: orange"
   },
   "id_15": {
     id: "id_15",
-    label: "@entry_dt := temp.entry_dt",
+    label: "@id_card_num := NULL",
     description: "字段",
     style: "fill: orange"
   },
   "id_16": {
     id: "id_16",
-    label: "#meta4",
-    description: "字段 | max ( leave_dt ) ",
+    label: "ent_id",
+    description: "字段",
     style: "fill: orange"
   },
   "id_17": {
     id: "id_17",
-    label: "ent_id",
-    description: "字段",
+    label: "#meta9",
+    description: "字段 | if ( work_card_no = '' NULL work_card_no ) ",
     style: "fill: orange"
   },
   "id_18": {
@@ -543,37 +543,37 @@ g1.setEdge( "id_1", "id_4" , { label: "" });
   },
   "id_20": {
     id: "id_20",
-    label: "work_card_num",
+    label: "id_card_num",
     description: "字段别名",
     style: "fill: pink"
   },
   "id_21": {
     id: "id_21",
-    label: "leave_date",
+    label: "leave_dt",
     description: "字段别名",
     style: "fill: pink"
   },
   "id_22": {
     id: "id_22",
-    label: "id_card_num",
+    label: "num",
     description: "字段别名",
     style: "fill: pink"
   },
   "id_23": {
     id: "id_23",
-    label: "entry_date",
+    label: "leave_date",
     description: "字段别名",
     style: "fill: pink"
   },
   "id_24": {
     id: "id_24",
-    label: "leave_dt",
+    label: "entry_date",
     description: "字段别名",
     style: "fill: pink"
   },
   "id_25": {
     id: "id_25",
-    label: "num",
+    label: "work_card_num",
     description: "字段别名",
     style: "fill: pink"
   },
@@ -594,30 +594,30 @@ g1.setEdge( "id_1", "id_4" , { label: "" });
 
   // Set up the edges
   g2.setEdge( "id_ts", "id_1" , { label: "" });
-g2.setEdge( "id_6", "id_19" , { label: "" });
+g2.setEdge( "id_7", "id_19" , { label: "" });
 g2.setEdge( "id_8", "id_20" , { label: "" });
-g2.setEdge( "id_24", "id_21" , { label: "" });
-g2.setEdge( "id_13", "id_22" , { label: "" });
-g2.setEdge( "id_14", "id_23" , { label: "" });
-g2.setEdge( "id_16", "id_24" , { label: "" });
-g2.setEdge( "id_10", "id_25" , { label: "" });
+g2.setEdge( "id_9", "id_21" , { label: "" });
+g2.setEdge( "id_10", "id_22" , { label: "" });
+g2.setEdge( "id_21", "id_23" , { label: "" });
+g2.setEdge( "id_13", "id_24" , { label: "" });
+g2.setEdge( "id_17", "id_25" , { label: "" });
 g2.setEdge( "id_2", "id_6" , { label: "" });
 g2.setEdge( "id_2", "id_7" , { label: "" });
-g2.setEdge( "id_2", "id_8" , { label: "" });
-g2.setEdge( "id_4", "id_9" , { label: "" });
+g2.setEdge( "id_5", "id_8" , { label: "" });
+g2.setEdge( "id_5", "id_9" , { label: "" });
 g2.setEdge( "id_5", "id_10" , { label: "" });
 g2.setEdge( "id_4", "id_11" , { label: "" });
 g2.setEdge( "id_5", "id_12" , { label: "" });
 g2.setEdge( "id_5", "id_13" , { label: "" });
-g2.setEdge( "id_5", "id_14" , { label: "" });
-g2.setEdge( "id_2", "id_15" , { label: "" });
+g2.setEdge( "id_2", "id_14" , { label: "" });
+g2.setEdge( "id_4", "id_15" , { label: "" });
 g2.setEdge( "id_5", "id_16" , { label: "" });
-g2.setEdge( "id_5", "id_17" , { label: "" });
+g2.setEdge( "id_2", "id_17" , { label: "" });
 g2.setEdge( "id_4", "id_18" , { label: "" });
+g2.setEdge( "id_3", "id_5" , { label: "" });
+g2.setEdge( "id_2", "id_3" , { label: "" });
 g2.setEdge( "id_2", "id_4" , { label: "" });
 g2.setEdge( "id_1", "id_2" , { label: "" });
-g2.setEdge( "id_2", "id_3" , { label: "" });
-g2.setEdge( "id_3", "id_5" , { label: "" });
 
 
   // Create the renderer
@@ -701,24 +701,24 @@ g2.setEdge( "id_3", "id_5" , { label: "" });
     "id_1": {
     id: "id_1",
     label: "SQL",
-    description: "<br>        update jff_ent_tmp.zhouxinxin_league_name_list a<br>inner join (<br>	select ent_id, if(work_card_no='', null, work_card_no) as work_card_num, id_card_num, entry_dt as entry_date, leave_dt as leave_date,<br>	if(@entry_dt=temp.entry_dt and @id_card_num=temp.id_card_num, @rank := @rank+1, @rank := 1) as rank,<br>	@entry_dt := temp.entry_dt, @id_card_num := temp.id_card_num<br>	from (<br>		SELECT upper(id_card_num) as id_card_num, work_card_no, entry_dt, ent_id, max(leave_dt) as leave_dt, count(1) as num <br>		FROM `ods_zxx_2.0`.bill_weekly_batch_import_detail<br>		where entry_dt > '1970-01-01'<br>		group by ent_id, upper(id_card_num), work_card_no, entry_dt<br>		order by ent_id, id_card_num, entry_dt, num desc<br>	)temp,<br>	(select @entry_dt := null, @id_card_num := null, @rank := 0) r<br>) b on b.rank = 1 and a.id_card_num = b.id_card_num and coalesce(a.fixed_work_card_num, a.work_card_num) = b.work_card_num<br>set a.hire_status = 1<br>where a.interview_date >= '${MIN_INTV_DT}';<br><br>update jff_ent_tmp.zhouxinxin_league_name_list<br>set hire_status = 0<br>where hire_status is null<br>and interview_date >= '${MIN_INTV_D}' ",
+    description: "<br>        update jff_ent_tmp.zhouxinxin_league_name_list a<br>inner join (<br>	select ent_id, if(work_card_no='', null, work_card_no) as work_card_num, id_card_num, entry_dt as entry_date, leave_dt as leave_date,<br>	if(@entry_dt=temp.entry_dt and @id_card_num=temp.id_card_num, @rank := @rank+1, @rank := 1) as rank,<br>	@entry_dt := temp.entry_dt, @id_card_num := temp.id_card_num<br>	from (<br>		SELECT upper(id_card_num) as id_card_num, work_card_no, entry_dt, ent_id, max(leave_dt) as leave_dt, count(1) as num<br>		FROM `ods_zxx_2.0`.bill_weekly_batch_import_detail<br>		where entry_dt > '1970-01-01'<br>		group by ent_id, upper(id_card_num), work_card_no, entry_dt<br>		order by ent_id, id_card_num, entry_dt, num desc<br>	)temp,<br>	(select @entry_dt := null, @id_card_num := null, @rank := 0) r<br>) b on b.rank = 1 and a.id_card_num = b.id_card_num and coalesce(a.fixed_work_card_num, a.work_card_num) = b.work_card_num<br>set a.hire_status = 1<br>where a.interview_date >= '${MIN_INTV_DT}';<br><br>update jff_ent_tmp.zhouxinxin_league_name_list<br>set hire_status = 0<br>where hire_status is null<br>and interview_date >= '${MIN_INTV_D}' ",
     style: "fill: lightblue"
   },
   "id_2": {
     id: "id_2",
-    label: "#meta9",
-    description: "表 | ( SELECT ent_id if #meta1 AS work_card_num id_card_num entry_dt AS entry_date leave_dt AS leave_date if #meta2 AS rank @entry_dt := temp.entry_dt @id_card_num := temp.id_card_num FROM #meta7 TEMP #meta8 r )",
+    label: "#meta27",
+    description: "表 | ( SELECT ent_id if #meta19 AS work_card_num id_card_num entry_dt AS entry_date leave_dt AS leave_date if #meta20 AS rank @entry_dt := temp.entry_dt @id_card_num := temp.id_card_num FROM #meta25 TEMP #meta26 r )",
     style: "fill: blue"
   },
   "id_3": {
     id: "id_3",
-    label: "#meta7",
-    description: "表 | ( SELECT upper #meta3 AS id_card_num work_card_no entry_dt ent_id max #meta4 AS leave_dt count #meta5 AS num FROM `ods_zxx_2.0`.bill_weekly_batch_import_detail WHERE entry_dt > '1970 - 01 - 01' GROUP BY ent_id upper #meta6 work_card_no entry_dt ORDER BY ent_id id_card_num entry_dt num DESC )",
+    label: "#meta25",
+    description: "表 | ( SELECT upper #meta21 AS id_card_num work_card_no entry_dt ent_id max #meta22 AS leave_dt count #meta23 AS num FROM `ods_zxx_2.0`.bill_weekly_batch_import_detail WHERE entry_dt > '1970 - 01 - 01' GROUP BY ent_id upper #meta24 work_card_no entry_dt ORDER BY ent_id id_card_num entry_dt num DESC )",
     style: "fill: blue"
   },
   "id_4": {
     id: "id_4",
-    label: "#meta8",
+    label: "#meta26",
     description: "表 | ( SELECT @entry_dt := NULL @id_card_num := NULL @rank := 0 )",
     style: "fill: blue"
   },
@@ -730,8 +730,8 @@ g2.setEdge( "id_3", "id_5" , { label: "" });
   },
   "id_6": {
     id: "id_6",
-    label: "#meta2",
-    description: "字段 | if ( @entry_dt = temp.entry_dt AND @id_card_num = temp.id_card_num @rank := @rank + 1 @rank := 1 ) ",
+    label: "#meta19",
+    description: "字段 | if ( work_card_no = '' NULL work_card_no ) ",
     style: "fill: orange"
   },
   "id_7": {
@@ -742,85 +742,85 @@ g2.setEdge( "id_3", "id_5" , { label: "" });
   },
   "id_8": {
     id: "id_8",
-    label: "#meta1",
-    description: "字段 | if ( work_card_no = '' NULL work_card_no ) ",
-    style: "fill: orange"
-  },
-  "id_9": {
-    id: "id_9",
     label: "@id_card_num := NULL",
     description: "字段",
     style: "fill: orange"
   },
+  "id_9": {
+    id: "id_9",
+    label: "#meta22",
+    description: "字段 | max ( leave_dt ) ",
+    style: "fill: orange"
+  },
   "id_10": {
     id: "id_10",
-    label: "#meta5",
-    description: "字段 | count ( 1 ) ",
+    label: "@entry_dt := NULL",
+    description: "字段",
     style: "fill: orange"
   },
   "id_11": {
     id: "id_11",
-    label: "@entry_dt := NULL",
+    label: "work_card_no",
     description: "字段",
     style: "fill: orange"
   },
   "id_12": {
     id: "id_12",
-    label: "work_card_no",
+    label: "entry_dt",
     description: "字段",
     style: "fill: orange"
   },
   "id_13": {
     id: "id_13",
-    label: "#meta3",
+    label: "#meta21",
     description: "字段 | upper ( id_card_num ) ",
     style: "fill: orange"
   },
   "id_14": {
     id: "id_14",
-    label: "entry_dt",
+    label: "@entry_dt := temp.entry_dt",
     description: "字段",
     style: "fill: orange"
   },
   "id_15": {
     id: "id_15",
-    label: "@entry_dt := temp.entry_dt",
-    description: "字段",
+    label: "#meta23",
+    description: "字段 | count ( 1 ) ",
     style: "fill: orange"
   },
   "id_16": {
     id: "id_16",
-    label: "#meta4",
-    description: "字段 | max ( leave_dt ) ",
+    label: "ent_id",
+    description: "字段",
     style: "fill: orange"
   },
   "id_17": {
     id: "id_17",
-    label: "ent_id",
+    label: "@rank := 0",
     description: "字段",
     style: "fill: orange"
   },
   "id_18": {
     id: "id_18",
-    label: "@rank := 0",
-    description: "字段",
+    label: "#meta20",
+    description: "字段 | if ( @entry_dt = temp.entry_dt AND @id_card_num = temp.id_card_num @rank := @rank + 1 @rank := 1 ) ",
     style: "fill: orange"
   },
   "id_19": {
     id: "id_19",
-    label: "rank",
+    label: "work_card_num",
     description: "字段别名",
     style: "fill: pink"
   },
   "id_20": {
     id: "id_20",
-    label: "work_card_num",
+    label: "leave_date",
     description: "字段别名",
     style: "fill: pink"
   },
   "id_21": {
     id: "id_21",
-    label: "leave_date",
+    label: "entry_date",
     description: "字段别名",
     style: "fill: pink"
   },
@@ -832,19 +832,19 @@ g2.setEdge( "id_3", "id_5" , { label: "" });
   },
   "id_23": {
     id: "id_23",
-    label: "entry_date",
+    label: "rank",
     description: "字段别名",
     style: "fill: pink"
   },
   "id_24": {
     id: "id_24",
-    label: "leave_dt",
+    label: "num",
     description: "字段别名",
     style: "fill: pink"
   },
   "id_25": {
     id: "id_25",
-    label: "num",
+    label: "leave_dt",
     description: "字段别名",
     style: "fill: pink"
   },
@@ -866,28 +866,28 @@ g2.setEdge( "id_3", "id_5" , { label: "" });
   // Set up the edges
   g3.setEdge( "id_ts", "id_1" , { label: "" });
 g3.setEdge( "id_6", "id_19" , { label: "" });
-g3.setEdge( "id_8", "id_20" , { label: "" });
-g3.setEdge( "id_24", "id_21" , { label: "" });
+g3.setEdge( "id_25", "id_20" , { label: "" });
+g3.setEdge( "id_12", "id_21" , { label: "" });
 g3.setEdge( "id_13", "id_22" , { label: "" });
-g3.setEdge( "id_14", "id_23" , { label: "" });
-g3.setEdge( "id_16", "id_24" , { label: "" });
-g3.setEdge( "id_10", "id_25" , { label: "" });
+g3.setEdge( "id_18", "id_23" , { label: "" });
+g3.setEdge( "id_15", "id_24" , { label: "" });
+g3.setEdge( "id_9", "id_25" , { label: "" });
 g3.setEdge( "id_2", "id_6" , { label: "" });
 g3.setEdge( "id_2", "id_7" , { label: "" });
-g3.setEdge( "id_2", "id_8" , { label: "" });
-g3.setEdge( "id_4", "id_9" , { label: "" });
-g3.setEdge( "id_5", "id_10" , { label: "" });
-g3.setEdge( "id_4", "id_11" , { label: "" });
+g3.setEdge( "id_4", "id_8" , { label: "" });
+g3.setEdge( "id_5", "id_9" , { label: "" });
+g3.setEdge( "id_4", "id_10" , { label: "" });
+g3.setEdge( "id_5", "id_11" , { label: "" });
 g3.setEdge( "id_5", "id_12" , { label: "" });
 g3.setEdge( "id_5", "id_13" , { label: "" });
-g3.setEdge( "id_5", "id_14" , { label: "" });
-g3.setEdge( "id_2", "id_15" , { label: "" });
+g3.setEdge( "id_2", "id_14" , { label: "" });
+g3.setEdge( "id_5", "id_15" , { label: "" });
 g3.setEdge( "id_5", "id_16" , { label: "" });
-g3.setEdge( "id_5", "id_17" , { label: "" });
-g3.setEdge( "id_4", "id_18" , { label: "" });
-g3.setEdge( "id_2", "id_4" , { label: "" });
-g3.setEdge( "id_1", "id_2" , { label: "" });
+g3.setEdge( "id_4", "id_17" , { label: "" });
+g3.setEdge( "id_2", "id_18" , { label: "" });
 g3.setEdge( "id_2", "id_3" , { label: "" });
+g3.setEdge( "id_1", "id_2" , { label: "" });
+g3.setEdge( "id_2", "id_4" , { label: "" });
 g3.setEdge( "id_3", "id_5" , { label: "" });
 
 
@@ -1145,68 +1145,68 @@ g4.setEdge( "id_1", "id_4" , { label: "" });
     "id_1": {
     id: "id_1",
     label: "SQL",
-    description: "<br>        select intv_dt, DATE_FORMAT(intv_dt, '%Y-%m') as interview_month, <br>count(*) as d_total,<br>count(rcrt_typ=2 or null) as d_zxx_total, <br>count(intv_sts=2 or null) as d_intv,<br>count(rcrt_typ=2 and intv_sts=2 or null) as d_zxx_intv, <br>count(rcrt_typ=2 and intv_sts=2 and hire_status=1 or null) as d_zxx_hire, <br>count(rcrt_typ=0 or null) as d_nzxx_total, <br>count(rcrt_typ=0 and intv_sts=2 or null) as d_nzxx_intv<br>from jff_ent_tmp.jff_cb_name_list<br>group by intv_dt ",
+    description: "<br>        select intv_dt, DATE_FORMAT(intv_dt, '%Y-%m') as interview_month,<br>count(*) as d_total,<br>count(rcrt_typ=2 or null) as d_zxx_total,<br>count(intv_sts=2 or null) as d_intv,<br>count(rcrt_typ=2 and intv_sts=2 or null) as d_zxx_intv,<br>count(rcrt_typ=2 and intv_sts=2 and hire_status=1 or null) as d_zxx_hire,<br>count(rcrt_typ=0 or null) as d_nzxx_total,<br>count(rcrt_typ=0 and intv_sts=2 or null) as d_nzxx_intv<br>from jff_ent_tmp.jff_cb_name_list<br>group by intv_dt ",
     style: "fill: lightblue"
   },
   "id_2": {
     id: "id_2",
+    label: "jff_ent_tmp.jff_cb_name_list",
+    description: "表",
+    style: "fill: blue"
+  },
+  "id_3": {
+    id: "id_3",
     label: "intv_dt",
     description: "字段",
     style: "fill: orange"
   },
-  "id_3": {
-    id: "id_3",
-    label: "#meta2",
-    description: "字段 | count ( * ) ",
-    style: "fill: orange"
-  },
   "id_4": {
     id: "id_4",
-    label: "#meta3",
+    label: "#meta32",
     description: "字段 | count ( rcrt_typ = 2 OR NULL ) ",
     style: "fill: orange"
   },
   "id_5": {
     id: "id_5",
-    label: "#meta1",
-    description: "字段 | DATE_FORMAT ( intv_dt '%Y - %m' ) ",
+    label: "#meta33",
+    description: "字段 | count ( intv_sts = 2 OR NULL ) ",
     style: "fill: orange"
   },
   "id_6": {
     id: "id_6",
-    label: "#meta6",
-    description: "字段 | count ( rcrt_typ = 2 AND intv_sts = 2 AND hire_status = 1 OR NULL ) ",
+    label: "#meta30",
+    description: "字段 | DATE_FORMAT ( intv_dt '%Y - %m' ) ",
     style: "fill: orange"
   },
   "id_7": {
     id: "id_7",
-    label: "#meta7",
-    description: "字段 | count ( rcrt_typ = 0 OR NULL ) ",
+    label: "#meta31",
+    description: "字段 | count ( * ) ",
     style: "fill: orange"
   },
   "id_8": {
     id: "id_8",
-    label: "#meta4",
-    description: "字段 | count ( intv_sts = 2 OR NULL ) ",
+    label: "#meta36",
+    description: "字段 | count ( rcrt_typ = 0 OR NULL ) ",
     style: "fill: orange"
   },
   "id_9": {
     id: "id_9",
-    label: "#meta5",
-    description: "字段 | count ( rcrt_typ = 2 AND intv_sts = 2 OR NULL ) ",
+    label: "#meta37",
+    description: "字段 | count ( rcrt_typ = 0 AND intv_sts = 2 OR NULL ) ",
     style: "fill: orange"
   },
   "id_10": {
     id: "id_10",
-    label: "#meta8",
-    description: "字段 | count ( rcrt_typ = 0 AND intv_sts = 2 OR NULL ) ",
+    label: "#meta34",
+    description: "字段 | count ( rcrt_typ = 2 AND intv_sts = 2 OR NULL ) ",
     style: "fill: orange"
   },
   "id_11": {
     id: "id_11",
-    label: "d_total",
-    description: "字段别名",
-    style: "fill: pink"
+    label: "#meta35",
+    description: "字段 | count ( rcrt_typ = 2 AND intv_sts = 2 AND hire_status = 1 OR NULL ) ",
+    style: "fill: orange"
   },
   "id_12": {
     id: "id_12",
@@ -1222,37 +1222,43 @@ g4.setEdge( "id_1", "id_4" , { label: "" });
   },
   "id_14": {
     id: "id_14",
-    label: "d_zxx_hire",
+    label: "interview_month",
     description: "字段别名",
     style: "fill: pink"
   },
   "id_13": {
     id: "id_13",
-    label: "interview_month",
+    label: "d_intv",
     description: "字段别名",
     style: "fill: pink"
   },
   "id_16": {
     id: "id_16",
-    label: "d_intv",
+    label: "d_nzxx_total",
     description: "字段别名",
     style: "fill: pink"
   },
   "id_17": {
     id: "id_17",
-    label: "d_zxx_intv",
+    label: "d_nzxx_intv",
     description: "字段别名",
     style: "fill: pink"
   },
   "id_18": {
     id: "id_18",
-    label: "d_nzxx_intv",
+    label: "d_zxx_intv",
+    description: "字段别名",
+    style: "fill: pink"
+  },
+  "id_19": {
+    id: "id_19",
+    label: "d_zxx_hire",
     description: "字段别名",
     style: "fill: pink"
   },
   "id_15": {
     id: "id_15",
-    label: "d_nzxx_total",
+    label: "d_total",
     description: "字段别名",
     style: "fill: pink"
   }
@@ -1267,7 +1273,6 @@ g4.setEdge( "id_1", "id_4" , { label: "" });
 
   // Set up the edges
   g5.setEdge( "id_ts", "id_1" , { label: "" });
-g5.setEdge( "id_3", "id_11" , { label: "" });
 g5.setEdge( "id_4", "id_12" , { label: "" });
 g5.setEdge( "id_5", "id_13" , { label: "" });
 g5.setEdge( "id_6", "id_14" , { label: "" });
@@ -1275,15 +1280,17 @@ g5.setEdge( "id_7", "id_15" , { label: "" });
 g5.setEdge( "id_8", "id_16" , { label: "" });
 g5.setEdge( "id_9", "id_17" , { label: "" });
 g5.setEdge( "id_10", "id_18" , { label: "" });
+g5.setEdge( "id_11", "id_19" , { label: "" });
+g5.setEdge( "id_2", "id_3" , { label: "" });
+g5.setEdge( "id_2", "id_4" , { label: "" });
+g5.setEdge( "id_2", "id_5" , { label: "" });
+g5.setEdge( "id_2", "id_6" , { label: "" });
+g5.setEdge( "id_2", "id_7" , { label: "" });
+g5.setEdge( "id_2", "id_8" , { label: "" });
+g5.setEdge( "id_2", "id_9" , { label: "" });
+g5.setEdge( "id_2", "id_10" , { label: "" });
+g5.setEdge( "id_2", "id_11" , { label: "" });
 g5.setEdge( "id_1", "id_2" , { label: "" });
-g5.setEdge( "id_1", "id_3" , { label: "" });
-g5.setEdge( "id_1", "id_4" , { label: "" });
-g5.setEdge( "id_1", "id_5" , { label: "" });
-g5.setEdge( "id_1", "id_6" , { label: "" });
-g5.setEdge( "id_1", "id_7" , { label: "" });
-g5.setEdge( "id_1", "id_8" , { label: "" });
-g5.setEdge( "id_1", "id_9" , { label: "" });
-g5.setEdge( "id_1", "id_10" , { label: "" });
 
 
   // Create the renderer
@@ -1367,7 +1374,7 @@ g5.setEdge( "id_1", "id_10" , { label: "" });
     "id_1": {
     id: "id_1",
     label: "SQL",
-    description: "<br>        select <br>count(distinct vIDCardNum) as cnt<br>from <br>ods_woda.tbbrokeruserorderstatus ta<br>where <br>eStatus=1<br>and dtcheckintime>=%s<br>and dtcheckintime<%s<br>and  iCheckinRecruitTmpID in (<br>        select iRecruitTmpID from ods_woda.tbRecruitTmp where vPositionName like '%%周薪薪%%' and eStatus=1<br>)<br>and eInterviewStatus in(1,2)<br>and eJFFInterviewStatus=2<br>and exists(<br>select <br>mbr_id_card_num<br>from <br>ods_jff.name_list <br>where <br>intv_dt>=%s<br>and intv_dt<%s<br>and rcrt_typ=1<br>and is_deleted=0<br>and left(ta.dtCheckinTime,10) = intv_dt<br>and ta.vIDCardNum = mbr_id_card_num<br>)",
+    description: "<br>        select<br>count(distinct vIDCardNum) as cnt<br>from<br>ods_woda.tbbrokeruserorderstatus ta<br>where<br>eStatus=1<br>and dtcheckintime>=%s<br>and dtcheckintime<%s<br>and  iCheckinRecruitTmpID in (<br>        select iRecruitTmpID from ods_woda.tbRecruitTmp where vPositionName like '%%周薪薪%%' and eStatus=1<br>)<br>and eInterviewStatus in(1,2)<br>and eJFFInterviewStatus=2<br>and exists(<br>select<br>mbr_id_card_num<br>from<br>ods_jff.name_list<br>where<br>intv_dt>=%s<br>and intv_dt<%s<br>and rcrt_typ=1<br>and is_deleted=0<br>and left(ta.dtCheckinTime,10) = intv_dt<br>and ta.vIDCardNum = mbr_id_card_num<br>)",
     style: "fill: lightblue"
   },
   "id_2": {
@@ -1378,7 +1385,7 @@ g5.setEdge( "id_1", "id_10" , { label: "" });
   },
   "id_3": {
     id: "id_3",
-    label: "#meta1",
+    label: "#meta38",
     description: "字段 | count ( vIDCardNum ) ",
     style: "fill: orange"
   },
@@ -1470,207 +1477,6 @@ g6.setEdge( "id_1", "id_2" , { label: "" });
   svg.call(zoom.transform, d3.zoomIdentity.translate((svg.attr("width") - g6.graph().width * initialScale) / 2, 20).scale(initialScale));
 
   svg.attr('height', g6.graph().height * initialScale + 40);
-</script>
-
-<h3>测试</h3>
-<svg width=960 height=800 id="svg7"></svg>
-<script>
-  var highlight_color = "#000000";
-  var upstream_color = "#0000FF";
-  var downstream_color = "#0000FF"
-  var fill_default_color = "rgb(240, 237, 228)"
-  var fill_upstream_color = "orange"
-  var fill_downstream_color = "orange"
-  var initialStrokeWidth = '3px';
-  
-  // Create a new directed graph
-  var g7 = new dagreD3.graphlib.Graph().setGraph({});
-
-  // States and transitions from RFC 793
-  var states = {
-    "id_1": {
-    id: "id_1",
-    label: "SQL",
-    description: "<br>        truncate transit_jff.direct_store_name_list_sum;<br><br>insert into transit_jff.direct_store_name_list_sum(sp_id, league_id, league_name,<br>ent_id, ent_short_name, sp_ent_id, sum_wage_min, sum_wage_max, intv_cnt)<br>select a.sp_id, b.league_id, b.league_name, d.ent_id, d.ent_short_name, a.sp_ent_id,<br>d.sum_wage_min, d.sum_wage_max, count(1) as intv_cnt<br>from ods_jff.name_list a<br>left join ods_jff.league_store b on a.sp_id = b.sp_id<br>left join ods_jff.sp_ent c on a.sp_ent_id = c.sp_ent_id<br>left join ods_jff.ent d on c.ent_id = d.ent_id<br>where a.is_deleted = 0 -- and b.coop_mode = 3 <br>and b.is_deleted = 0 and d.ent_id > 0 and a.intv_dt >= date_sub(current_date(), interval 1 month)<br>group by a.sp_id, b.league_id, b.league_name, d.ent_id, d.ent_short_name, a.sp_ent_id,<br>d.sum_wage_min, d.sum_wage_max;<br>        ",
-    style: "fill: lightblue"
-  },
-  "id_2": {
-    id: "id_2",
-    label: "ods_jff.name_list",
-    description: "表",
-    style: "fill: blue"
-  },
-  "id_3": {
-    id: "id_3",
-    label: "ods_jff.league_store",
-    description: "表",
-    style: "fill: blue"
-  },
-  "id_4": {
-    id: "id_4",
-    label: "ods_jff.sp_ent",
-    description: "表",
-    style: "fill: blue"
-  },
-  "id_5": {
-    id: "id_5",
-    label: "ods_jff.ent",
-    description: "表",
-    style: "fill: blue"
-  },
-  "id_6": {
-    id: "id_6",
-    label: "sum_wage_max",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_7": {
-    id: "id_7",
-    label: "league_id",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_8": {
-    id: "id_8",
-    label: "sum_wage_min",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_9": {
-    id: "id_9",
-    label: "ent_short_name",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_10": {
-    id: "id_10",
-    label: "sp_id",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_11": {
-    id: "id_11",
-    label: "#meta2",
-    description: "字段 | count ( 1 ) ",
-    style: "fill: orange"
-  },
-  "id_12": {
-    id: "id_12",
-    label: "sp_ent_id",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_ts": {
-    id: "id_ts",
-    label: "开始",
-    description: "开始",
-    style: "fill: red"
-  },
-  "id_14": {
-    id: "id_14",
-    label: "league_name",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_13": {
-    id: "id_13",
-    label: "ent_id",
-    description: "字段",
-    style: "fill: orange"
-  },
-  "id_15": {
-    id: "id_15",
-    label: "intv_cnt",
-    description: "字段别名",
-    style: "fill: pink"
-  }
-  };
-
-  // Add states to the graph, set labels, and style
-  Object.keys(states).forEach(function (state) {
-    var value = states[state];
-    value.rx = value.ry = 5;
-    g7.setNode(state, value);
-  });
-
-  // Set up the edges
-  g7.setEdge( "id_ts", "id_1" , { label: "" });
-g7.setEdge( "id_11", "id_15" , { label: "" });
-g7.setEdge( "id_5", "id_6" , { label: "" });
-g7.setEdge( "id_3", "id_7" , { label: "" });
-g7.setEdge( "id_5", "id_8" , { label: "" });
-g7.setEdge( "id_5", "id_9" , { label: "" });
-g7.setEdge( "id_2", "id_10" , { label: "" });
-g7.setEdge( "id_1", "id_11" , { label: "" });
-g7.setEdge( "id_2", "id_12" , { label: "" });
-g7.setEdge( "id_5", "id_13" , { label: "" });
-g7.setEdge( "id_3", "id_14" , { label: "" });
-g7.setEdge( "id_1", "id_5" , { label: "" });
-g7.setEdge( "id_1", "id_3" , { label: "" });
-g7.setEdge( "id_1", "id_2" , { label: "" });
-g7.setEdge( "id_1", "id_4" , { label: "" });
-
-
-  // Create the renderer
-  var render = new dagreD3.render();
-
-  // Set up an SVG group so that we can translate the final graph.
-  var svg = d3.select("#svg7"),
-    inner7 = svg.append("g");
-
-  // Set up zoom support
-  var zoom = d3.zoom()
-    .on("zoom", function () {
-      inner7.attr("transform", d3.event.transform);
-    });
-  svg.call(zoom);
-
-  // Simple function to style the tooltip for the given node.
-  var styleTooltip = function (name, description) {
-    return "<p class='name'>" + name + "</p><p class='description' style='color:orange; width:100%; height:100%; display:inline-block' >" + description +"<br>" + "</p>";
-  };
-
-  // Run the renderer. This is what draws the final graph.
-  render(inner7, g7);
-
-  inner7.selectAll("g.node")
-    .attr("title", function (v) { return styleTooltip(g7.node(v).label, g7.node(v).description) })
-    .each(function (v) { $(this).tipsy({ gravity: "w", opacity: 1, html: true }); });
-
-  inner7.selectAll("g.node").style("stroke-width", initialStrokeWidth);
-
-  // function highlight nodes
-  inner7.selectAll("g.node").on("mouseover", function (d) {
-    inner7.selectAll("rect").style("stroke", highlight_color);
-    g7.predecessors(d).forEach(function (nodeid) {
-      my_node = inner7.select('#' + nodeid + ' rect');
-      my_node.style("stroke", fill_upstream_color);
-    })
-
-    g7.successors(d).forEach(function (nodeid) {
-      my_node = inner7.select('#' + nodeid + ' rect');
-      my_node.style("stroke", fill_downstream_color);
-    })
-  });
-
-  inner7.selectAll("g.node").on("mouseout", function (d) {
-    inner7.selectAll("rect").style("stroke", null);
-    g7.predecessors(d).forEach(function (nodeid) {
-      my_node = inner7.select('#' + nodeid + ' rect');
-      my_node.style("stroke", null);
-    })
-
-    g7.successors(d).forEach(function (nodeid) {
-      my_node = inner7.select('#' + nodeid + ' rect');
-      my_node.style("stroke", null);
-    })
-  });
-  
-  // Center the graph
-  var initialScale = 0.75;
-  svg.call(zoom.transform, d3.zoomIdentity.translate((svg.attr("width") - g7.graph().width * initialScale) / 2, 20).scale(initialScale));
-
-  svg.attr('height', g7.graph().height * initialScale + 40);
 </script>
 
 

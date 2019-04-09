@@ -20,13 +20,16 @@ meta_map = {}
 
 # 用于检索sql语句的关键字
 STATE_WORDS_PASS = ['SELECT', 'AS', 'FROM', 'JOIN', 'ON', 'WHERE', 'GROUP', 'BY']
+# 范围操作符
+META_BETWEEN = {'CASE': 'END', '(': ')'}
+
 # 用于检索前缀表达式的关键字
 OPERATOR_BEFORE = ['IF', 'COUNT', 'if', 'count', 'in', 'IN', 'CURRENT_DATE', 'current_date', 'concat', 'sum',
-                   'floor', '@', 'ROUND', 'round', 'MIN', 'min', 'MAX', 'max', 'date_part', 'DATE_FORMAT', 'upper']
-# 用于检索中缀表达式的关键字
+                   'floor', '@', 'ROUND', 'round', 'MIN', 'min', 'MAX', 'max', 'date_part', 'DATE_FORMAT', 'upper',
+                   'left', 'datediff', 'DATEDIFF']
+# 用于检索中缀表达式的关键字( := = 需要再合并)
 OPERATOR_MIDDLE = [':=', '=', '/', '+', '-', '::']
 
-# OPERATOR_RANGE = ['CASE', 'case', 'end', 'END']
 rename_col_cnt = 0
 MAP_TABLE_TABLE = {}
 COLUMN_AS = {}
@@ -50,7 +53,16 @@ def sql_to_meta_words(sql):
 
     for v in OPERATOR_MIDDLE:
         sql_format = sql_format.replace(v, ' %s ' % v)
-    sql_format = sql_format.replace(': =', ':=')
+    # 防止把 := = 按照=分割开，需要合并
+    recover_list = {}
+    for v1 in OPERATOR_MIDDLE:
+        for v2 in OPERATOR_MIDDLE:
+            if v1 in v2 and v1 != v2:
+                recover_list[v2.replace(v1, ' %s ' % v1)] = ' %s ' % v2
+
+    for k, v in recover_list.items():
+        sql_format = sql_format.replace(k, v)
+
     sql_sep = sql_format.replace('\n', ' ').replace(';', ' ').replace(',', ' ').replace('(', ' ( ').replace(')',
                                                                                                             ' ) ').split(
         ' ')
@@ -60,114 +72,117 @@ def sql_to_meta_words(sql):
             sql_words.append(v.strip())
 
     # 处理括号,存在子查询时需要标记下一次分解
-    meta_id = 0
-    for word in sql_words:
-        meta_sql_words.append(word)
-        if ')' == word:
-            meta_id += 1
-            meta_map_id = '#meta%d' % meta_id
-            meta_list = []
-            while True:
-                if len(meta_sql_words) == 0:
-                    break
-                top = meta_sql_words.pop()
-                meta_list.append(top)
-                if '(' == top:
-                    meta_map[meta_map_id] = list(reversed(meta_list))
-                    meta_sql_words.append(meta_map_id)
-                    break
-    # # 处理UNION关键字，分割两张表
-    # for word in meta_sql_words:
-    #     if 'UNION' == word:
-    #         meta_id += 1
-    #         meta_map_id = '#meta%d' % meta_id
-    #         meta_list = []
-    #
+    merge_meta_words_by_META_BETWEEN('SQL', sql_words, meta_map)
+    pass
+
+
+# 输入一个SQL单词列表，通过META_BETWEEN做聚合，
+# 由于可能META_BETWEEN有多个，所以每个聚合好的元素，都要递归调用，再次聚合上次聚合好的元素
+# 退出递归条件：没有新的聚合产生
+# 输入：递归层名称，要聚合的单词列表
+# 输出：meta_map:dict ,key:节点名，value:单词聚合列表
+meta_between_meta_id = 0
+
+
+@func_name()
+def merge_meta_words_by_META_BETWEEN(node_name, word_list, meta_map):
+    global META_BETWEEN, meta_between_meta_id
+    for meta_s, meta_e in META_BETWEEN.items():
+        meta_sql_words = []
+        for word in word_list:
+            meta_sql_words.append(word)
+            if meta_e == word:
+                seg_list = []
+                while True:
+                    if len(meta_sql_words) == 0:
+                        break
+                    top = meta_sql_words.pop()
+                    seg_list.append(top)
+                    if meta_s == top:
+                        # 如果没有新增聚合，直接返回
+                        if len(seg_list) == len(word_list):
+                            return
+                        meta_between_meta_id += 1
+                        meta_map_id = '#meta%d' % meta_between_meta_id
+                        meta_map[meta_map_id] = list(reversed(seg_list))
+                        meta_sql_words.append(meta_map_id)
+                        # 新增聚合，需要递归聚合
+                        merge_meta_words_by_META_BETWEEN(meta_map_id, meta_map[meta_map_id], meta_map)
+
+                        break
+
+        meta_map[node_name] = []
+        meta_map[node_name] += meta_sql_words
     pass
 
 
 @func_name()
-def merge_meta_words_to_operator(meta_sql_words, meta_map):
+def merge_meta_words_by_operator(meta_sql_words, meta_map):
     # 把运算符号相连接的a op b 组合在一起
-    global OPERATOR_BEFORE, OPERATOR_MIDDLE
+    global OPERATOR_BEFORE, OPERATOR_MIDDLE, merge_meta_map
 
-    merge_sql_words = []
+    merge_sql_words1 = []
+    merge_sql_words2 = []
     merge_meta_map = meta_map
     i = 0
+    # 先处理前缀操作符
+    # 后处理中间操作符
+    # 处理特殊操作符CASE WHEN ELSE END
     while i < len(meta_sql_words):
-        merge_sql_words.append(meta_sql_words[i])
-        if meta_sql_words[i] in OPERATOR_MIDDLE:
-            seg_tmp = meta_sql_words[i - 1:i + 2]
-            merge_one = ' '.join(seg_tmp)
-            merge_sql_words.pop()
-            merge_sql_words.pop()
-            is_meta_in = 0
-            # 单元与运算符结合，需要单独判断
-            if '#meta' in seg_tmp[0]:
-                is_meta_in += 1
-                merge_sql_words.append(seg_tmp[0])
-                merge_meta_map[seg_tmp[0]] = merge_meta_map[seg_tmp[0]] + seg_tmp[1:]
-            elif '#meta' in seg_tmp[2]:
-                is_meta_in += 1
-                merge_sql_words.append(seg_tmp[2])
-                merge_meta_map[seg_tmp[2]] = seg_tmp[:2] + merge_meta_map[seg_tmp[2]]
-
-            if is_meta_in == 0:
-                merge_sql_words.append(merge_one)
-
-            i += 2
-            continue
-        elif meta_sql_words[i] in OPERATOR_BEFORE:
+        merge_sql_words1.append(meta_sql_words[i])
+        if meta_sql_words[i] in OPERATOR_BEFORE:
             seg_tmp = meta_sql_words[i:i + 2]
             merge_one = ' '.join(seg_tmp)
-            merge_sql_words.pop()
+            merge_sql_words1.pop()
             is_meta_in = 0
             for v in seg_tmp:
                 if '#meta' in v:
                     is_meta_in += 1
-                    merge_sql_words.append(v)
-                    merge_meta_map[v] = [meta_sql_words[i]] + merge_meta_map[v]
+                    merge_sql_words1.append(v)
+                    merge_meta_map[v] = [seg_tmp[0]] + merge_meta_map[v]
             if is_meta_in == 0:
-                merge_sql_words.append(merge_one)
-
+                merge_sql_words1.append(merge_one)
             i += 2
-            continue
-        # case end 语句
-        elif meta_sql_words[i] == 'END' or meta_sql_words[i] == 'end':
-            merge_list = []
-            while True:
-                if len(merge_sql_words) == 0:
-                    break
-                top = merge_sql_words.pop()
-                merge_list.append(top)
-                if 'CASE' in top:
-                    # 去掉首尾2个运算符号
-                    seg_tmp = list(reversed(merge_list))
-                    merge_one = ' '.join(seg_tmp)
-                    is_meta_in = 0
-                    # seg_tmp中可能有多个#meta，需要生成新的#meta?
-                    for v in seg_tmp:
-                        if '#meta' in v:
-                            is_meta_in += 1
-                    if is_meta_in == 1:
-                        for v in seg_tmp:
-                            if '#meta' in v:
-                                merge_sql_words.append(v)
-                                merge_meta_map[v] += seg_tmp
-                    elif is_meta_in == 0:
-                        merge_sql_words.append(merge_one)
-                    elif is_meta_in > 1:
-                        new_meta_id = '#meta%d' % (len(merge_meta_map) + 1)
-                        merge_sql_words.append(new_meta_id)
-                        merge_meta_map[new_meta_id] = seg_tmp
-                    break
-            i += 1
             continue
         else:
             i += 1
             continue
 
-    return merge_sql_words, merge_meta_map
+    # ----后处理中间操作符
+    i = 0
+    while i < len(merge_sql_words1):
+        merge_sql_words2.append(merge_sql_words1[i])
+        if merge_sql_words1[i] in OPERATOR_MIDDLE:
+            seg_tmp = merge_sql_words1[i - 1:i + 2]
+            merge_one = ' '.join(seg_tmp)
+            merge_sql_words2.pop()
+            merge_sql_words2.pop()
+            is_meta_in = 0
+            # 单元与运算符结合，需要单独判断
+            if '#meta' in seg_tmp[0] and '#meta' not in seg_tmp[2]:
+                is_meta_in += 1
+                merge_sql_words2.append(seg_tmp[0])
+                merge_meta_map[seg_tmp[0]] = merge_meta_map[seg_tmp[0]] + seg_tmp[1:]
+            elif '#meta' in seg_tmp[2] and '#meta' not in seg_tmp[0]:
+                is_meta_in += 1
+                merge_sql_words2.append(seg_tmp[2])
+                merge_meta_map[seg_tmp[2]] = seg_tmp[:2] + merge_meta_map[seg_tmp[2]]
+            elif '#meta' in seg_tmp[0] and '#meta' in seg_tmp[2]:
+                is_meta_in += 1
+                merge_sql_words2.append(seg_tmp[0])
+                merge_meta_map[seg_tmp[0]] = merge_meta_map[seg_tmp[0]] + seg_tmp[1:2] + merge_meta_map[seg_tmp[2]]
+                if seg_tmp[2] in merge_meta_map.keys():
+                    merge_meta_map.pop(seg_tmp[2])
+            if is_meta_in == 0:
+                merge_sql_words2.append(merge_one)
+
+            i += 2
+            continue
+        else:
+            i += 1
+            continue
+
+    return merge_sql_words2, merge_meta_map
 
 
 # 递归调用解析sql
@@ -264,6 +279,18 @@ def parse_meta_select_v2(node_name, sql_words):
             i_tmp = 0
             while i_tmp < len(seg_x_y) - 1:
                 TABLE_AS[seg_x_y[i_tmp]] = seg_x_y[i_tmp + 1]
+                i_tmp += 2
+        elif 'FROM' == state_x and 'GROUP' == state_y:
+            TABLE += seg_x_y
+            i_tmp = 0
+            while i_tmp < len(seg_x_y) - 1:
+                TABLE_AS[seg_x_y[i_tmp]] = seg_x_y[i_tmp + 1]
+                i_tmp += 2
+        elif 'FROM' == state_y and i_state_y == len(i_STATE) - 1:
+            TABLE += seg_y
+            i_tmp = 0
+            while i_tmp < len(seg_y) - 1:
+                TABLE_AS[seg_y[i_tmp]] = seg_y[i_tmp + 1]
                 i_tmp += 2
 
     # 1删除select字段表名
@@ -433,7 +460,7 @@ def reset_dag_conf():
 def recursion_gen(node_name, meta_sql_words, meta_map):
     global MAP_TABLE_TABLE, COLUMN_AS, MAP_COLUMN_TABLE, TABLE_PURE, COLUMN_PURE, merge_meta_map
 
-    merge_sql_words, merge_meta_map = merge_meta_words_to_operator(meta_sql_words, meta_map)
+    merge_sql_words, merge_meta_map = merge_meta_words_by_operator(meta_sql_words, meta_map)
     TMP_COLUMN_AS, TMP_MAP_COLUMN_TABLE, TMP_TABLE_PURE = parse_meta_select_v2(node_name, merge_sql_words)
 
     # 层级关系
@@ -507,7 +534,7 @@ def auto_gen():
         # 计算
         sql_to_meta_words(dict_one['SQL'])
         # 递归计算
-        recursion_gen('SQL', meta_sql_words, meta_map)
+        recursion_gen('SQL', meta_map['SQL'], meta_map)
         # 把全局关系映射到dag_conf.py
         select_sql_to_conf(dict_one['TITLE'], dict_one['SQL'].replace('"', ''), COLUMN_AS, MAP_COLUMN_TABLE, TABLE_PURE,
                            MAP_TABLE_TABLE,

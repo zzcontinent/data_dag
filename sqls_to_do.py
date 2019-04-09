@@ -24,7 +24,7 @@ FROM (
 		select name_list_id, jff_name_list_id, ent_id, upper(id_card_num) as id_card_num, trgt_sp_id,
 		work_card_no, intv_dt, intv_sts, work_sts, entry_dt, leave_dt, rcrt_order_id, srce_sp_id
 		from `ods_zxx_2.0`.name_list
-		where is_deleted = 1 
+		where is_deleted = 1
 		order by intv_dt, id_card_num, name_list_id desc
 		) temp,
 		(select @intv_dt := null, @id_card_num := null, @rank := 0) r
@@ -47,7 +47,7 @@ inner join (
 	if(@entry_dt=temp.entry_dt and @id_card_num=temp.id_card_num, @rank := @rank+1, @rank := 1) as rank,
 	@entry_dt := temp.entry_dt, @id_card_num := temp.id_card_num
 	from (
-		SELECT upper(id_card_num) as id_card_num, work_card_no, entry_dt, ent_id, max(leave_dt) as leave_dt, count(1) as num 
+		SELECT upper(id_card_num) as id_card_num, work_card_no, entry_dt, ent_id, max(leave_dt) as leave_dt, count(1) as num
 		FROM `ods_zxx_2.0`.bill_monthly_batch_import_detail
 		where entry_dt > '1970-01-01'
 		group by ent_id, upper(id_card_num), work_card_no, entry_dt
@@ -67,7 +67,7 @@ inner join (
 	if(@entry_dt=temp.entry_dt and @id_card_num=temp.id_card_num, @rank := @rank+1, @rank := 1) as rank,
 	@entry_dt := temp.entry_dt, @id_card_num := temp.id_card_num
 	from (
-		SELECT upper(id_card_num) as id_card_num, work_card_no, entry_dt, ent_id, max(leave_dt) as leave_dt, count(1) as num 
+		SELECT upper(id_card_num) as id_card_num, work_card_no, entry_dt, ent_id, max(leave_dt) as leave_dt, count(1) as num
 		FROM `ods_zxx_2.0`.bill_weekly_batch_import_detail
 		where entry_dt > '1970-01-01'
 		group by ent_id, upper(id_card_num), work_card_no, entry_dt
@@ -101,13 +101,13 @@ and c.sp_id != 1006 and a.is_deleted = 0; '''
     {
         'TITLE': '4 生成统计结果',
         'SQL': '''
-        select intv_dt, DATE_FORMAT(intv_dt, '%Y-%m') as interview_month, 
+        select intv_dt, DATE_FORMAT(intv_dt, '%Y-%m') as interview_month,
 count(*) as d_total,
-count(rcrt_typ=2 or null) as d_zxx_total, 
+count(rcrt_typ=2 or null) as d_zxx_total,
 count(intv_sts=2 or null) as d_intv,
-count(rcrt_typ=2 and intv_sts=2 or null) as d_zxx_intv, 
-count(rcrt_typ=2 and intv_sts=2 and hire_status=1 or null) as d_zxx_hire, 
-count(rcrt_typ=0 or null) as d_nzxx_total, 
+count(rcrt_typ=2 and intv_sts=2 or null) as d_zxx_intv,
+count(rcrt_typ=2 and intv_sts=2 and hire_status=1 or null) as d_zxx_hire,
+count(rcrt_typ=0 or null) as d_nzxx_total,
 count(rcrt_typ=0 and intv_sts=2 or null) as d_nzxx_intv
 from jff_ent_tmp.jff_cb_name_list
 group by intv_dt '''
@@ -115,11 +115,11 @@ group by intv_dt '''
     {
         'TITLE': '4 生成统计结果',
         'SQL': '''
-        select 
+        select
 count(distinct vIDCardNum) as cnt
-from 
+from
 ods_woda.tbbrokeruserorderstatus ta
-where 
+where
 eStatus=1
 and dtcheckintime>=%s
 and dtcheckintime<%s
@@ -129,11 +129,11 @@ and  iCheckinRecruitTmpID in (
 and eInterviewStatus in(1,2)
 and eJFFInterviewStatus=2
 and exists(
-select 
+select
 mbr_id_card_num
-from 
-ods_jff.name_list 
-where 
+from
+ods_jff.name_list
+where
 intv_dt>=%s
 and intv_dt<%s
 and rcrt_typ=1
@@ -142,24 +142,30 @@ and left(ta.dtCheckinTime,10) = intv_dt
 and ta.vIDCardNum = mbr_id_card_num
 )'''
     },
-    {
-        'TITLE': '测试',
-        'SQL': '''
-        truncate transit_jff.direct_store_name_list_sum;
-
-insert into transit_jff.direct_store_name_list_sum(sp_id, league_id, league_name,
-ent_id, ent_short_name, sp_ent_id, sum_wage_min, sum_wage_max, intv_cnt)
-select a.sp_id, b.league_id, b.league_name, d.ent_id, d.ent_short_name, a.sp_ent_id,
-d.sum_wage_min, d.sum_wage_max, count(1) as intv_cnt
-from ods_jff.name_list a
-left join ods_jff.league_store b on a.sp_id = b.sp_id
-left join ods_jff.sp_ent c on a.sp_ent_id = c.sp_ent_id
-left join ods_jff.ent d on c.ent_id = d.ent_id
-where a.is_deleted = 0 -- and b.coop_mode = 3 
-and b.is_deleted = 0 and d.ent_id > 0 and a.intv_dt >= date_sub(current_date(), interval 1 month)
-group by a.sp_id, b.league_id, b.league_name, d.ent_id, d.ent_short_name, a.sp_ent_id,
-d.sum_wage_min, d.sum_wage_max;
-        '''
-    }
+#     {
+#         'TITLE': '测试',
+#         'SQL': '''
+#         select sum(tta.m),sum(tta.days) ,
+# sum(tta.m)/sum(tta.days),
+# left(entry_dt,7) as month
+# from
+# (
+# select
+# begin_dt,end_dt,entry_dt,leave_dt,
+# case when entry_dt>end_dt then 0
+# when entry_dt>=begin_dt and end_dt<=leave_dt and leave_dt is not null then datediff(end_dt,entry_dt)
+# when entry_dt>=begin_dt and leave_dt is null then datediff(end_dt,entry_dt)
+# when entry_dt>=begin_dt and end_dt>=leave_dt and   leave_dt is not null  then datediff(end_dt,entry_dt)
+# when entry_dt<begin_dt and end_dt<=leave_dt and leave_dt is not null then datediff(end_dt,begin_dt)
+# when entry_dt<begin_dt and leave_dt is null then datediff(end_dt,begin_dt)
+# when entry_dt<begin_dt and end_dt>=leave_dt and  leave_dt is not null then datediff(leave_dt,begin_dt)
+# end +1 as `days`,agent_amt/100 as `m`
+# from league_bill
+# where
+# store_sp_id!=1006
+# ) tta
+# group by left(entry_dt,7);
+#         '''
+#     }
 
 ]
