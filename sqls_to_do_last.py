@@ -170,7 +170,7 @@ group by left(entry_dt,7);
     {
         'TITLE': '朱雨测试SQL',
         'SQL': '''
-        select a.mgmt_city_name as 区域, a.league_name as 门店名称, a.enroll_cnt 预签到数, a.broker_cnt 经纪人数, a.avg_cnt 人均, a.row_num 排名 from (
+        select a.mgmt_city_name as 区域, a.league_name as 门店名称, a.enroll_cnt as 预签到数, a.broker_cnt as 经纪人数, a.avg_cnt as 人均, a.row_num as 排名 from (
 select x.*, (@row_num:=@row_num+1) as row_num from
 (
 SELECT c.mgmt_city_name, c.league_id, c.league_name, count(a.broker_enroll_id) as enroll_cnt, c.cnt as broker_cnt, count(a.broker_enroll_id)/c.cnt as avg_cnt
